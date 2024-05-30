@@ -26,14 +26,14 @@ class CustomEnterNumber extends StatelessWidget {
             border: Border.all(
               color: Colors.grey,
             ),
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(14),
               bottomLeft: Radius.circular(14),
             ),
           ),
           child: TextField(
             controller: countryCode,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               contentPadding: EdgeInsets.symmetric(horizontal: 20),
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
@@ -46,7 +46,7 @@ class CustomEnterNumber extends StatelessWidget {
               border: Border.all(
                 color: Colors.grey,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(14),
                 bottomRight: Radius.circular(14),
               ),
@@ -55,7 +55,7 @@ class CustomEnterNumber extends StatelessWidget {
               controller: numberController,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 hintText: "Enter Your Number",
                 hintStyle: TextStyle(
                   color: Colors.grey[400],

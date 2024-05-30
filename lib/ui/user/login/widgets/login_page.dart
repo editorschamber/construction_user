@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:site_construct/constrant/custom_color.dart';
+import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_enter_number.dart';
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
         },
         codeSent: (String verificationId, int? resendToken) {
           LoginScreen.verify = verificationId;
-          Get.toNamed('/otpScreen');
+          Get.toNamed(otpScreen);
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );

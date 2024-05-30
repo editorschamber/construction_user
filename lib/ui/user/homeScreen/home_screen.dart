@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:site_construct/routes/route.dart';
+import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/homeScreen/widgets/cards_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,6 +14,28 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currIndex = 0;
+
+  final List<Site> sites = [
+    Site(
+      imageUrl: 'assets/img/site1.jpg',
+      siteName: 'Site 1',
+      siteDetails: 'Details about Site 1',
+      location: 'Location 1',
+    ),
+    Site(
+      imageUrl: 'assets/img/site2.jpg',
+      siteName: 'Site 2',
+      siteDetails: 'Details about Site 2',
+      location: 'Location 2',
+    ),
+    Site(
+      imageUrl: 'assets/img/site3.jpg',
+      siteName: 'Site 3',
+      siteDetails: 'Details about Site 3',
+      location: 'Location 3',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
@@ -25,10 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 3,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: sites.length,
                   itemBuilder: (context, index) {
-                    return CardsPage();
+                    return CardsPage(
+                      site: sites[index],
+                      onTap: () {
+                        Get.toNamed(detailsScreen, arguments: sites[index]);
+                      },
+                    );
                   },
                 ),
               ],
@@ -45,23 +76,17 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: currIndex,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-            ),
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.shop,
-            ),
+            icon: Icon(Icons.shop),
             label: 'Order',
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person,
-            ),
+            icon: Icon(Icons.person),
             label: 'Profile',
-          )
+          ),
         ],
       ),
     );

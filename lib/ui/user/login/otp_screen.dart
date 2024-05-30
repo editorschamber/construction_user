@@ -43,12 +43,12 @@ class _OtpScreenState extends State<OtpScreen> {
       body: SafeArea(
         child: Container(
           width: width,
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "OTP Verify",
                 style: TextStyle(color: CustomColor.textColor, fontSize: 33),
               ),
@@ -57,7 +57,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               Pinput(
                 length: 6,
-                autofillHints: [AutofillHints.oneTimeCode],
+                autofillHints: const [AutofillHints.oneTimeCode],
                 showCursor: true,
                 onChanged: (value) {
                   code = value;

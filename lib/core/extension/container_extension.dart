@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-extension sample on Container {
+extension DecorationContainer on Container {
   Container decorate([int? x, double? height, double? width]) {
     return Container(
       padding: padding,
