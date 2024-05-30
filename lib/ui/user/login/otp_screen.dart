@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:pinput/pinput.dart';
-import 'package:site_construct/constrant/customColor.dart';
-import 'package:site_construct/ui/user/login/loginPage.dart';
-import 'package:site_construct/utils/common/common_widgets/customButton.dart';
+import 'package:site_construct/constrant/custom_color.dart';
+import 'package:site_construct/ui/user/login/login_screen.dart';
+import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
-class OtpPage extends StatefulWidget {
-  const OtpPage({super.key});
+class OtpScreen extends StatefulWidget {
+  const OtpScreen({super.key});
 
   @override
-  State<OtpPage> createState() => _OtpPageState();
+  State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpPageState extends State<OtpPage> {
+class _OtpScreenState extends State<OtpScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController pinController = TextEditingController();
   String code = "";
@@ -22,7 +22,7 @@ class _OtpPageState extends State<OtpPage> {
   void _verifyOtp() async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: LoginPage.verify,
+        verificationId: LoginScreen.verify,
         smsCode: code,
       );
       await auth.signInWithCredential(credential);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:site_construct/ui/user/homeScreen/widgets/cardsPage.dart';
+import 'package:site_construct/ui/user/homeScreen/widgets/cards_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               // mainAxisSize: MainAxisSize.max,
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         currentIndex: currIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,

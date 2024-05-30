@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
-import 'package:site_construct/ui/user/login/otpPage.dart';
+import 'package:site_construct/ui/user/login/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const OtpPage(),
+      home: const LoginScreen(),
       getPages: routes,
     );
   }
