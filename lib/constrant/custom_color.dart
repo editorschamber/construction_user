@@ -9,4 +9,5 @@ class CustomColor {
   static const Color textColor = Color(0xFF2A4ECA);
   static const Color buttonColor = Color(0xFF2A4ECA);
   static const Color lightGrey = Color(0xFF61677D);
+  static const Color containerColor = Color(0xFFD9D9D9);
 }

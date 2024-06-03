@@ -57,7 +57,7 @@ class DetailsPage extends StatelessWidget {
           width: width,
           buttonColor: Colors.purple,
           buttonText: "Material Details",
-          onTap: () {},
+          onTap: () => Get.toNamed(materialScreen),
         ),
       ],
     );

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:site_construct/constrant/custom_color.dart';
 
 class CustomButton extends StatelessWidget {
   final double buttonRadius;
   final double height;
   final double? width;
   final Color? buttonColor;
+  final Color? textColor;
   final String buttonText;
   final VoidCallback onTap;
   final BorderRadiusGeometry? borderRadius;
@@ -16,6 +18,7 @@ class CustomButton extends StatelessWidget {
     this.width = 100,
     this.borderRadius,
     this.buttonColor = Colors.blue,
+    this.textColor = Colors.white,
     required this.buttonText,
     required this.onTap,
   });
@@ -34,7 +37,7 @@ class CustomButton extends StatelessWidget {
         child: Center(
           child: Text(
             buttonText,
-            style: const TextStyle(fontFamily: 'Poppins', color: Colors.white),
+            style:  TextStyle(fontFamily: 'Poppins', color: textColor ),
           ),
         ),
       ),

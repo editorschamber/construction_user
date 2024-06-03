@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String hintText;
+  final String? hintText;
   final IconData? icon;
   final TextEditingController? controller;
+  final double? height;
 
   const CustomTextField({
     super.key,
-    required this.hintText,
+    this.hintText,
     this.icon,
     this.controller,
+    this.height = 50
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      height: height,
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(30.0),
       ),
       child: TextField(
         controller: controller,

@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
-import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
+import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
+import 'package:site_construct/ui/user/login/binding/login_binding.dart';
+import 'package:site_construct/ui/user/login/login_screen.dart';
+import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
+import 'package:site_construct/ui/user/onBoarding/on_boarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +30,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
       getPages: routes,
+      home: const NavigationMenu(),
     );
   }
 }

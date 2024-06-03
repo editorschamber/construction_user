@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:site_construct/ui/user/login/controller/login_controller.dart';
 import 'package:site_construct/ui/user/login/widgets/login_page.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
   static String verify = "";
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;

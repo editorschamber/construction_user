@@ -1,66 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 import 'package:site_construct/constrant/custom_color.dart';
-import 'package:site_construct/routes/route.dart';
-import 'package:site_construct/ui/user/login/login_screen.dart';
+import 'package:site_construct/ui/user/login/controller/login_controller.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_enter_number.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  TextEditingController countryCode = TextEditingController();
-  TextEditingController numberController = TextEditingController();
-
-  @override
-  void initState() {
-    countryCode.text = "+91";
-    super.initState();
-  }
-
-  void _verifyPhoneNumber() async {
-    String phoneNumber = countryCode.text + numberController.text.trim();
-    if (phoneNumber.length < 10) {
-      Get.defaultDialog();
-      return;
-    }
-
-    try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
-        verificationFailed: (FirebaseAuthException e) {
-          String errorMessage;
-          switch (e.code) {
-            case 'invalid-phone-number':
-              errorMessage = 'The provided phone number is not valid.';
-              break;
-            case 'too-many-requests':
-              errorMessage =
-                  'We have blocked all requests from this device due to unusual activity. Try again later.';
-              break;
-            default:
-              errorMessage = 'Phone verification failed. Please try again.';
-          }
-          Get.snackbar(errorMessage, "");
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          LoginScreen.verify = verificationId;
-          Get.toNamed(otpScreen);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
-    } catch (e) {
-      Get.snackbar("Failed to verify phone number. Please try again.", "");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +31,11 @@ class _LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
         ),
         SizedBox(
-          height: height * 0.10,
+          height: height * 0.07,
         ),
         CustomEnterNumber(
-          countryCode: countryCode,
-          numberController: numberController,
+          countryCode: controller.countryCode,
+          numberController: controller.numberController,
         ),
         SizedBox(
           height: height * 0.05,
@@ -96,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           buttonColor: CustomColor.buttonColor,
           buttonText: "Send OTP",
           onTap: () {
-            _verifyPhoneNumber();
+            Get.find<LoginController>().verifyPhoneNumber();
           },
         )
       ],
