@@ -4,10 +4,12 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
+import 'package:site_construct/ui/user/addNewSite/binding/add_new_site_binding.dart';
 import 'package:site_construct/ui/user/login/binding/login_binding.dart';
 import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
 import 'package:site_construct/ui/user/onBoarding/on_boarding_screen.dart';
+import 'package:site_construct/ui/user/profile/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +33,9 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      home: const NavigationMenu(),
+      home: const AddNewSite(),
+      initialRoute: addNewSiteScreen,
+      initialBinding: AddNewSiteBinding(),
     );
   }
 }

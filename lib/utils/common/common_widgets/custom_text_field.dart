@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.icon,
     this.controller,
-    this.height = 50
+    this.height = 50,
   });
 
   @override
@@ -24,10 +24,12 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          icon: Icon(
+          icon: icon != null
+              ? Icon(
             icon,
             color: Colors.grey,
-          ),
+          )
+              : null,
           hintText: hintText,
           hintStyle: const TextStyle(
             fontFamily: 'Poppins',
@@ -35,6 +37,7 @@ class CustomTextField extends StatelessWidget {
             color: Colors.grey,
           ),
           border: InputBorder.none,
+          contentPadding: EdgeInsets.only(left: icon == null ? 16.0 : 0.0),
         ),
       ),
     );
