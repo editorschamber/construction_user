@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:site_construct/ui/user/details/widgets/details_page.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
+import '../../../routes/route.dart';
 import '../homeScreen/models/site.dart';
+import '../orderPage/order_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   final Site site;
@@ -38,7 +41,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       bottomSheet: Container(
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: CustomButton(width: width, buttonText: "Order", onTap: () {}),
+        child: CustomButton(width: width, buttonText: "Order", onTap: () {Get.toNamed(orderScreen);}),
       ),
     );
   }

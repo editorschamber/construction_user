@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 
+import '../allSitePlan/all_site_plans_screen.dart';
+
 class SitePlans extends StatelessWidget {
   final List<Site> sites;
 
@@ -14,10 +16,13 @@ class SitePlans extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Site Plans', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Site Plans',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
             TextButton(
               onPressed: () {
-                // Navigate to view all screen
+                Get.to(
+                    transition: Transition.rightToLeft,
+                    () => AllSitePlansScreen(sites: sites),);
               },
               child: Text('View All'),
             ),

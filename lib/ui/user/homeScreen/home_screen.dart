@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/img/user.jpg'),
+                      backgroundImage: AssetImage('assets/img/person.jpg'),
                       radius: 20,
                     ),
                     const Text('Hello John Doe', style: TextStyle(fontSize: 18)),

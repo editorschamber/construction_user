@@ -11,6 +11,8 @@ import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/login/widgets/login_page.dart';
 import 'package:site_construct/ui/user/onBoarding/binding/on_boarding_binding.dart';
 import 'package:site_construct/ui/user/onBoarding/on_boarding_screen.dart';
+import 'package:site_construct/ui/user/orderPage/binding/order_binding.dart';
+import 'package:site_construct/ui/user/orderPage/order_screen.dart';
 import 'package:site_construct/ui/user/otp/binding/otp_binding.dart';
 import 'package:site_construct/ui/user/otp/otp_screen.dart';
 import 'package:site_construct/ui/user/material/material_screen.dart';
@@ -18,6 +20,8 @@ import 'package:site_construct/ui/user/otp/widgets/otp_page.dart';
 import 'package:site_construct/ui/user/profile/binding/profile_binding.dart';
 import 'package:site_construct/ui/user/profile/profile_screen.dart';
 import 'package:site_construct/ui/user/siteEmployee/site_employee_list.dart';
+
+import '../ui/user/allSitePlan/all_site_plans_screen.dart';
 
 const String homeScreen = "/homeScreen";
 const String loginScreen = "/loginScreen";
@@ -31,6 +35,8 @@ const String siteEmployeeList = "/siteEmployeeList";
 const String onBoardingScreen = "/onBoardingScreen";
 const String profileScreen = "/profileScreen";
 const String addNewSiteScreen = "/addNewSiteScreen";
+const String allSitePlans = "/allSitePlans";
+const String orderScreen = "/orderScreen";
 
 List<GetPage<dynamic>> routes = [
   GetPage(name: homeScreen, page: () => const HomeScreen()),
@@ -44,29 +50,54 @@ List<GetPage<dynamic>> routes = [
   GetPage(name: otpPage, page: () => const OtpPage()),
   GetPage(
     name: detailsScreen,
+    transition: Transition.rightToLeft,
     page: () {
       final Site site = Get.arguments;
       return DetailsScreen(site: site);
     },
   ),
-  GetPage(name: labourScreen, page: () => const LabourScreen()),
-  GetPage(name: materialScreen, page: () => const MaterialScreen()),
-  GetPage(name: siteEmployeeList, page: () => const SiteEmployeeList()),
-  GetPage(name: siteEmployeeList, page: () => const SiteEmployeeList()),
-  GetPage(name: siteEmployeeList, page: () => const SiteEmployeeList()),
+  GetPage(
+      name: labourScreen,
+      transition: Transition.rightToLeft,
+      page: () => const LabourScreen()),
+  GetPage(
+      name: materialScreen,
+      transition: Transition.rightToLeft,
+      page: () => const MaterialScreen()),
+  GetPage(
+      name: siteEmployeeList,
+      transition: Transition.rightToLeft,
+      page: () => const SiteEmployeeList()),
+  GetPage(
+      name: siteEmployeeList,
+      transition: Transition.rightToLeft,
+      page: () => const SiteEmployeeList()),
+  GetPage(
+      name: siteEmployeeList,
+      transition: Transition.rightToLeft,
+      page: () => const SiteEmployeeList()),
   GetPage(
     name: onBoardingScreen,
+    transition: Transition.rightToLeft,
     page: () => OnBoardingScreen(),
     binding: OnBoardingBinding(),
   ),
   GetPage(
     name: profileScreen,
+    transition: Transition.rightToLeft,
     page: () => ProfileScreen(),
     binding: ProfileBinding(),
   ),
   GetPage(
     name: addNewSiteScreen,
+    transition: Transition.rightToLeft,
     page: () => AddNewSite(),
     binding: AddNewSiteBinding(),
   ),
+  GetPage(
+    name: orderScreen,
+    transition: Transition.rightToLeft,
+    page: () => OrderScreen(),
+    binding: OrderBinding(),
+  )
 ];

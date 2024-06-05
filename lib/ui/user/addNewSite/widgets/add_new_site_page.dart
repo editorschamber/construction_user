@@ -11,6 +11,19 @@ import '../../../../utils/common/common_widgets/custom_text_field.dart';
 class AddNewSitePage extends GetView<AddNewSiteController> {
   const AddNewSitePage({super.key});
 
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      controller.text = picked.toLocal().toString().split(' ')[0];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +35,7 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
           SizedBox(
             height: 5,
           ),
-          CustomTextField(controller: controller.siteNameController,),
+          CustomTextField(controller: controller.siteNameController),
           SizedBox(
             height: 10,
           ),
@@ -49,24 +62,38 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: 100,
+                width: 150,
                 height: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Starting Date").customStyle(),
-                    CustomTextField(),
+                    GestureDetector(
+                      onTap: () =>
+                          _selectDate(context, controller.startDateController),
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                            controller: controller.startDateController),
+                      ),
+                    ),
                   ],
                 ),
               ),
               Container(
-                width: 100,
+                width: 150,
                 height: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Ending Date").customStyle(),
-                    CustomTextField(),
+                    GestureDetector(
+                      onTap: () =>
+                          _selectDate(context, controller.endDateController),
+                      child: AbsorbPointer(
+                        child: CustomTextField(
+                            controller: controller.endDateController),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -76,16 +103,29 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
             height: 15,
           ),
           Center(
-            child: Container(
-              width: 341,
-              height: 121,
-              child: DottedBorder(
-                color: Colors.black,
-                strokeWidth: 1,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(Icons.upload), Text("Upload Files")],
+            child: GestureDetector(
+              onTap: () => controller.pickFile(),
+              child: Container(
+                width: 341,
+                height: 121,
+                child: DottedBorder(
+                  color: Colors.black,
+                  strokeWidth: 1,
+                  child: Center(
+                    child: Obx(
+                          () => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (controller.selectedFilePath.isEmpty)
+                            Icon(Icons.upload),
+                          Text(
+                            controller.selectedFilePath.isEmpty
+                                ? "Upload Files"
+                                : controller.selectedFilePath.value,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),

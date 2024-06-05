@@ -53,7 +53,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.006,
           ),
-          CustomTextField(controller: controller.emailController,),
+          CustomTextField(controller: controller.emailController),
           SizedBox(
             height: height * 0.01,
           ),
@@ -61,7 +61,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.006,
           ),
-          CustomTextField(controller: controller.numberController,),
+          CustomTextField(controller: controller.numberController),
           SizedBox(
             height: height * 0.01,
           ),
