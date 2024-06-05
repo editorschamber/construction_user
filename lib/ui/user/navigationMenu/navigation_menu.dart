@@ -4,6 +4,10 @@ import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
 import 'package:site_construct/ui/user/employeeDetails/employee_details_screen.dart';
 import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
 import 'package:site_construct/ui/user/material/material_screen.dart';
+import 'package:site_construct/ui/user/profile/profile_screen.dart';
+
+import '../addNewSite/binding/add_new_site_binding.dart';
+import '../profile/binding/profile_binding.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
@@ -13,17 +17,14 @@ class NavigationMenu extends StatelessWidget {
     final controller = Get.put(NavigationController());
     return Scaffold(
       bottomNavigationBar: Obx(
-        () => NavigationBar(
+            () => NavigationBar(
           height: 80,
           selectedIndex: controller.selectedIndex.value,
-          onDestinationSelected: (index) =>
-              controller.selectedIndex.value = index,
+          onDestinationSelected: (index) => controller.selectedIndex.value = index,
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-            NavigationDestination(
-                icon: Icon(Icons.add), label: "Employee"),
-            NavigationDestination(
-                icon: Icon(Icons.settings), label: "Settings"),
+            NavigationDestination(icon: Icon(Icons.add), label: "Employee"),
+            NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
           ],
         ),
       ),
@@ -35,5 +36,10 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [HomeScreen(), AddNewSite(), MaterialScreen()];
+  final screens = [HomeScreen(), AddNewSite(), ProfileScreen()];
+
+  NavigationController() {
+    AddNewSiteBinding().dependencies();
+    ProfileBinding().dependencies();
+  }
 }

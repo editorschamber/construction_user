@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
-import 'package:site_construct/ui/user/homeScreen/widgets/cards_page.dart';
-import 'package:site_construct/routes/route.dart';
 
 class SitePlans extends StatelessWidget {
   final List<Site> sites;
@@ -32,15 +30,41 @@ class SitePlans extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 8.0,
             mainAxisSpacing: 8.0,
-            childAspectRatio: 0.7,
+            childAspectRatio: 0.8,
           ),
           itemCount: sites.length,
           itemBuilder: (context, index) {
-            return CardsPage(
-              site: sites[index],
+            return GestureDetector(
               onTap: () {
-                Get.toNamed(detailsScreen, arguments: sites[index]);
+                Get.toNamed('/detailsScreen', arguments: sites[index]);
               },
+              child: Card(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Image.asset(
+                        sites[index].imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            sites[index].siteName,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(sites[index].siteDetails),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         ),

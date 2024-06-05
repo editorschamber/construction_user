@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:site_construct/routes/route.dart';
+import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
-import 'package:site_construct/ui/user/homeScreen/widgets/cards_page.dart';
+
+import '../availableStock/available_stock.dart';
+import '../sitePlans/site_plans.dart';
+import '../siteTeam/site_team.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,8 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currIndex = 0;
-
   final List<Site> sites = [
     Site(
       imageUrl: 'assets/img/site1.jpg',
@@ -38,30 +37,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
-    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Container(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisSize: MainAxisSize.max,
               children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: sites.length,
-                  itemBuilder: (context, index) {
-                    return CardsPage(
-                      site: sites[index],
-                      onTap: () {
-                        Get.toNamed(detailsScreen, arguments: sites[index]);
-                      },
-                    );
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/img/user.jpg'),
+                      radius: 20,
+                    ),
+                    const Text('Hello John Doe', style: TextStyle(fontSize: 18)),
+                    IconButton(
+                      icon: Icon(Icons.notifications),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 20),
+                SitePlans(sites: sites),
+                const SizedBox(height: 20),
+                AvailableStock(),
+                const SizedBox(height: 20),
+                SiteTeam(),
               ],
             ),
           ),

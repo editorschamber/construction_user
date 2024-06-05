@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MaterialDetails extends StatefulWidget {
-  const MaterialDetails({super.key});
+  final List<Map<String, String>> members;
+
+  const MaterialDetails({super.key,required this.members});
 
   @override
   State<MaterialDetails> createState() => _MaterialDetailsState();
@@ -12,20 +14,34 @@ class _MaterialDetailsState extends State<MaterialDetails> {
   Widget build(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
     var height = MediaQuery.sizeOf(context).height;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: const ListTile(
-          title: Text(
-            'Material Name',
-          ),
-          trailing: Icon(Icons.shopping_bag),
-        ),
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
+        childAspectRatio: 1.0,
       ),
+      itemCount: widget.members.length, // Number of items in the grid
+      itemBuilder: (context, index) {
+        return Card(
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.grey,
+                  child: Center(
+                    child: Icon(Icons.image, size: 50),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('${widget.members[index]['stockName']}', textAlign: TextAlign.center),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -9,6 +9,58 @@ class MaterialScreen extends StatefulWidget {
 }
 
 class _MaterialScreenState extends State<MaterialScreen> {
+  List<Map<String, String>> members = [
+    {'stockName': 'Stock Name'},
+    // Add initial members if needed
+  ];
+
+  void _addMember(String name) {
+    setState(() {
+      members.add({'stockName': name});
+    });
+  }
+
+  void _showAddMemberDialog() {
+    String name = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New Member'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Name'),
+                onChanged: (value) {
+                  name = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Add'),
+              onPressed: () {
+                if (name.isNotEmpty) {
+                  _addMember(name);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,12 +70,15 @@ class _MaterialScreenState extends State<MaterialScreen> {
       ),
       body: SafeArea(
         child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: ListView.builder(
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return const MaterialDetails();
-                })),
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          child: MaterialDetails(
+            members: members,
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddMemberDialog,
+        child: Icon(Icons.add),
       ),
     );
   }
