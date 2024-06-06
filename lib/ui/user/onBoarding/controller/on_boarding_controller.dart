@@ -7,7 +7,7 @@ class OnBoardingController extends GetxController {
   void nextPage(PageController pageController) {
     if (currentPage.value < 2) {
       pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
     }

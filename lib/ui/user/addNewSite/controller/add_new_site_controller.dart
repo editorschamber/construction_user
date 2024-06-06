@@ -12,20 +12,6 @@ class AddNewSiteController extends GetxController {
   var selectedFilePath = ''.obs;
 
   void addFun() {
-    String siteName = siteNameController.text;
-    String location = locationController.text;
-    String description = descriptionController.text;
-    String startDate = startDateController.text;
-    String endDate = endDateController.text;
-    String filePath = selectedFilePath.value;
-
-    print("Site name: $siteName");
-    print("Location: $location");
-    print("Description: $description");
-    print("Start Date: $startDate");
-    print("End Date: $endDate");
-    print("File Path: $filePath");
-
     Get.snackbar(
       "Success",
       "Site added successfully",
@@ -40,10 +26,10 @@ class AddNewSiteController extends GetxController {
       if (result != null) {
         selectedFilePath.value = result.files.single.path ?? '';
       } else {
-        selectedFilePath.value = ''; // Reset the file path if file picking is canceled
+        selectedFilePath.value =
+            ''; // Reset the file path if file picking is canceled
       }
     } catch (e) {
-      print("Error picking file: $e");
       Get.snackbar(
         "Error",
         "Failed to pick file",

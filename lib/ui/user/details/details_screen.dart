@@ -5,7 +5,6 @@ import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
 import '../../../routes/route.dart';
 import '../homeScreen/models/site.dart';
-import '../orderPage/order_screen.dart';
 
 class DetailsScreen extends StatefulWidget {
   final Site site;

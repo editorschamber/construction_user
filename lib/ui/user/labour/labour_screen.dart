@@ -29,24 +29,24 @@ class _LabourScreenState extends State<LabourScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add New Member'),
+          title: const Text('Add New Member'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (value) {
                   name = value;
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Site Name'),
+                decoration: const InputDecoration(labelText: 'Site Name'),
                 onChanged: (value) {
                   site = value;
                 },
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Job Title'),
+                decoration: const InputDecoration(labelText: 'Job Title'),
                 onChanged: (value) {
                   job = value;
                 },
@@ -55,13 +55,13 @@ class _LabourScreenState extends State<LabourScreen> {
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: const Text('Add'),
               onPressed: () {
                 if (name.isNotEmpty && site.isNotEmpty && job.isNotEmpty) {
                   _addMember(name, site, job);
@@ -84,13 +84,13 @@ class _LabourScreenState extends State<LabourScreen> {
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           child: LabourDetails(members: members),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddMemberDialog,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

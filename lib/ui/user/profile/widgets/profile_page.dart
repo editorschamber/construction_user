@@ -29,7 +29,7 @@ class ProfilePage extends GetView<ProfileController> {
                     Container(
                       width: width * 0.45,
                       height: height * 0.2,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: CustomColor.containerColor,
                       ),
@@ -37,19 +37,28 @@ class ProfilePage extends GetView<ProfileController> {
                     SizedBox(
                       height: height * 0.01,
                     ),
-                    Text(
-                      "Name",
-                      style: TextStyle(
-                        fontSize: width * 0.05,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Obx(() {
+                      return Text(
+                        controller.displayName.value.isNotEmpty
+                            ? controller.displayName.value
+                            : "Name",
+                        style: TextStyle(
+                          fontSize: width * 0.05,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ],
             ),
           ),
-          Text("Email: ").customStyle(),
+          const Text("Name: ").customStyle(),
+          SizedBox(
+            height: height * 0.006,
+          ),
+          CustomTextField(controller: controller.nameController),
+          const Text("Email: ").customStyle(),
           SizedBox(
             height: height * 0.006,
           ),
@@ -57,7 +66,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.01,
           ),
-          Text("Phone Number: ").customStyle(),
+          const Text("Phone Number: ").customStyle(),
           SizedBox(
             height: height * 0.006,
           ),
@@ -65,7 +74,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.01,
           ),
-          Text("Password: ").customStyle(),
+          const Text("Password: ").customStyle(),
           SizedBox(
             height: height * 0.006,
           ),
@@ -73,7 +82,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.01,
           ),
-          Text("Site: ").customStyle(),
+          const Text("Site: ").customStyle(),
           SizedBox(
             height: height * 0.006,
           ),

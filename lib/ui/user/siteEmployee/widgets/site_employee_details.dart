@@ -10,8 +10,6 @@ class SiteEmployeeDetails extends StatefulWidget {
 class _SiteEmployeeDetailsState extends State<SiteEmployeeDetails> {
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
-    var height = MediaQuery.sizeOf(context).height;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Container(

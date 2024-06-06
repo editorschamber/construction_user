@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MaterialDetails extends StatefulWidget {
   final List<Map<String, String>> members;
 
-  const MaterialDetails({super.key,required this.members});
+  const MaterialDetails({super.key, required this.members});
 
   @override
   State<MaterialDetails> createState() => _MaterialDetailsState();
@@ -15,7 +15,7 @@ class _MaterialDetailsState extends State<MaterialDetails> {
     var width = MediaQuery.sizeOf(context).width;
     var height = MediaQuery.sizeOf(context).height;
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 8.0,
         mainAxisSpacing: 8.0,
@@ -29,14 +29,15 @@ class _MaterialDetailsState extends State<MaterialDetails> {
               Expanded(
                 child: Container(
                   color: Colors.grey,
-                  child: Center(
+                  child: const Center(
                     child: Icon(Icons.image, size: 50),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('${widget.members[index]['stockName']}', textAlign: TextAlign.center),
+                child: Text('${widget.members[index]['stockName']}',
+                    textAlign: TextAlign.center),
               ),
             ],
           ),

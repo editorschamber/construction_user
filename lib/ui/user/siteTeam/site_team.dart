@@ -10,16 +10,17 @@ class SiteTeam extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Site Team', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Site Team',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () {
                 // Navigate to view all screen
               },
-              child: Text('View All'),
+              child: const Text('View All'),
             ),
           ],
         ),
-        SingleChildScrollView(
+        const SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
@@ -46,13 +47,13 @@ class TeamMember extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 30,
             backgroundColor: Colors.grey,
             child: Icon(Icons.person, size: 30),
           ),
-          SizedBox(height: 8.0),
-          Text(role, style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8.0),
+          Text(role, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );

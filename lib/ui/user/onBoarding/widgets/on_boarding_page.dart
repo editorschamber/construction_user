@@ -8,7 +8,8 @@ class OnBoardingPage extends StatelessWidget {
   final int index;
   final PageController pageController;
 
-  const OnBoardingPage({required this.index, required this.pageController, super.key});
+  const OnBoardingPage(
+      {required this.index, required this.pageController, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class OnBoardingPage extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 25,vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         width: media.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -25,16 +26,16 @@ class OnBoardingPage extends StatelessWidget {
             Container(
               height: 303,
               width: 287,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: CustomColor.containerColor,
               ),
             ),
-            SizedBox(height: 25),
-            Text(
+            const SizedBox(height: 25),
+            const Text(
               "Lorem ipsum dolor sit amet",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 25),
+            const SizedBox(height: 25),
             if (index < 2) ...[
               SizedBox(
                 height: 50,
@@ -47,7 +48,7 @@ class OnBoardingPage extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => controller.skip(pageController),
-                child: Text('Skip'),
+                child: const Text('Skip'),
               ),
             ] else ...[
               SizedBox(
@@ -55,13 +56,15 @@ class OnBoardingPage extends StatelessWidget {
                 width: media.width * 0.4,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.white, // Text color
-                    side: BorderSide(color: Colors.grey), // Border color
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.white,
+                    // Text color
+                    side: const BorderSide(color: Colors.grey), // Border color
                   ),
                   onPressed: () {
                     // Sign Up functionality
                   },
-                  child: Text('Sign Up'),
+                  child: const Text('Sign Up'),
                 ),
               ),
             ],

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/constrant/custom_color.dart';
@@ -9,10 +8,8 @@ import 'package:site_construct/utils/common/common_widgets/custom_enter_number.d
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
     var height = MediaQuery.sizeOf(context).height;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

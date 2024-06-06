@@ -9,6 +9,7 @@ import 'package:site_construct/ui/user/labour/labour_screen.dart';
 import 'package:site_construct/ui/user/login/binding/login_binding.dart';
 import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/login/widgets/login_page.dart';
+import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
 import 'package:site_construct/ui/user/onBoarding/binding/on_boarding_binding.dart';
 import 'package:site_construct/ui/user/onBoarding/on_boarding_screen.dart';
 import 'package:site_construct/ui/user/orderPage/binding/order_binding.dart';
@@ -20,6 +21,8 @@ import 'package:site_construct/ui/user/otp/widgets/otp_page.dart';
 import 'package:site_construct/ui/user/profile/binding/profile_binding.dart';
 import 'package:site_construct/ui/user/profile/profile_screen.dart';
 import 'package:site_construct/ui/user/siteEmployee/site_employee_list.dart';
+import 'package:site_construct/ui/user/splash/binding/splash_binding.dart';
+import 'package:site_construct/ui/user/splash/splash_screen.dart';
 
 import '../ui/user/allSitePlan/all_site_plans_screen.dart';
 
@@ -37,9 +40,12 @@ const String profileScreen = "/profileScreen";
 const String addNewSiteScreen = "/addNewSiteScreen";
 const String allSitePlans = "/allSitePlans";
 const String orderScreen = "/orderScreen";
+const String splashScreen = "/splashScreen";
+const String navigationMenu = "/navigationMenu";
 
 List<GetPage<dynamic>> routes = [
   GetPage(name: homeScreen, page: () => const HomeScreen()),
+  GetPage(name: navigationMenu, page: () => const NavigationMenu()),
   GetPage(
       name: loginScreen,
       page: () => const LoginScreen(),
@@ -99,5 +105,11 @@ List<GetPage<dynamic>> routes = [
     transition: Transition.rightToLeft,
     page: () => OrderScreen(),
     binding: OrderBinding(),
+  ),
+  GetPage(
+    name: splashScreen,
+    transition: Transition.rightToLeft,
+    page: () => SplashScreen(),
+    binding: SplashBinding(),
   )
 ];

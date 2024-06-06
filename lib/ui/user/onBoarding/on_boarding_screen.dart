@@ -9,7 +9,6 @@ class OnBoardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
     final OnBoardingController controller = Get.put(OnBoardingController());
     final PageController pageController = PageController();
 

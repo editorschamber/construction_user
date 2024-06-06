@@ -3,11 +3,16 @@ import 'package:get/get.dart';
 
 class ProfileController extends GetxController {
   var email = ''.obs;
+  var name = ''.obs;
   var number = ''.obs;
   var password = ''.obs;
   var site = ''.obs;
 
+  // Separate observable for the displayed name
+  var displayName = ''.obs;
+
   late TextEditingController emailController;
+  late TextEditingController nameController;
   late TextEditingController numberController;
   late TextEditingController passwordController;
   late TextEditingController siteController;
@@ -16,6 +21,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     emailController = TextEditingController();
+    nameController = TextEditingController();
     numberController = TextEditingController();
     passwordController = TextEditingController();
     siteController = TextEditingController();
@@ -23,6 +29,9 @@ class ProfileController extends GetxController {
     // Bind controllers to observables
     emailController.addListener(() {
       email.value = emailController.text;
+    });
+    nameController.addListener(() {
+      name.value = nameController.text;
     });
     numberController.addListener(() {
       number.value = numberController.text;
@@ -45,6 +54,9 @@ class ProfileController extends GetxController {
   }
 
   void updateProfile() {
+    // Update the displayName observable
+    displayName.value = name.value;
+
     print("Email: ${email.value}");
     print("Phone Number: ${number.value}");
     print("Password: ${password.value}");

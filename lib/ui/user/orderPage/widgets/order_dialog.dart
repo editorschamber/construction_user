@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../controller/order_controller.dart';
 
 class OrderDialog extends GetView<OrderController> {
+  const OrderDialog({super.key});
+
   @override
   Widget build(BuildContext context) {
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Padding(
@@ -17,11 +17,11 @@ class OrderDialog extends GetView<OrderController> {
           children: [
             TextField(
               controller: controller.materialNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Material Name',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Obx(() {
               return DropdownButton<String>(
                 value: controller.selectedSupplier.value,
@@ -37,22 +37,21 @@ class OrderDialog extends GetView<OrderController> {
                 }).toList(),
               );
             }),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               keyboardType: TextInputType.number,
               controller: controller.quantityController,
               decoration: const InputDecoration(
                 labelText: 'Quantity',
-
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 controller.addOrder();
                 Get.back();
               },
-              child: Text('Add Order'),
+              child: const Text('Add Order'),
             ),
           ],
         ),

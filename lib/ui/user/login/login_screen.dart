@@ -5,12 +5,12 @@ import 'package:site_construct/ui/user/login/widgets/login_page.dart';
 
 class LoginScreen extends GetView<LoginController> {
   const LoginScreen({super.key});
+
   static String verify = "";
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
-    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       body: SafeArea(
         child: Container(

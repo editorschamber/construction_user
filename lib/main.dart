@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
-
-import 'ui/user/navigationMenu/navigation_menu.dart';
+import 'package:site_construct/ui/user/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +27,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      home: const NavigationMenu(),
+      home: const SplashScreen(),
+      initialRoute: splashScreen,
     );
   }
 }

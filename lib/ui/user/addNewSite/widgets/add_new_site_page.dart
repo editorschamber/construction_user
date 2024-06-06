@@ -27,47 +27,47 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Name of site: ").customStyle(),
-          SizedBox(
+          const Text("Name of site: ").customStyle(),
+          const SizedBox(
             height: 5,
           ),
           CustomTextField(controller: controller.siteNameController),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text("Location of site: ").customStyle(),
-          SizedBox(
+          const Text("Location of site: ").customStyle(),
+          const SizedBox(
             height: 5,
           ),
           CustomTextField(controller: controller.locationController),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text("Description of site: ").customStyle(),
-          SizedBox(
+          const Text("Description of site: ").customStyle(),
+          const SizedBox(
             height: 5,
           ),
           CustomTextField(
             controller: controller.descriptionController,
             height: 200,
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              SizedBox(
                 width: 150,
                 height: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Starting Date").customStyle(),
+                    const Text("Starting Date").customStyle(),
                     GestureDetector(
                       onTap: () =>
                           _selectDate(context, controller.startDateController),
@@ -79,13 +79,13 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
                 width: 150,
                 height: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Ending Date").customStyle(),
+                    const Text("Ending Date").customStyle(),
                     GestureDetector(
                       onTap: () =>
                           _selectDate(context, controller.endDateController),
@@ -99,13 +99,13 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
           Center(
             child: GestureDetector(
               onTap: () => controller.pickFile(),
-              child: Container(
+              child: SizedBox(
                 width: 341,
                 height: 121,
                 child: DottedBorder(
@@ -113,11 +113,11 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
                   strokeWidth: 1,
                   child: Center(
                     child: Obx(
-                          () => Column(
+                      () => Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (controller.selectedFilePath.isEmpty)
-                            Icon(Icons.upload),
+                            const Icon(Icons.upload),
                           Text(
                             controller.selectedFilePath.isEmpty
                                 ? "Upload Files"
@@ -131,7 +131,7 @@ class AddNewSitePage extends GetView<AddNewSiteController> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
           Center(

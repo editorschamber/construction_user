@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 
 import '../availableStock/available_stock.dart';
+import '../profile/controller/profile_controller.dart';
 import '../sitePlans/site_plans.dart';
 import '../siteTeam/site_team.dart';
 
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ProfileController profileController = Get.find<ProfileController>();
   final List<Site> sites = [
     Site(
       imageUrl: 'assets/img/site1.jpg',
@@ -48,13 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       backgroundImage: AssetImage('assets/img/person.jpg'),
                       radius: 20,
                     ),
-                    const Text('Hello John Doe', style: TextStyle(fontSize: 18)),
+                    Text('Hello ${profileController.displayName}',
+                        style: const TextStyle(fontSize: 18)),
                     IconButton(
-                      icon: Icon(Icons.notifications),
+                      icon: const Icon(Icons.notifications),
                       onPressed: () {},
                     ),
                   ],
@@ -62,9 +65,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 SitePlans(sites: sites),
                 const SizedBox(height: 20),
-                AvailableStock(),
+                const AvailableStock(),
                 const SizedBox(height: 20),
-                SiteTeam(),
+                const SiteTeam(),
               ],
             ),
           ),

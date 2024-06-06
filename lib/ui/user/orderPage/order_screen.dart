@@ -10,17 +10,18 @@ class OrderScreen extends GetView<OrderController> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Page'),
+        title: const Text('Order Page'),
       ),
-      body: Container(padding:EdgeInsets.symmetric(horizontal: 20,vertical: 15),child: OrderPage()),
+      body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: const OrderPage()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.dialog(OrderDialog() as Widget);
+          Get.dialog(const OrderDialog() as Widget);
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

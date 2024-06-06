@@ -13,7 +13,7 @@ class _LabourDetailsState extends State<LabourDetails> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Number of columns in the grid
         crossAxisSpacing: 8.0, // Spacing between columns
         mainAxisSpacing: 8.0, // Spacing between rows
@@ -30,12 +30,12 @@ class _LabourDetailsState extends State<LabourDetails> {
                 Expanded(
                   child: Container(
                     color: Colors.grey,
-                    child: Center(
+                    child: const Center(
                       child: Icon(Icons.person, size: 50),
                     ),
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text('Name: ${widget.members[index]['name']}'),
                 Text('Site Name: ${widget.members[index]['site']}'),
                 Text('Job: ${widget.members[index]['job']}'),

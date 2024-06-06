@@ -11,17 +11,16 @@ class OrderPage extends GetView<OrderController> {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Number of columns
-            crossAxisSpacing: 8.0, // Space between columns
-            mainAxisSpacing: 8.0, // Space between rows
-            childAspectRatio: 1, // Aspect ratio of the children
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+            childAspectRatio: 1,
           ),
           itemCount: controller.orders.length,
           itemBuilder: (context, index) {
             final order = controller.orders[index];
             return Card(
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -32,11 +31,15 @@ class OrderPage extends GetView<OrderController> {
                       children: [
                         Text(
                           'Material: ${order.materialName}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 8,),
+                        const SizedBox(
+                          height: 8,
+                        ),
                         Text('Supplier: ${order.supplierName}'),
-                        SizedBox(height: 8,),
+                        const SizedBox(
+                          height: 8,
+                        ),
                         Text('Quantity: ${order.quantity}'),
                       ],
                     ),

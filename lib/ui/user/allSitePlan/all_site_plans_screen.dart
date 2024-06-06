@@ -11,12 +11,12 @@ class AllSitePlansScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Site Plans'),
+        title: const Text('All Site Plans'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, // Number of columns
             crossAxisSpacing: 8.0, // Space between columns
             mainAxisSpacing: 8.0, // Space between rows
@@ -46,7 +46,7 @@ class AllSitePlansScreen extends StatelessWidget {
                         children: [
                           Text(
                             sites[index].siteName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(sites[index].siteDetails),
                         ],

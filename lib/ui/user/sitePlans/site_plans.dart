@@ -16,22 +16,25 @@ class SitePlans extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Site Plans',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+            const Text(
+              'Site Plans',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             TextButton(
               onPressed: () {
                 Get.to(
-                    transition: Transition.rightToLeft,
-                    () => AllSitePlansScreen(sites: sites),);
+                  transition: Transition.rightToLeft,
+                  () => AllSitePlansScreen(sites: sites),
+                );
               },
-              child: Text('View All'),
+              child: const Text('View All'),
             ),
           ],
         ),
         GridView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 8.0,
             mainAxisSpacing: 8.0,
@@ -61,7 +64,7 @@ class SitePlans extends StatelessWidget {
                         children: [
                           Text(
                             sites[index].siteName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(sites[index].siteDetails),
                         ],

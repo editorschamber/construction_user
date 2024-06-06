@@ -27,12 +27,12 @@ class _MaterialScreenState extends State<MaterialScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add New Member'),
+          title: const Text('Add New Member'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (value) {
                   name = value;
                 },
@@ -41,13 +41,13 @@ class _MaterialScreenState extends State<MaterialScreen> {
           ),
           actions: [
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Add'),
+              child: const Text('Add'),
               onPressed: () {
                 if (name.isNotEmpty) {
                   _addMember(name);
@@ -70,7 +70,7 @@ class _MaterialScreenState extends State<MaterialScreen> {
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           child: MaterialDetails(
             members: members,
           ),
@@ -78,7 +78,7 @@ class _MaterialScreenState extends State<MaterialScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddMemberDialog,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -6,13 +5,12 @@ import 'package:site_construct/ui/user/otp/controller/otp_controller.dart';
 
 import '../../../../constrant/custom_color.dart';
 import '../../../../utils/common/common_widgets/custom_button.dart';
-import '../../login/login_screen.dart';
 
-class OtpPage extends GetView<OtpController>{
+class OtpPage extends GetView<OtpController> {
   const OtpPage({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     var width = MediaQuery.sizeOf(context).width;
     var height = MediaQuery.sizeOf(context).height;
     return Container(

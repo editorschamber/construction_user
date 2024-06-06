@@ -11,7 +11,7 @@ class SiteEmployeeList extends StatefulWidget {
 class _SiteEmployeeListState extends State<SiteEmployeeList> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(child: SiteEmployeeDetails()),
     );
   }
