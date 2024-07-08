@@ -59,6 +59,13 @@ class DetailsPage extends StatelessWidget {
           buttonText: "Material Details",
           onTap: () => Get.toNamed(materialScreen),
         ),
+        const SizedBox(height: 15),
+        CustomButton(
+          width: width,
+          buttonColor: Colors.purple,
+          buttonText: "Order",
+          onTap: () => Get.toNamed(orderScreen),
+        ),
       ],
     );
   }

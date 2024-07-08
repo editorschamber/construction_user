@@ -1,34 +1,32 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-import '../../../../core/data/database_helper.dart';
-import '../../../../core/data/user_model.dart';
 import '../../../../routes/route.dart';
 import '../login_screen.dart';
 
 class LoginController extends GetxController {
   TextEditingController countryCode = TextEditingController(text: '+91');
   TextEditingController numberController = TextEditingController();
+  final GetStorage storage = GetStorage();
 
   void verifyPhoneNumber() async {
     String phoneNumber = countryCode.text + numberController.text.trim();
     if (phoneNumber.length < 10) {
-      Get.defaultDialog();
+      Get.defaultDialog(
+        title: 'Invalid Phone Number',
+        content: Text('Please enter a valid phone number.'),
+      );
       return;
     }
 
     try {
-      UserModel? existingUser =
-          await DatabaseHelper.instance.getUserByPhoneNumber(phoneNumber);
-      if (existingUser != null) {
-        Get.offNamed(homeScreen);
-        return;
-      }
-
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationCompleted: (PhoneAuthCredential credential) {
+          // Auto-sign in the user (optional)
+        },
         verificationFailed: (FirebaseAuthException e) {
           String errorMessage;
           switch (e.code) {
@@ -37,21 +35,24 @@ class LoginController extends GetxController {
               break;
             case 'too-many-requests':
               errorMessage =
-                  'We have blocked all requests from this device due to unusual activity. Try again later.';
+              'We have blocked all requests from this device due to unusual activity. Try again later.';
               break;
             default:
               errorMessage = 'Phone verification failed. Please try again.';
           }
-          Get.snackbar(errorMessage, "");
+          Get.snackbar('Error', errorMessage);
         },
         codeSent: (String verificationId, int? resendToken) async {
+          storage.write('phoneNumber', phoneNumber); // Store phone number in GetStorage
           LoginScreen.verify = verificationId;
           Get.toNamed(otpScreen);
         },
-        codeAutoRetrievalTimeout: (String verificationId) {},
+        codeAutoRetrievalTimeout: (String verificationId) {
+          LoginScreen.verify = verificationId;
+        },
       );
     } catch (e) {
-      Get.snackbar("Failed to verify phone number. Please try again.", "");
+      Get.snackbar('Error', 'Failed to verify phone number. Please try again.');
     }
   }
 }

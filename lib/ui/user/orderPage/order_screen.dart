@@ -14,9 +14,7 @@ class OrderScreen extends GetView<OrderController> {
       appBar: AppBar(
         title: const Text('Order Page'),
       ),
-      body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          child: const OrderPage()),
+      body: const OrderPage(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.dialog(const OrderDialog() as Widget);

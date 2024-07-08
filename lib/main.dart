@@ -5,6 +5,8 @@ import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/splash/splash_screen.dart';
 
+import 'ui/user/navigationMenu/navigation_menu.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -27,8 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      home: const SplashScreen(),
-      initialRoute: splashScreen,
+      home: NavigationMenu(),
     );
   }
 }

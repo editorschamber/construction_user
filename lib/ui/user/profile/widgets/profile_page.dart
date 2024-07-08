@@ -15,8 +15,6 @@ class ProfilePage extends GetView<ProfileController> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: width * 0.06, vertical: height * 0.02),
       width: width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

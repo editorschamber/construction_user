@@ -69,11 +69,8 @@ class _MaterialScreenState extends State<MaterialScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          child: MaterialDetails(
-            members: members,
-          ),
+        child: MaterialDetails(
+          members: members,
         ),
       ),
       floatingActionButton: FloatingActionButton(

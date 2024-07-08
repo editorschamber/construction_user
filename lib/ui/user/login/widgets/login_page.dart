@@ -23,7 +23,7 @@ class LoginPage extends GetView<LoginController> {
           height: height * 0.01,
         ),
         const Text(
-          "It was popularised in the 1960s with the release of Letraset sheetscontaining Lorem Ipsum.",
+          "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum.",
           style: TextStyle(color: CustomColor.lightGrey, fontSize: 14),
           textAlign: TextAlign.center,
         ),
@@ -41,7 +41,7 @@ class LoginPage extends GetView<LoginController> {
           buttonColor: CustomColor.buttonColor,
           buttonText: "Send OTP",
           onTap: () {
-            Get.find<LoginController>().verifyPhoneNumber();
+            controller.verifyPhoneNumber();
           },
         )
       ],

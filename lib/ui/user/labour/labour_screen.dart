@@ -83,10 +83,7 @@ class _LabourScreenState extends State<LabourScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          child: LabourDetails(members: members),
-        ),
+        child: LabourDetails(members: members),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddMemberDialog,

@@ -42,34 +42,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: AssetImage('assets/img/person.jpg'),
-                      radius: 20,
-                    ),
-                    Text('Hello ${profileController.displayName}',
-                        style: const TextStyle(fontSize: 18)),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                SitePlans(sites: sites),
-                const SizedBox(height: 20),
-                const AvailableStock(),
-                const SizedBox(height: 20),
-                const SiteTeam(),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CircleAvatar(
+                    backgroundImage: AssetImage('assets/img/person.jpg'),
+                    radius: 20,
+                  ),
+                  Text('Hello ${profileController.displayName}',
+                      style: const TextStyle(fontSize: 18)),
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SitePlans(sites: sites),
+              const SizedBox(height: 20),
+              const AvailableStock(),
+              const SizedBox(height: 20),
+              const SiteTeam(),
+            ],
           ),
         ),
       ),

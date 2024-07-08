@@ -28,7 +28,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
         child: SingleChildScrollView(
           child: Container(
             width: width,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: Column(
               children: [
                 DetailsPage(site: widget.site),
@@ -36,11 +35,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
           ),
         ),
-      ),
-      bottomSheet: Container(
-        width: width,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: CustomButton(width: width, buttonText: "Order", onTap: () {Get.toNamed(orderScreen);}),
       ),
     );
   }
