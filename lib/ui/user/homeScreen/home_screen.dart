@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/ui/user/icon/icon_screen.dart';
 
 import '../availableStock/available_stock.dart';
 import '../profile/controller/profile_controller.dart';
@@ -56,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: const TextStyle(fontSize: 18)),
                   IconButton(
                     icon: const Icon(Icons.notifications),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(IconScreen());
+                    },
                   ),
                 ],
               ),

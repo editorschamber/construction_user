@@ -1,26 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../models/oder_model.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class OrderController extends GetxController {
   var orders = <Order>[].obs;
-  var selectedSupplier = 'Supplier A'.obs;
+  var images = <File>[].obs;
 
-  TextEditingController materialNameController = TextEditingController();
-  TextEditingController quantityController = TextEditingController();
+  var materialNameController = TextEditingController();
+  var quantityController = TextEditingController();
+  var selectedSupplier = ''.obs;
 
   void addOrder() {
-    final order = Order(
-      materialName: materialNameController.text,
-      supplierName: selectedSupplier.value,
-      quantity: quantityController.text,
+    orders.add(
+      Order(
+        materialName: materialNameController.text,
+        supplierName: selectedSupplier.value,
+        quantity: quantityController.text,
+      ),
     );
+    clearControllers();
+  }
 
-    orders.add(order);
-
-    // Clear the text fields after adding
+  void clearControllers() {
     materialNameController.clear();
     quantityController.clear();
+    selectedSupplier.value = '';
   }
+
+  Future<void> pickImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null && result.files.single.path != null) {
+        images.add(File(result.files.single.path!));
+      }
+    } catch (e) {
+      // Handle errors if needed
+      print("Error picking file: $e");
+    }
+  }
+}
+
+class Order {
+  final String materialName;
+  final String supplierName;
+  final String quantity;
+
+  Order({
+    required this.materialName,
+    required this.supplierName,
+    required this.quantity,
+  });
 }

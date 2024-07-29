@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class AvailableStock extends StatelessWidget {
+class AvailableStock extends GetView {
   const AvailableStock({super.key});
 
   @override
@@ -13,7 +14,7 @@ class AvailableStock extends StatelessWidget {
             const Text('Available Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () {
-                // Navigate to view all screen
+                Get.to(ViewAllScreen());
               },
               child: const Text('View All'),
             ),
@@ -58,6 +59,30 @@ class StockCard extends StatelessWidget {
           const SizedBox(height: 5),
           Text(quantity, style: const TextStyle(fontSize: 14, color: Colors.grey)),
         ],
+      ),
+    );
+  }
+}
+
+class ViewAllScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final List<Map<String, String>> stockDetails = [
+      {'title': 'Total Bag', 'quantity': '42'},
+      {'title': 'Total Steel', 'quantity': '3100/kg'},
+      {'title': 'Total Brick', 'quantity': '3100'},
+    ];
+
+    return Scaffold(
+      appBar: AppBar(title: Text('View All Stock')),
+      body: ListView.builder(
+        itemCount: stockDetails.length,
+        itemBuilder: (context, index) {
+          return StockCard(
+            title: stockDetails[index]['title']!,
+            quantity: stockDetails[index]['quantity']!,
+          );
+        },
       ),
     );
   }

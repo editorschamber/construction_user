@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
+
+import '../controller/order_controller.dart';
 
 class OrderPage extends GetView<OrderController> {
   const OrderPage({super.key});
@@ -24,6 +26,13 @@ class OrderPage extends GetView<OrderController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (controller.images.isNotEmpty && index < controller.images.length)
+                    Image.file(
+                      controller.images[index],
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -33,13 +42,9 @@ class OrderPage extends GetView<OrderController> {
                           'Material: ${order.materialName}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
+                        const SizedBox(height: 8),
                         Text('Supplier: ${order.supplierName}'),
-                        const SizedBox(
-                          height: 8,
-                        ),
+                        const SizedBox(height: 8),
                         Text('Quantity: ${order.quantity}'),
                       ],
                     ),

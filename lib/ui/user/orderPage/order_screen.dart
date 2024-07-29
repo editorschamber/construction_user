@@ -17,7 +17,28 @@ class OrderScreen extends GetView<OrderController> {
       body: const OrderPage(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.dialog(const OrderDialog() as Widget);
+          showDialog(
+            context: context,
+            builder: (context) => SimpleDialog(
+              title: const Text('Choose an option'),
+              children: [
+                SimpleDialogOption(
+                  onPressed: () async {
+                    await controller.pickImage();
+                    Get.back();
+                  },
+                  child: const Text('Pick Image'),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    Get.back();
+                    Get.dialog(const OrderDialog() as Widget);
+                  },
+                  child: const Text('Order Dialog'),
+                ),
+              ],
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
