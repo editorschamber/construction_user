@@ -89,11 +89,13 @@ class ProfilePage extends GetView<ProfileController> {
             height: height * 0.02,
           ),
           Center(
-            child: CustomButton(
-              textColor: Colors.black,
-              buttonColor: CustomColor.containerColor,
-              buttonText: "Update",
-              onTap: () => controller.updateProfile(),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black, // Button color
+                backgroundColor: Colors.deepPurple.shade100, // Text color
+              ),
+              onPressed: () => controller.updateProfile(),
+              child: const Text("Update"),
             ),
           )
         ],

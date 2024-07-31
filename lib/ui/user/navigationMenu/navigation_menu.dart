@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
 import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
+import 'package:site_construct/ui/user/mainOrderPage/binding/order_binding.dart';
+import 'package:site_construct/ui/user/mainOrderPage/main_order_screen.dart';
+import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
 import 'package:site_construct/ui/user/profile/profile_screen.dart';
 
 import '../addNewSite/binding/add_new_site_binding.dart';
@@ -22,7 +25,7 @@ class NavigationMenu extends StatelessWidget {
               controller.selectedIndex.value = index,
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-            NavigationDestination(icon: Icon(Icons.add), label: "Employee"),
+            NavigationDestination(icon: Icon(Icons.shopping_bag_rounded), label: "Orders"),
             NavigationDestination(
                 icon: Icon(Icons.settings), label: "Settings"),
           ],
@@ -36,10 +39,11 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [const HomeScreen(), const AddNewSite(), const ProfileScreen()];
+  final screens = [const HomeScreen(), const MainOrderScreen(), const ProfileScreen()];
 
   NavigationController() {
     AddNewSiteBinding().dependencies();
+    MainOrderBinding().dependencies();
     ProfileBinding().dependencies();
   }
 }

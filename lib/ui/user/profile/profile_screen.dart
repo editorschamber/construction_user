@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:site_construct/ui/user/profile/widgets/profile_page.dart';
+import 'package:get/get.dart';
+import 'controller/profile_controller.dart';
+import 'widgets/profile_page.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
           child: ProfilePage(),

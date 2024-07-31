@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/order_controller.dart';
+import '../controller/main_order_controller.dart';
 
-class OrderDialog extends StatelessWidget {
-  const OrderDialog({Key? key}) : super(key: key);
+class MainOrderDialog extends StatelessWidget {
+  const MainOrderDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final orderController = Get.find<OrderController>();
+    final orderController = Get.find<MainOrderController>();
 
     return AlertDialog(
       title: const Text('Add Order'),

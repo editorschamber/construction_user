@@ -24,9 +24,9 @@ class AvailableStock extends GetView {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              StockCard(title: 'Total Bag', quantity: '42'),
-              StockCard(title: 'Total Steel', quantity: '3100/kg'),
-              StockCard(title: 'Total Brick', quantity: '3100'),
+              StockCard(title: 'Total Bag', quantity: '42', icon: Icons.shopping_bag),
+              StockCard(title: 'Total Steel', quantity: '3100/kg', icon: Icons.build),
+              StockCard(title: 'Total Brick', quantity: '3100', icon: Icons.house),
             ],
           ),
         ),
@@ -38,8 +38,9 @@ class AvailableStock extends GetView {
 class StockCard extends StatelessWidget {
   final String title;
   final String quantity;
+  final IconData icon;
 
-  const StockCard({super.key, required this.title, required this.quantity});
+  const StockCard({super.key, required this.title, required this.quantity, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class StockCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(Icons.inventory, size: 50),
+          Icon(icon, size: 50, color: Colors.deepPurple.shade400),
           const SizedBox(height: 10),
           Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
@@ -67,10 +68,10 @@ class StockCard extends StatelessWidget {
 class ViewAllScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> stockDetails = [
-      {'title': 'Total Bag', 'quantity': '42'},
-      {'title': 'Total Steel', 'quantity': '3100/kg'},
-      {'title': 'Total Brick', 'quantity': '3100'},
+    final List<Map<String, dynamic>> stockDetails = [
+      {'title': 'Total Bag', 'quantity': '42', 'icon': Icons.shopping_bag},
+      {'title': 'Total Steel', 'quantity': '3100/kg', 'icon': Icons.build},
+      {'title': 'Total Brick', 'quantity': '3100', 'icon': Icons.house},
     ];
 
     return Scaffold(
@@ -81,6 +82,7 @@ class ViewAllScreen extends StatelessWidget {
           return StockCard(
             title: stockDetails[index]['title']!,
             quantity: stockDetails[index]['quantity']!,
+            icon: stockDetails[index]['icon']!,
           );
         },
       ),

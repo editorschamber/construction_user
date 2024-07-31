@@ -103,7 +103,9 @@ List<GetPage<dynamic>> routes = [
   GetPage(
     name: orderScreen,
     transition: Transition.rightToLeft,
-    page: () => OrderScreen(),
+    page: () {
+      return OrderScreen();
+    },
     binding: OrderBinding(),
   ),
   GetPage(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/orderPage/widgets/order_dialog.dart';
 import 'package:site_construct/ui/user/orderPage/widgets/order_page.dart';
 
@@ -19,25 +20,7 @@ class OrderScreen extends GetView<OrderController> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (context) => SimpleDialog(
-              title: const Text('Choose an option'),
-              children: [
-                SimpleDialogOption(
-                  onPressed: () async {
-                    await controller.pickImage();
-                    Get.back();
-                  },
-                  child: const Text('Pick Image'),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    Get.back();
-                    Get.dialog(const OrderDialog() as Widget);
-                  },
-                  child: const Text('Order Dialog'),
-                ),
-              ],
-            ),
+            builder: (context) => const OrderDialog(),
           );
         },
         child: const Icon(Icons.add),
