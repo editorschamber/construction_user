@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/order_controller.dart';
+import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
 
 class OrderDialog extends StatelessWidget {
   const OrderDialog({Key? key}) : super(key: key);

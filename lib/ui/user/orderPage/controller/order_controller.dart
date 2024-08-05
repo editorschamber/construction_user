@@ -10,12 +10,14 @@ class Order {
   final String supplierName;
   final String quantity;
   final String imagePath;
+  final bool isReturn;
 
   Order({
     required this.materialName,
     required this.supplierName,
     required this.quantity,
     required this.imagePath,
+    required this.isReturn
   });
 
   Map<String, dynamic> toJson() {
@@ -24,6 +26,7 @@ class Order {
       'supplierName': supplierName,
       'quantity': quantity,
       'imagePath': imagePath,
+      'isReturn': isReturn,
     };
   }
 
@@ -33,6 +36,7 @@ class Order {
       supplierName: json['supplierName'],
       quantity: json['quantity'],
       imagePath: json['imagePath'],
+      isReturn: json['isReturn'],
     );
   }
 }
@@ -80,6 +84,22 @@ class OrderController extends GetxController {
         supplierName: selectedSupplier.value,
         quantity: quantityController.text,
         imagePath: pickedImage!.path,
+        isReturn: false
+      );
+
+      orders.add(order);
+      saveOrders();
+      clearControllers();
+    }
+  }
+  void returnOrder() {
+    if (pickedImage != null) {
+      final order = Order(
+        materialName: materialNameController.text,
+        supplierName: selectedSupplier.value,
+        quantity: quantityController.text,
+        imagePath: pickedImage!.path,
+        isReturn: true
       );
 
       orders.add(order);

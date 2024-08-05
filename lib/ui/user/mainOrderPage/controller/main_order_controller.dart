@@ -7,21 +7,27 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 
+import '../widgets/return_order_dialog.dart';
+
 class Order {
   final String materialName;
   final String supplierName;
-  final String quantity;
+  String quantity;
   final String imagePath;
-  final bool isReceivedOrder;  // New flag
-  final String siteName;  // New field
+  final bool isReceivedOrder;
+  final String siteName;
+  bool isReturn;
+  String returnedQuantity; // New field
 
   Order({
     required this.materialName,
     required this.supplierName,
     required this.quantity,
     required this.imagePath,
-    this.isReceivedOrder = false,  // Default to false for orders from local storage
-    required this.siteName,  // New field
+    this.isReceivedOrder = false,
+    required this.siteName,
+    required this.isReturn,
+    required this.returnedQuantity, // Initialize new field
   });
 
   Map<String, dynamic> toJson() {
@@ -31,7 +37,9 @@ class Order {
       'quantity': quantity,
       'imagePath': imagePath,
       'isReceivedOrder': isReceivedOrder,
-      'siteName': siteName,  // New field
+      'siteName': siteName,
+      'isReturn': isReturn,
+      'returnedQuantity': returnedQuantity, // Include new field
     };
   }
 
@@ -41,8 +49,10 @@ class Order {
       supplierName: json['supplierName'],
       quantity: json['quantity'],
       imagePath: json['imagePath'],
-      isReceivedOrder: json['isReceivedOrder'] ?? false,  // Default to false if null
-      siteName: json['siteName'] ?? '',  // Provide a default empty string if null
+      isReceivedOrder: json['isReceivedOrder'] ?? false,
+      siteName: json['siteName'] ?? '',
+      isReturn: json['isReturn'],
+      returnedQuantity: json['returnedQuantity'] ?? '', // Default value for new field
     );
   }
 }
@@ -64,6 +74,28 @@ class MainOrderController extends GetxController {
     super.onInit();
     loadOrders();
     loadSites();
+  }
+
+  void showReturnOrderDialog() {
+    Get.dialog(const ReturnOrderDialog());
+  }
+
+  void addReturnedOrder(Order order) {
+    orders.add(order);
+  }
+
+  void partialReturnOrder(int index, String quantity) {
+      orders[index].returnedQuantity += quantity;
+      orders[index].isReturn = true;
+    }
+
+
+
+
+  void fullReturnOrder(int index) {
+    orders[index].returnedQuantity = orders[index].quantity;
+    orders[index].quantity = 'Full';
+    orders[index].isReturn = true;
   }
 
   void loadOrders() {
@@ -112,6 +144,19 @@ class MainOrderController extends GetxController {
         log(image.path.toString());
         log(pickedImage!.path.split('/').last.toString());
         showOrderDialog(isReceivedOrder: true);
+      }
+    } catch (e) {
+      log("Error picking image: $e");
+    }
+  }
+  Future<void> returnOrderPicker() async {
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        pickedImage = File(image.path);
+        log(image.path.toString());
+        log(pickedImage!.path.split('/').last.toString());
+        showReturnOrderDialog();
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -172,6 +217,60 @@ class MainOrderController extends GetxController {
       ),
     );
   }
+void showReturnDialog({bool isReceivedOrder = false}) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Add Order Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: materialNameController,
+              decoration: const InputDecoration(labelText: 'Material Name'),
+            ),
+            TextField(
+              controller: quantityController,
+              decoration: const InputDecoration(labelText: 'Quantity'),
+              keyboardType: TextInputType.number,
+            ),
+            Obx(() {
+              return DropdownButton<String>(
+                hint: const Text("Select Site"),
+                value: selectedSite.value.isEmpty ? null : selectedSite.value,
+                items: sites.map((Site site) {
+                  return DropdownMenuItem<String>(
+                    value: site.siteName,
+                    child: Text(site.siteName),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    selectedSite.value = newValue;
+                  }
+                },
+              );
+            }),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close the dialog
+              clearControllers(); // Clear controllers if canceled
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(); // Close the dialog
+              returnOrder(isReceivedOrder: false);
+            },
+            child: const Text('Add Order'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void addOrder({bool isReceivedOrder = false}) {
     bool hasImage = pickedImage != null;
@@ -179,7 +278,7 @@ class MainOrderController extends GetxController {
     bool hasQuantity = quantityController.text.isNotEmpty;
     bool hasSite = selectedSite.value.isNotEmpty;
 
-    if (hasImage || (hasMaterial && hasQuantity && hasSite)) {
+    if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
         materialName: hasMaterial ? materialNameController.text : "",
         supplierName: selectedSupplier.value,
@@ -187,6 +286,32 @@ class MainOrderController extends GetxController {
         imagePath: hasImage ? pickedImage!.path : "",
         isReceivedOrder: isReceivedOrder,
         siteName: selectedSite.value,  // New field
+        isReturn: false, returnedQuantity: ''
+      );
+
+      orders.add(order);
+      saveOrders();
+      clearControllers();
+    } else {
+      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
+    }
+  }
+  void returnOrder({bool isReceivedOrder = false}) {
+    bool hasImage = pickedImage != null;
+    bool hasMaterial = materialNameController.text.isNotEmpty;
+    bool hasQuantity = quantityController.text.isNotEmpty;
+    bool hasSite = selectedSite.value.isNotEmpty;
+
+    if (hasImage || (hasMaterial && hasQuantity)) {
+      final order = Order(
+        materialName: hasMaterial ? materialNameController.text : "",
+        supplierName: selectedSupplier.value,
+        quantity: hasQuantity ? quantityController.text : "",
+        imagePath: hasImage ? pickedImage!.path : "",
+        isReceivedOrder: isReceivedOrder,
+        siteName: selectedSite.value,  // New field
+        isReturn: true,
+          returnedQuantity: ''
       );
 
       orders.add(order);
@@ -222,4 +347,6 @@ class MainOrderController extends GetxController {
     selectedSite.value = '';  // New field
     pickedImage = null;
   }
+
+
 }

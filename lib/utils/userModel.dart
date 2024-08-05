@@ -2,18 +2,10 @@ import 'package:get_storage/get_storage.dart';
 
 class UserModel {
   String username;
-  String email;
-  String firstName;
-  String lastName;
-  String gender;
   String phoneNumber;
 
   UserModel({
     required this.username,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    required this.gender,
     required this.phoneNumber,
   });
 
@@ -21,10 +13,6 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'username': username,
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      'gender': gender,
       'phoneNumber': phoneNumber,
     };
   }
@@ -33,10 +21,6 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       username: json['username'],
-      email: json['email'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      gender: json['gender'],
       phoneNumber: json['phoneNumber'],
     );
   }

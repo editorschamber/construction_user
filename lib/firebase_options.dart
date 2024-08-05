@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBO6VpqvY1nCh5HoXzISoqPA-LEyJ5vvfM',
+    apiKey: 'AIzaSyArS3QIPZ81WrjlUa04Nx4jVmWRIkYO7FM',
     appId: '1:208221952824:android:efc39e1f6482e10925ffcd',
     messagingSenderId: '208221952824',
     projectId: 'construction-site-46999',
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'construction-site-46999.appspot.com',
     measurementId: 'G-JN7F4QBZVX',
   );
+
 }

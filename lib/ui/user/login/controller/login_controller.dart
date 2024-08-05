@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,7 @@ class LoginController extends GetxController {
     if (phoneNumber.length < 10) {
       Get.defaultDialog(
         title: 'Invalid Phone Number',
-        content: Text('Please enter a valid phone number.'),
+        content: const Text('Please enter a valid phone number.'),
       );
       return;
     }
@@ -52,6 +53,7 @@ class LoginController extends GetxController {
         },
       );
     } catch (e) {
+      log(e.toString());
       Get.snackbar('Error', 'Failed to verify phone number. Please try again.');
     }
   }

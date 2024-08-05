@@ -4,7 +4,6 @@ import 'package:site_construct/core/extension/text_style_extension.dart';
 import 'package:site_construct/ui/user/profile/controller/profile_controller.dart';
 
 import '../../../../constrant/custom_color.dart';
-import '../../../../utils/common/common_widgets/custom_button.dart';
 import '../../../../utils/common/common_widgets/custom_text_field.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -56,11 +55,6 @@ class ProfilePage extends GetView<ProfileController> {
             height: height * 0.006,
           ),
           CustomTextField(controller: controller.nameController),
-          const Text("Email: ").customStyle(),
-          SizedBox(
-            height: height * 0.006,
-          ),
-          CustomTextField(controller: controller.emailController),
           SizedBox(
             height: height * 0.01,
           ),

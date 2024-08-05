@@ -4,7 +4,11 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
+import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
+import 'package:site_construct/ui/user/login/binding/login_binding.dart';
+import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
+import 'package:site_construct/ui/user/profile/binding/profile_binding.dart';
 import 'package:site_construct/ui/user/splash/splash_screen.dart';
 
 void main() async {
@@ -30,7 +34,10 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       getPages: routes,
+      // home: NavigationMenu(),
       home: NavigationMenu(),
+      // initialBinding: ProfileBinding(),
+
     );
   }
 }

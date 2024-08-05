@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10), // Add this line for rounded corners
       ),
       child: TextField(
         controller: controller,
