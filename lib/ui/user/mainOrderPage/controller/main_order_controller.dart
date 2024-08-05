@@ -52,7 +52,8 @@ class Order {
       isReceivedOrder: json['isReceivedOrder'] ?? false,
       siteName: json['siteName'] ?? '',
       isReturn: json['isReturn'],
-      returnedQuantity: json['returnedQuantity'] ?? '', // Default value for new field
+      returnedQuantity:
+          json['returnedQuantity'] ?? '', // Default value for new field
     );
   }
 }
@@ -69,10 +70,42 @@ class MainOrderController extends GetxController {
 
   final ImagePicker _picker = ImagePicker();
 
+  List<Order> defaultOrders = [
+    Order(
+      materialName: "Brick",
+      supplierName: 'Hinduja',
+      quantity: '100',
+      imagePath: '',
+      siteName: "Site 1",
+      isReturn: false,
+      returnedQuantity: '',
+    ),
+    Order(
+      materialName: "Sand",
+      supplierName: 'Malviya',
+      quantity: '10',
+      imagePath: '',
+      siteName: "Site 2",
+      isReturn: true,
+      returnedQuantity: '5',
+    ),
+    Order(
+      materialName: "Cement",
+      supplierName: 'Malviya',
+      quantity: '10',
+      imagePath: '',
+      siteName: "Site 2",
+      isReturn: false,
+      returnedQuantity: '',
+      isReceivedOrder: true
+    ),
+  ];
+
   @override
   void onInit() {
     super.onInit();
     loadOrders();
+    orders.addAll(defaultOrders);
     loadSites();
   }
 
@@ -85,12 +118,9 @@ class MainOrderController extends GetxController {
   }
 
   void partialReturnOrder(int index, String quantity) {
-      orders[index].returnedQuantity += quantity;
-      orders[index].isReturn = true;
-    }
-
-
-
+    orders[index].returnedQuantity += quantity;
+    orders[index].isReturn = true;
+  }
 
   void fullReturnOrder(int index) {
     orders[index].returnedQuantity = orders[index].quantity;
@@ -99,8 +129,12 @@ class MainOrderController extends GetxController {
   }
 
   void loadOrders() {
-    List storedOrders = box.read<List>('orders') ?? [];
-    orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
+
+    List<Order> storedOrders = (box.read<List>('orders') as List?)
+        ?.map((orderJson) => Order.fromJson(orderJson))
+        .toList() ??
+        defaultOrders;
+    // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
   }
 
   void saveOrders() {
@@ -149,6 +183,7 @@ class MainOrderController extends GetxController {
       log("Error picking image: $e");
     }
   }
+
   Future<void> returnOrderPicker() async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
@@ -217,7 +252,8 @@ class MainOrderController extends GetxController {
       ),
     );
   }
-void showReturnDialog({bool isReceivedOrder = false}) {
+
+  void showReturnDialog({bool isReceivedOrder = false}) {
     Get.dialog(
       AlertDialog(
         title: const Text('Add Order Details'),
@@ -280,14 +316,14 @@ void showReturnDialog({bool isReceivedOrder = false}) {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
-        materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
-        imagePath: hasImage ? pickedImage!.path : "",
-        isReceivedOrder: isReceivedOrder,
-        siteName: selectedSite.value,  // New field
-        isReturn: false, returnedQuantity: ''
-      );
+          materialName: hasMaterial ? materialNameController.text : "",
+          supplierName: selectedSupplier.value,
+          quantity: hasQuantity ? quantityController.text : "",
+          imagePath: hasImage ? pickedImage!.path : "",
+          isReceivedOrder: isReceivedOrder,
+          siteName: selectedSite.value, // New field
+          isReturn: false,
+          returnedQuantity: '');
 
       orders.add(order);
       saveOrders();
@@ -296,6 +332,7 @@ void showReturnDialog({bool isReceivedOrder = false}) {
       log("Order cannot be added. Please provide either an image, material, quantity, and site.");
     }
   }
+
   void returnOrder({bool isReceivedOrder = false}) {
     bool hasImage = pickedImage != null;
     bool hasMaterial = materialNameController.text.isNotEmpty;
@@ -304,15 +341,14 @@ void showReturnDialog({bool isReceivedOrder = false}) {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
-        materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
-        imagePath: hasImage ? pickedImage!.path : "",
-        isReceivedOrder: isReceivedOrder,
-        siteName: selectedSite.value,  // New field
-        isReturn: true,
-          returnedQuantity: ''
-      );
+          materialName: hasMaterial ? materialNameController.text : "",
+          supplierName: selectedSupplier.value,
+          quantity: hasQuantity ? quantityController.text : "",
+          imagePath: hasImage ? pickedImage!.path : "",
+          isReceivedOrder: isReceivedOrder,
+          siteName: selectedSite.value, // New field
+          isReturn: true,
+          returnedQuantity: '');
 
       orders.add(order);
       saveOrders();
@@ -329,7 +365,8 @@ void showReturnDialog({bool isReceivedOrder = false}) {
 
   Future<void> pickImage() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null && result.files.single.path != null) {
         pickedImage = File(result.files.single.path!);
         log(result.files.single.path!.toString());
@@ -344,9 +381,7 @@ void showReturnDialog({bool isReceivedOrder = false}) {
     materialNameController.clear();
     quantityController.clear();
     selectedSupplier.value = '';
-    selectedSite.value = '';  // New field
+    selectedSite.value = ''; // New field
     pickedImage = null;
   }
-
-
 }
