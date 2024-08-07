@@ -10,8 +10,11 @@ class LabourScreen extends StatefulWidget {
 
 class _LabourScreenState extends State<LabourScreen> {
   List<Map<String, String>> members = [
-    {'name': 'John Doe', 'site': 'xyz', 'job': 'xyz'},
-    // Add initial members if needed
+    {'name': 'Ghamshyam', 'site': '2', 'job': 'Electrician'},
+    {'name': 'Mangi Lal', 'site': '1', 'job': 'Plumber'},
+    {'name': 'Hemant', 'site': '3', 'job': 'Engineer'},
+    {'name': 'Saurabh', 'site': '1', 'job': 'Engineer'},
+    {'name': 'Himesh', 'site': '3', 'job': 'Plumber'},
   ];
 
   void _addMember(String name, String site, String job) {

@@ -33,10 +33,13 @@ class SitePlans extends GetView {
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12),
                     ),
-                    child: Image.asset(
-                      sites[1].imageUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+                    child: Hero(
+                      tag: 1,
+                      child: Image.asset(
+                        sites[1].imageUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
                     ),
                   ),
 

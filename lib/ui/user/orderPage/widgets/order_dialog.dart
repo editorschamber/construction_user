@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
 
 class OrderDialog extends StatelessWidget {
@@ -38,6 +39,23 @@ class OrderDialog extends StatelessWidget {
                   child: Text(order.supplierName),
                 ))
                     .toList(),
+              );
+            }),
+            Obx(() {
+              return DropdownButton<String>(
+                hint: const Text("Select Site"),
+                value: orderController.selectedSite.value.isEmpty ? null : orderController.selectedSite.value,
+                items: orderController.sites.map<DropdownMenuItem<String>>((Site site) {
+                  return DropdownMenuItem<String>(
+                    value: site.siteName,
+                    child: Text(site.siteName),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    orderController.selectedSite.value = newValue;
+                  }
+                },
               );
             }),
             ElevatedButton(

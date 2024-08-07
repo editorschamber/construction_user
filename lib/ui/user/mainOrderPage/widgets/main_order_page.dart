@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/main_order_dialog.dart';
-import 'package:site_construct/ui/user/orderPage/widgets/order_dialog.dart';
 
 class MainOrderPage extends GetView<MainOrderController> {
   const MainOrderPage({super.key});
@@ -19,18 +18,17 @@ class MainOrderPage extends GetView<MainOrderController> {
           title: const Text('Orders Management'),
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'Receive Orders'),
-              Tab(text: 'Order List'),
-              Tab(text: 'Returned Orders'),
+              Tab(
+                child: Center(child: Text("Receive Orders", textAlign: TextAlign.center,
+                )),
+              ),
+              Tab(child: Center(child: Text('Order List', textAlign: TextAlign.center))),
+              Tab(child: Center(child: Text('Returned Orders', textAlign: TextAlign.center))),
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            ReceiveOrdersTab(),
-            OrderListTab(),
-            ReturnedOrdersTab()
-          ],
+        body: const TabBarView(
+          children: [ReceiveOrdersTab(), OrderListTab(), ReturnedOrdersTab()],
         ),
       ),
     );
@@ -42,6 +40,7 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.loadOrders();
     return Column(
       children: [
         Padding(
@@ -57,7 +56,9 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
         ),
         Expanded(
           child: Obx(() {
-            final filteredOrders = controller.orders.where((order) => order.isReceivedOrder).toList();
+            final filteredOrders = controller.orders
+                .where((order) => order.isReceivedOrder)
+                .toList();
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -72,7 +73,8 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                 itemBuilder: (context, index) {
                   final order = filteredOrders[index];
                   return Card(
-                    color: Colors.green[100], // Received orders differentiated by color
+                    color: Colors
+                        .green[100], // Received orders differentiated by color
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -96,7 +98,9 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                                             fit: BoxFit.cover,
                                           ),
                                           SizedBox(
-                                            width: MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                             child: TextButton(
                                               onPressed: () {
                                                 Get.back();
@@ -130,7 +134,8 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
@@ -142,7 +147,8 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {
-                            controller.deleteOrder(controller.orders.indexOf(order));
+                            controller
+                                .deleteOrder(controller.orders.indexOf(order));
                           },
                         ),
                       ],
@@ -163,6 +169,8 @@ class OrderListTab extends GetView<MainOrderController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.loadOrders();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -180,7 +188,9 @@ class OrderListTab extends GetView<MainOrderController> {
             child: Obx(() {
               return DropdownButton<String>(
                 hint: const Text("Select Site"),
-                value: controller.selectedSite.value.isEmpty ? null : controller.selectedSite.value,
+                value: controller.selectedSite.value.isEmpty
+                    ? null
+                    : controller.selectedSite.value,
                 items: controller.sites.map<DropdownMenuItem<String>>((Site site) {
                   return DropdownMenuItem<String>(
                     value: site.siteName,
@@ -199,8 +209,10 @@ class OrderListTab extends GetView<MainOrderController> {
             child: Obx(() {
               final filteredOrders = controller.orders.where((order) {
                 return !order.isReturn &&
-                  !order.isReceivedOrder &&
-                    (controller.selectedSite.value == 'ALL' || controller.selectedSite.value.isEmpty || order.siteName == controller.selectedSite.value);
+                    !order.isReceivedOrder &&
+                    (controller.selectedSite.value == 'ALL' ||
+                        controller.selectedSite.value.isEmpty ||
+                        order.siteName == controller.selectedSite.value);
               }).toList();
 
               return Padding(
@@ -215,83 +227,112 @@ class OrderListTab extends GetView<MainOrderController> {
                   itemCount: filteredOrders.length,
                   itemBuilder: (context, index) {
                     final order = filteredOrders[index];
-                    return Card(
-                      color: Colors.blue[100], // Only local storage orders are shown, so only blue color is used
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (order.imagePath.isNotEmpty)
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Image.file(
-                                              File(order.imagePath),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery.of(context).size.width,
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                                child: const Text('Close'),
+                    Color borderColor;
+                    Color backgroundColor;
+
+                    switch (order.status) {
+                      case 'approved':
+                        borderColor = Colors.green;
+                        backgroundColor = Colors.white;
+                        break;
+                      case 'pending':
+                        borderColor = Colors.blue;
+                        backgroundColor = Colors.white;
+                        break;
+                      default:
+                        borderColor = Colors.grey;
+                        backgroundColor = Colors.white;
+                        break;
+                    }
+
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        border: Border.all(color: borderColor, width: 2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (order.imagePath.isNotEmpty)
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Image.file(
+                                                File(order.imagePath),
+                                                fit: BoxFit.cover,
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width,
+                                                child: TextButton(
+                                                  onPressed: () {
+                                                    Get.back();
+                                                  },
+                                                  child: const Text('Close'),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(12),
+                                      topRight: Radius.circular(12),
                                     ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    topRight: Radius.circular(12),
-                                  ),
-                                  child: Image.file(
-                                    File(order.imagePath),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
+                                    child: Image.file(
+                                      File(order.imagePath),
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Material: ${order.materialName}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text('Supplier: ${order.supplierName}'),
+                                  const SizedBox(height: 8),
+                                  Text('Quantity: ${order.quantity}'),
+                                  const SizedBox(height: 8),
+                                  Text('Site: ${order.siteName}'),
+                                  const SizedBox(height: 8),
+                                  Text('Status: ${order.status}'),
+                                ],
+                              ),
                             ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Material: ${order.materialName}',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 8),
-                                Text('Supplier: ${order.supplierName}'),
-                                const SizedBox(height: 8),
-                                Text('Quantity: ${order.quantity}'),
-                                const SizedBox(height: 8),
-                                Text('Site: ${order.siteName}'),  // New field
-                              ],
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                controller.deleteOrder(
+                                    controller.orders.indexOf(order));
+                              },
                             ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              controller.deleteOrder(controller.orders.indexOf(order));
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -304,7 +345,6 @@ class OrderListTab extends GetView<MainOrderController> {
     );
   }
 }
-
 class ReturnedOrdersTab extends GetView<MainOrderController> {
   const ReturnedOrdersTab({super.key});
 
@@ -325,7 +365,8 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
         ),
         Expanded(
           child: Obx(() {
-            final filteredOrders = controller.orders.where((order) => order.isReturn).toList();
+            final filteredOrders =
+                controller.orders.where((order) => order.isReturn).toList();
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -340,7 +381,8 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                 itemBuilder: (context, index) {
                   final order = filteredOrders[index];
                   return Card(
-                    color: Colors.red[100], // Returned orders differentiated by color
+                    color: Colors
+                        .red[100], // Returned orders differentiated by color
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -364,7 +406,9 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                                             fit: BoxFit.cover,
                                           ),
                                           SizedBox(
-                                            width: MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                             child: TextButton(
                                               onPressed: () {
                                                 Get.back();
@@ -398,14 +442,16 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                               const SizedBox(height: 8),
                               Text('Quantity: ${order.quantity}'),
                               const SizedBox(height: 8),
-                              Text('Returned Quantity: ${order.returnedQuantity}'),
+                              Text(
+                                  'Returned Quantity: ${order.returnedQuantity}'),
                               const SizedBox(height: 8),
                               Text('Site: ${order.siteName}'),
                             ],
@@ -414,7 +460,8 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {
-                            controller.deleteOrder(controller.orders.indexOf(order));
+                            controller
+                                .deleteOrder(controller.orders.indexOf(order));
                           },
                         ),
                       ],

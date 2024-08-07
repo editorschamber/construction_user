@@ -5,58 +5,10 @@ import 'package:get_storage/get_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
-
+import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../widgets/return_order_dialog.dart';
-
-class Order {
-  final String materialName;
-  final String supplierName;
-  String quantity;
-  final String imagePath;
-  final bool isReceivedOrder;
-  final String siteName;
-  bool isReturn;
-  String returnedQuantity; // New field
-
-  Order({
-    required this.materialName,
-    required this.supplierName,
-    required this.quantity,
-    required this.imagePath,
-    this.isReceivedOrder = false,
-    required this.siteName,
-    required this.isReturn,
-    required this.returnedQuantity, // Initialize new field
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'materialName': materialName,
-      'supplierName': supplierName,
-      'quantity': quantity,
-      'imagePath': imagePath,
-      'isReceivedOrder': isReceivedOrder,
-      'siteName': siteName,
-      'isReturn': isReturn,
-      'returnedQuantity': returnedQuantity, // Include new field
-    };
-  }
-
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      materialName: json['materialName'],
-      supplierName: json['supplierName'],
-      quantity: json['quantity'],
-      imagePath: json['imagePath'],
-      isReceivedOrder: json['isReceivedOrder'] ?? false,
-      siteName: json['siteName'] ?? '',
-      isReturn: json['isReturn'],
-      returnedQuantity:
-          json['returnedQuantity'] ?? '', // Default value for new field
-    );
-  }
-}
 
 class MainOrderController extends GetxController {
   final box = GetStorage();
@@ -79,6 +31,17 @@ class MainOrderController extends GetxController {
       siteName: "Site 1",
       isReturn: false,
       returnedQuantity: '',
+      status: 'pending'
+    ),
+    Order(
+      materialName: "Brick",
+      supplierName: 'Hinduja',
+      quantity: '100',
+      imagePath: '',
+      siteName: "Site 1",
+      isReturn: false,
+      returnedQuantity: '',
+      status: 'approved'
     ),
     Order(
       materialName: "Sand",
@@ -88,6 +51,7 @@ class MainOrderController extends GetxController {
       siteName: "Site 2",
       isReturn: true,
       returnedQuantity: '5',
+      status: ''
     ),
     Order(
       materialName: "Cement",
@@ -97,13 +61,15 @@ class MainOrderController extends GetxController {
       siteName: "Site 2",
       isReturn: false,
       returnedQuantity: '',
-      isReceivedOrder: true
+      isReceivedOrder: true,
+        status: ''
     ),
   ];
 
   @override
   void onInit() {
     super.onInit();
+    log("onINITTTTTT");
     loadOrders();
     orders.addAll(defaultOrders);
     loadSites();
@@ -134,6 +100,7 @@ class MainOrderController extends GetxController {
         ?.map((orderJson) => Order.fromJson(orderJson))
         .toList() ??
         defaultOrders;
+    // orders.value = storedOrders;
     // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
   }
 
@@ -177,7 +144,7 @@ class MainOrderController extends GetxController {
         pickedImage = File(image.path);
         log(image.path.toString());
         log(pickedImage!.path.split('/').last.toString());
-        showOrderDialog(isReceivedOrder: true);
+        receiveOrderDialog(isReceivedOrder: true);
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -198,113 +165,15 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void showOrderDialog({bool isReceivedOrder = false}) {
+  void receiveOrderDialog({bool isReceivedOrder = false}) {
     Get.dialog(
-      AlertDialog(
-        title: const Text('Add Order Details'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: materialNameController,
-              decoration: const InputDecoration(labelText: 'Material Name'),
-            ),
-            TextField(
-              controller: quantityController,
-              decoration: const InputDecoration(labelText: 'Quantity'),
-              keyboardType: TextInputType.number,
-            ),
-            Obx(() {
-              return DropdownButton<String>(
-                hint: const Text("Select Site"),
-                value: selectedSite.value.isEmpty ? null : selectedSite.value,
-                items: sites.map((Site site) {
-                  return DropdownMenuItem<String>(
-                    value: site.siteName,
-                    child: Text(site.siteName),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    selectedSite.value = newValue;
-                  }
-                },
-              );
-            }),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              clearControllers(); // Clear controllers if canceled
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              addOrder(isReceivedOrder: isReceivedOrder);
-            },
-            child: const Text('Add Order'),
-          ),
-        ],
-      ),
+        ReceiveOrderDialog(isReceivedOrder: isReceivedOrder,)
     );
   }
 
   void showReturnDialog({bool isReceivedOrder = false}) {
     Get.dialog(
-      AlertDialog(
-        title: const Text('Add Order Details'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: materialNameController,
-              decoration: const InputDecoration(labelText: 'Material Name'),
-            ),
-            TextField(
-              controller: quantityController,
-              decoration: const InputDecoration(labelText: 'Quantity'),
-              keyboardType: TextInputType.number,
-            ),
-            Obx(() {
-              return DropdownButton<String>(
-                hint: const Text("Select Site"),
-                value: selectedSite.value.isEmpty ? null : selectedSite.value,
-                items: sites.map((Site site) {
-                  return DropdownMenuItem<String>(
-                    value: site.siteName,
-                    child: Text(site.siteName),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    selectedSite.value = newValue;
-                  }
-                },
-              );
-            }),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              clearControllers(); // Clear controllers if canceled
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              returnOrder(isReceivedOrder: false);
-            },
-            child: const Text('Add Order'),
-          ),
-        ],
-      ),
+     const ReturnOrderDialog()
     );
   }
 
@@ -316,6 +185,7 @@ class MainOrderController extends GetxController {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
+        status: 'pending',
           materialName: hasMaterial ? materialNameController.text : "",
           supplierName: selectedSupplier.value,
           quantity: hasQuantity ? quantityController.text : "",
@@ -341,6 +211,7 @@ class MainOrderController extends GetxController {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
+        status: '',
           materialName: hasMaterial ? materialNameController.text : "",
           supplierName: selectedSupplier.value,
           quantity: hasQuantity ? quantityController.text : "",
@@ -381,7 +252,9 @@ class MainOrderController extends GetxController {
     materialNameController.clear();
     quantityController.clear();
     selectedSupplier.value = '';
-    selectedSite.value = ''; // New field
+    selectedSite.value = '';
     pickedImage = null;
   }
 }
+
+

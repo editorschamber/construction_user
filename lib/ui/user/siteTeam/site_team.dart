@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:site_construct/ui/user/labour/labour_screen.dart';
 
 class SiteTeam extends StatelessWidget {
   const SiteTeam({super.key});
@@ -16,7 +18,9 @@ class SiteTeam extends StatelessWidget {
               onPressed: () {
                 // Navigate to view all screen
               },
-              child: const Text('View All'),
+              child: TextButton(onPressed: (){
+                Get.to(LabourScreen());
+              },child: Text("View All"),),
             ),
           ],
         ),

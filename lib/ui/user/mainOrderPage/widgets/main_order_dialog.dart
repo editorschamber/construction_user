@@ -24,40 +24,59 @@ class MainOrderDialog extends StatelessWidget {
               controller: orderController.quantityController,
               decoration: const InputDecoration(labelText: 'Quantity'),
             ),
-            Obx(() {
-              return DropdownButton<String>(
-                hint: const Text('Select Supplier'),
-                value: orderController.selectedSupplier.value.isNotEmpty
-                    ? orderController.selectedSupplier.value
-                    : null,
-                onChanged: (newValue) {
-                  orderController.selectedSupplier.value = newValue!;
-                },
-                items: orderController.orders
-                    .map((order) => DropdownMenuItem<String>(
-                  value: order.supplierName,
-                  child: Text(order.supplierName),
-                ))
-                    .toList(),
-              );
-            }),
-            Obx(() {
-              return DropdownButton<String>(
-                hint: const Text("Select Site"),
-                value: orderController.selectedSite.value.isEmpty ? null : orderController.selectedSite.value,
-                items: orderController.sites.map<DropdownMenuItem<String>>((Site site) {
-                  return DropdownMenuItem<String>(
-                    value: site.siteName,
-                    child: Text(site.siteName),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    orderController.selectedSite.value = newValue;
-                  }
-                },
-              );
-            }),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Obx(() {
+                    // Collect distinct supplier names
+                    final distinctSuppliers = orderController.orders
+                        .map((order) => order.supplierName)
+                        .toSet()
+                        .toList();
+                  
+                    return DropdownButton<String>(
+                      hint: const Text('Supplier'),
+                      value: orderController.selectedSupplier.value.isNotEmpty
+                          ? orderController.selectedSupplier.value
+                          : null,
+                      onChanged: (newValue) {
+                        orderController.selectedSupplier.value = newValue!;
+                      },
+                      items: distinctSuppliers
+                          .map((supplier) => DropdownMenuItem<String>(
+                        value: supplier,
+                        child: Text(supplier),
+                      ))
+                          .toList(),
+                    );
+                  }),
+                ),
+                const SizedBox(width: 15,),
+                Expanded(
+                  child: Obx(() {
+                    return DropdownButton<String>(
+                      hint: const Text("Site"),
+                      value: orderController.selectedSite.value.isEmpty ? null : orderController.selectedSite.value,
+                      items: orderController.sites.map<DropdownMenuItem<String>>((Site site) {
+                        return DropdownMenuItem<String>(
+                          value: site.siteName,
+                          child: Text(site.siteName),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          orderController.selectedSite.value = newValue;
+                        }
+                      },
+                    );
+                  }),
+                ),
+              ],
+            ),
+
             ElevatedButton(
               onPressed: () async {
                 await orderController.pickImage();

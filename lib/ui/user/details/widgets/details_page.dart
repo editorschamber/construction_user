@@ -20,11 +20,18 @@ class DetailsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            site.imageUrl, // Replace with your image URL
-            height: height * 0.3,
-            width: width,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Hero(
+              tag: 1,
+              child: Image.asset(
+                site.imageUrl,
+                height: height * 0.3,
+                width: width,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           const SizedBox(height: 16.0),
           Row(

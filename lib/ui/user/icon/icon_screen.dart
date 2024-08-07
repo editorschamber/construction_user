@@ -7,7 +7,9 @@ class IconScreen extends GetView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Notifications'),
+      ),
       body: IconPage(),
     );
   }
