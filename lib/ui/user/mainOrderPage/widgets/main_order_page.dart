@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/main_order_dialog.dart';
+import 'package:site_construct/ui/user/orderDetailsPage/orderDetailsScreen.dart';
 
 class MainOrderPage extends GetView<MainOrderController> {
   const MainOrderPage({super.key});
@@ -43,21 +44,11 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
     controller.loadOrders();
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                controller.pickImageFromCamera();
-              },
-              child: const Text('Receive Orders'),
-            ),
-          ),
-        ),
+
         Expanded(
           child: Obx(() {
             final filteredOrders = controller.orders
-                .where((order) => order.isReceivedOrder)
+                .where((order) => order.status=='received')
                 .toList();
 
             return Padding(
@@ -127,21 +118,26 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                               ),
                             ),
                           ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Material: ${order.materialName}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Text('Supplier: ${order.supplierName}'),
-                              const SizedBox(height: 8),
-                              Text('Quantity: ${order.quantity}'),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => OrderDetailsScreen(order: order));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Material: ${order.materialName}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text('Supplier: ${order.supplierName}'),
+                                const SizedBox(height: 8),
+                                Text('Quantity: ${order.quantity}'),
+                              ],
+                            ),
                           ),
                         ),
                         IconButton(
@@ -158,6 +154,17 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
               ),
             );
           }),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                controller.pickImageFromCamera();
+              },
+              child: const Text('Receive Orders'),
+            ),
+          ),
         ),
       ],
     );
@@ -208,8 +215,8 @@ class OrderListTab extends GetView<MainOrderController> {
           Expanded(
             child: Obx(() {
               final filteredOrders = controller.orders.where((order) {
-                return !order.isReturn &&
-                    !order.isReceivedOrder &&
+                return order.status=='pending' ||
+                    order.status=='approved' &&
                     (controller.selectedSite.value == 'ALL' ||
                         controller.selectedSite.value.isEmpty ||
                         order.siteName == controller.selectedSite.value);
@@ -245,93 +252,98 @@ class OrderListTab extends GetView<MainOrderController> {
                         break;
                     }
 
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: backgroundColor,
-                        border: Border.all(color: borderColor, width: 2),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (order.imagePath.isNotEmpty)
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Image.file(
-                                                File(order.imagePath),
-                                                fit: BoxFit.cover,
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context).size.width,
-                                                child: TextButton(
-                                                  onPressed: () {
-                                                    Get.back();
-                                                  },
-                                                  child: const Text('Close'),
+                    return GestureDetector(
+                      onTap: () {
+                        Get.to(() => OrderDetailsScreen(order: order));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: backgroundColor,
+                          border: Border.all(color: borderColor, width: 2),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (order.imagePath.isNotEmpty)
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(16),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.file(
+                                                  File(order.imagePath),
+                                                  fit: BoxFit.cover,
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  child: TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('Close'),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
+                                      );
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        topRight: Radius.circular(12),
                                       ),
-                                    );
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(12),
-                                      topRight: Radius.circular(12),
-                                    ),
-                                    child: Image.file(
-                                      File(order.imagePath),
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
+                                      child: Image.file(
+                                        File(order.imagePath),
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Material: ${order.materialName}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text('Supplier: ${order.supplierName}'),
+                                    const SizedBox(height: 8),
+                                    Text('Quantity: ${order.quantity}'),
+                                    const SizedBox(height: 8),
+                                    Text('Site: ${order.siteName}'),
+                                    const SizedBox(height: 8),
+                                    Text('Status: ${order.status}'),
+                                  ],
+                                ),
                               ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Material: ${order.materialName}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text('Supplier: ${order.supplierName}'),
-                                  const SizedBox(height: 8),
-                                  Text('Quantity: ${order.quantity}'),
-                                  const SizedBox(height: 8),
-                                  Text('Site: ${order.siteName}'),
-                                  const SizedBox(height: 8),
-                                  Text('Status: ${order.status}'),
-                                ],
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  controller.deleteOrder(
+                                      controller.orders.indexOf(order));
+                                },
                               ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                controller.deleteOrder(
-                                    controller.orders.indexOf(order));
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -352,21 +364,11 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: ElevatedButton(
-              onPressed: () {
-                controller.showReturnDialog();
-              },
-              child: const Text('Return Orders'),
-            ),
-          ),
-        ),
+
         Expanded(
           child: Obx(() {
             final filteredOrders =
-                controller.orders.where((order) => order.isReturn).toList();
+                controller.orders.where((order) => order.status=='returned').toList();
 
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -435,26 +437,31 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                               ),
                             ),
                           ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Material: ${order.materialName}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Text('Supplier: ${order.supplierName}'),
-                              const SizedBox(height: 8),
-                              Text('Quantity: ${order.quantity}'),
-                              const SizedBox(height: 8),
-                              Text(
-                                  'Returned Quantity: ${order.returnedQuantity}'),
-                              const SizedBox(height: 8),
-                              Text('Site: ${order.siteName}'),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => OrderDetailsScreen(order: order));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Material: ${order.materialName}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Text('Supplier: ${order.supplierName}'),
+                                const SizedBox(height: 8),
+                                Text('Quantity: ${order.quantity}'),
+                                const SizedBox(height: 8),
+                                Text(
+                                    'Returned Quantity: ${order.returnedQuantity}'),
+                                const SizedBox(height: 8),
+                                Text('Site: ${order.siteName}'),
+                              ],
+                            ),
                           ),
                         ),
                         IconButton(
@@ -471,6 +478,17 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
               ),
             );
           }),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                controller.showReturnDialog();
+              },
+              child: const Text('Return Orders'),
+            ),
+          ),
         ),
       ],
     );

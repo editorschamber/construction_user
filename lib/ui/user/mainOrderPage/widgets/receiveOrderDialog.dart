@@ -5,8 +5,7 @@ import 'package:site_construct/ui/user/homeScreen/models/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 
 class ReceiveOrderDialog extends GetView<MainOrderController> {
-  bool isReceivedOrder;
-  ReceiveOrderDialog({super.key, required this.isReceivedOrder});
+  ReceiveOrderDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,9 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
         TextButton(
           onPressed: () {
             Get.back(); // Close the dialog
-            controller.addOrder(isReceivedOrder: isReceivedOrder);
+            controller.addOrder(
+              status: 'received'
+            );
           },
           child: const Text('Add Order'),
         ),

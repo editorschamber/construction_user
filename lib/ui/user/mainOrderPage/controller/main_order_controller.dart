@@ -19,50 +19,49 @@ class MainOrderController extends GetxController {
   var selectedSite = ''.obs;
   var sites = <Site>[].obs;
   File? pickedImage;
-
   final ImagePicker _picker = ImagePicker();
+  int _orderIdCounter = 0; // ID counter for orders
 
   List<Order> defaultOrders = [
     Order(
+      id: '1',
       materialName: "Brick",
       supplierName: 'Hinduja',
       quantity: '100',
       imagePath: '',
       siteName: "Site 1",
-      isReturn: false,
       returnedQuantity: '',
-      status: 'pending'
+      status: 'pending',
     ),
     Order(
+      id: '2',
       materialName: "Brick",
       supplierName: 'Hinduja',
       quantity: '100',
       imagePath: '',
       siteName: "Site 1",
-      isReturn: false,
       returnedQuantity: '',
-      status: 'approved'
+      status: 'approved',
     ),
     Order(
+      id: '3',
       materialName: "Sand",
       supplierName: 'Malviya',
       quantity: '10',
       imagePath: '',
       siteName: "Site 2",
-      isReturn: true,
       returnedQuantity: '5',
-      status: ''
+      status: 'received',
     ),
     Order(
+      id: '4',
       materialName: "Cement",
       supplierName: 'Malviya',
       quantity: '10',
       imagePath: '',
       siteName: "Site 2",
-      isReturn: false,
       returnedQuantity: '',
-      isReceivedOrder: true,
-        status: ''
+      status: 'returned',
     ),
   ];
 
@@ -71,8 +70,48 @@ class MainOrderController extends GetxController {
     super.onInit();
     log("onINITTTTTT");
     loadOrders();
+    loadOrderIdCounter();
     orders.addAll(defaultOrders);
     loadSites();
+  }
+
+  void updater(){
+    loadOrders();
+    update();
+  }
+
+  List<Order> retrieveOrders() {
+    final box = GetStorage();
+    final List<dynamic> jsonOrders = box.read('orders') ?? [];
+    return jsonOrders.map((json) => Order.fromJson(json)).toList();
+  }
+
+  Order? getOrderById(String orderId) {
+    final orders = retrieveOrders();
+    try {
+      return orders.firstWhere((order) => order.id == orderId);
+    } catch (e) {
+      return null; // Return null if no order is found with the given ID
+    }
+  }
+
+  void updateOrderById(String id, Order updatedOrder) {
+    int index = orders.indexWhere((order) => order.id == id);
+    if (index != -1) {
+      orders[index] = updatedOrder;
+      saveOrders();
+    } else {
+      Get.snackbar("Order with id $id not found.",'');
+    }
+  }
+
+  void loadOrderIdCounter() {
+    _orderIdCounter = box.read('orderIdCounter') ?? 0;
+  }
+
+  void saveOrderIdCounter() {
+    box.write('orderIdCounter', _orderIdCounter);
+    update();
   }
 
   void showReturnOrderDialog() {
@@ -81,25 +120,30 @@ class MainOrderController extends GetxController {
 
   void addReturnedOrder(Order order) {
     orders.add(order);
+    update();
   }
 
   void partialReturnOrder(int index, String quantity) {
     orders[index].returnedQuantity += quantity;
-    orders[index].isReturn = true;
+    orders[index].status = 'returned';
   }
 
   void fullReturnOrder(int index) {
     orders[index].returnedQuantity = orders[index].quantity;
     orders[index].quantity = 'Full';
-    orders[index].isReturn = true;
+    orders[index].status = 'returned';
   }
 
   void loadOrders() {
-
-    List<Order> storedOrders = (box.read<List>('orders') as List?)
+    List<Order>? storedOrders = (box.read<List>('orders') as List?)
         ?.map((orderJson) => Order.fromJson(orderJson))
-        .toList() ??
-        defaultOrders;
+        .toList();
+    if(storedOrders?.length==0){
+      orders.addAll(defaultOrders);
+      saveOrders();
+      loadOrders();
+      update();
+    }
     // orders.value = storedOrders;
     // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
   }
@@ -144,7 +188,7 @@ class MainOrderController extends GetxController {
         pickedImage = File(image.path);
         log(image.path.toString());
         log(pickedImage!.path.split('/').last.toString());
-        receiveOrderDialog(isReceivedOrder: true);
+        receiveOrderDialog();
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -165,38 +209,40 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void receiveOrderDialog({bool isReceivedOrder = false}) {
+  void receiveOrderDialog() {
     Get.dialog(
-        ReceiveOrderDialog(isReceivedOrder: isReceivedOrder,)
+      ReceiveOrderDialog(),
     );
   }
 
   void showReturnDialog({bool isReceivedOrder = false}) {
     Get.dialog(
-     const ReturnOrderDialog()
+      const ReturnOrderDialog(),
     );
   }
 
-  void addOrder({bool isReceivedOrder = false}) {
+  void addOrder({String status = 'pending'}) {
     bool hasImage = pickedImage != null;
     bool hasMaterial = materialNameController.text.isNotEmpty;
     bool hasQuantity = quantityController.text.isNotEmpty;
     bool hasSite = selectedSite.value.isNotEmpty;
 
     if (hasImage || (hasMaterial && hasQuantity)) {
+      _orderIdCounter++;
       final order = Order(
-        status: 'pending',
-          materialName: hasMaterial ? materialNameController.text : "",
-          supplierName: selectedSupplier.value,
-          quantity: hasQuantity ? quantityController.text : "",
-          imagePath: hasImage ? pickedImage!.path : "",
-          isReceivedOrder: isReceivedOrder,
-          siteName: selectedSite.value, // New field
-          isReturn: false,
-          returnedQuantity: '');
+        id: _orderIdCounter.toString(), // Assign incrementing ID
+        status: status,
+        materialName: hasMaterial ? materialNameController.text : "",
+        supplierName: selectedSupplier.value,
+        quantity: hasQuantity ? quantityController.text : "",
+        imagePath: hasImage ? pickedImage!.path : "",
+        siteName: selectedSite.value, // New field
+        returnedQuantity: '',
+      );
 
       orders.add(order);
       saveOrders();
+      saveOrderIdCounter(); // Save the updated counter
       clearControllers();
     } else {
       log("Order cannot be added. Please provide either an image, material, quantity, and site.");
@@ -210,19 +256,21 @@ class MainOrderController extends GetxController {
     bool hasSite = selectedSite.value.isNotEmpty;
 
     if (hasImage || (hasMaterial && hasQuantity)) {
+      _orderIdCounter++;
       final order = Order(
-        status: '',
-          materialName: hasMaterial ? materialNameController.text : "",
-          supplierName: selectedSupplier.value,
-          quantity: hasQuantity ? quantityController.text : "",
-          imagePath: hasImage ? pickedImage!.path : "",
-          isReceivedOrder: isReceivedOrder,
-          siteName: selectedSite.value, // New field
-          isReturn: true,
-          returnedQuantity: '');
+        id: _orderIdCounter.toString(), // Assign incrementing ID
+        status: 'returned',
+        materialName: hasMaterial ? materialNameController.text : "",
+        supplierName: selectedSupplier.value,
+        quantity: hasQuantity ? quantityController.text : "",
+        imagePath: hasImage ? pickedImage!.path : "",
+        siteName: selectedSite.value, // New field
+        returnedQuantity: '',
+      );
 
       orders.add(order);
       saveOrders();
+      saveOrderIdCounter(); // Save the updated counter
       clearControllers();
     } else {
       log("Order cannot be added. Please provide either an image, material, quantity, and site.");
@@ -237,14 +285,14 @@ class MainOrderController extends GetxController {
   Future<void> pickImage() async {
     try {
       FilePickerResult? result =
-          await FilePicker.platform.pickFiles(type: FileType.image);
+      await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null && result.files.single.path != null) {
         pickedImage = File(result.files.single.path!);
         log(result.files.single.path!.toString());
         log(pickedImage!.path.split('/').last.toString());
       }
     } catch (e) {
-      log("Error picking file: ${e}");
+      log("Error picking file: $e");
     }
   }
 
@@ -256,5 +304,3 @@ class MainOrderController extends GetxController {
     pickedImage = null;
   }
 }
-
-

@@ -7,9 +7,9 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 
 class OrderController extends GetxController {
-
   final box = GetStorage();
   var orders = <Order>[].obs;
   var materialNameController = TextEditingController();
@@ -18,50 +18,49 @@ class OrderController extends GetxController {
   var selectedSite = ''.obs;
   var sites = <Site>[].obs;
   File? pickedImage;
-
   final ImagePicker _picker = ImagePicker();
+  int _orderIdCounter = 0; // ID counter for orders
 
   List<Order> defaultOrders = [
     Order(
-        materialName: "Brick",
-        supplierName: 'Hinduja',
-        quantity: '100',
-        imagePath: '',
-        siteName: "Site 1",
-        isReturn: false,
-        returnedQuantity: '',
-        status: 'pending'
+      id: '1',
+      materialName: "Brick",
+      supplierName: 'Hinduja',
+      quantity: '100',
+      imagePath: '',
+      siteName: "Site 1",
+      returnedQuantity: '',
+      status: 'pending',
     ),
     Order(
-        materialName: "Brick",
-        supplierName: 'Hinduja',
-        quantity: '100',
-        imagePath: '',
-        siteName: "Site 1",
-        isReturn: false,
-        returnedQuantity: '',
-        status: 'approved'
+      id: '2',
+      materialName: "Brick",
+      supplierName: 'Hinduja',
+      quantity: '100',
+      imagePath: '',
+      siteName: "Site 1",
+      returnedQuantity: '',
+      status: 'approved',
     ),
     Order(
-        materialName: "Sand",
-        supplierName: 'Malviya',
-        quantity: '10',
-        imagePath: '',
-        siteName: "Site 2",
-        isReturn: true,
-        returnedQuantity: '5',
-        status: ''
+      id: '3',
+      materialName: "Sand",
+      supplierName: 'Malviya',
+      quantity: '10',
+      imagePath: '',
+      siteName: "Site 2",
+      returnedQuantity: '5',
+      status: 'received',
     ),
     Order(
-        materialName: "Cement",
-        supplierName: 'Malviya',
-        quantity: '10',
-        imagePath: '',
-        siteName: "Site 2",
-        isReturn: false,
-        returnedQuantity: '',
-        isReceivedOrder: true,
-        status: ''
+      id: '4',
+      materialName: "Cement",
+      supplierName: 'Malviya',
+      quantity: '10',
+      imagePath: '',
+      siteName: "Site 2",
+      returnedQuantity: '',
+      status: 'returned',
     ),
   ];
 
@@ -69,52 +68,31 @@ class OrderController extends GetxController {
   void onInit() {
     super.onInit();
     log("onINITTTTTT");
-
     loadOrders();
-    // orders.addAll(defaultOrders);
+    loadOrderIdCounter();
+    orders.addAll(defaultOrders);
     loadSites();
   }
 
-  void addOrder({bool isReceivedOrder = false}) {
-    bool hasImage = pickedImage != null;
-    bool hasMaterial = materialNameController.text.isNotEmpty;
-    bool hasQuantity = quantityController.text.isNotEmpty;
-    bool hasSite = selectedSite.value.isNotEmpty;
-
-    if (hasImage || (hasMaterial && hasQuantity)) {
-      final order = Order(
-          status: 'pending',
-          materialName: hasMaterial ? materialNameController.text : "",
-          supplierName: selectedSupplier.value,
-          quantity: hasQuantity ? quantityController.text : "",
-          imagePath: hasImage ? pickedImage!.path : "",
-          isReceivedOrder: isReceivedOrder,
-          siteName: selectedSite.value, // New field
-          isReturn: false,
-          returnedQuantity: '');
-
-      orders.add(order);
-      saveOrders();
-      clearControllers();
-    } else {
-      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
-    }
+  void loadOrderIdCounter() {
+    _orderIdCounter = box.read('orderIdCounter') ?? 0;
   }
 
+  void saveOrderIdCounter() {
+    box.write('orderIdCounter', _orderIdCounter);
+  }
 
   void loadOrders() {
-
     List<Order> storedOrders = (box.read<List>('orders') as List?)
         ?.map((orderJson) => Order.fromJson(orderJson))
         .toList() ??
         defaultOrders;
-    orders.value = storedOrders;
+    // orders.value = storedOrders;
     // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
   }
 
   void saveOrders() {
     box.write('orders', orders.map((e) => e.toJson()).toList());
-    log("Saved");
   }
 
   void loadSites() {
@@ -145,6 +123,61 @@ class OrderController extends GetxController {
       ),
     ];
   }
+  void addOrder({bool isReceivedOrder = false}) {
+    bool hasImage = pickedImage != null;
+    bool hasMaterial = materialNameController.text.isNotEmpty;
+    bool hasQuantity = quantityController.text.isNotEmpty;
+    bool hasSite = selectedSite.value.isNotEmpty;
+
+    if (hasImage || (hasMaterial && hasQuantity)) {
+      _orderIdCounter++;
+      final order = Order(
+        id: _orderIdCounter.toString(), // Assign incrementing ID
+        status: 'pending',
+        materialName: hasMaterial ? materialNameController.text : "",
+        supplierName: selectedSupplier.value,
+        quantity: hasQuantity ? quantityController.text : "",
+        imagePath: hasImage ? pickedImage!.path : "",
+        siteName: selectedSite.value,
+        returnedQuantity: '',
+      );
+
+      orders.add(order);
+      saveOrders();
+      saveOrderIdCounter(); // Save the updated counter
+      clearControllers();
+    } else {
+      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
+    }
+  }
+
+  void returnOrder({bool isReceivedOrder = false}) {
+    bool hasImage = pickedImage != null;
+    bool hasMaterial = materialNameController.text.isNotEmpty;
+    bool hasQuantity = quantityController.text.isNotEmpty;
+    bool hasSite = selectedSite.value.isNotEmpty;
+
+    if (hasImage || (hasMaterial && hasQuantity)) {
+      _orderIdCounter++;
+      final order = Order(
+        id: _orderIdCounter.toString(), // Assign incrementing ID
+        status: '',
+        materialName: hasMaterial ? materialNameController.text : "",
+        supplierName: selectedSupplier.value,
+        quantity: hasQuantity ? quantityController.text : "",
+        imagePath: hasImage ? pickedImage!.path : "",
+        siteName: selectedSite.value, // New field
+        returnedQuantity: '',
+      );
+
+      orders.add(order);
+      saveOrders();
+      saveOrderIdCounter(); // Save the updated counter
+      clearControllers();
+    } else {
+      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
+    }
+  }
 
   void deleteOrder(int index) {
     orders.removeAt(index);
@@ -161,7 +194,7 @@ class OrderController extends GetxController {
         log(pickedImage!.path.split('/').last.toString());
       }
     } catch (e) {
-      log("Error picking file: ${e}");
+      log("Error picking file: $e");
     }
   }
 
@@ -169,7 +202,7 @@ class OrderController extends GetxController {
     materialNameController.clear();
     quantityController.clear();
     selectedSupplier.value = '';
-    selectedSite.value = ''; // New field
+    selectedSite.value = '';
     pickedImage = null;
   }
 }

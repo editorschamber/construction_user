@@ -76,12 +76,23 @@ class MainOrderDialog extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 10,),
+            Row(
+              children: [
+                Expanded(
 
-            ElevatedButton(
-              onPressed: () async {
-                await orderController.pickImage();
-              },
-              child: const Text('Pick Image'),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Square corners
+                      ),),
+                    onPressed: () async {
+                      await orderController.pickImage();
+                    },
+                    child: const Text('Pick Image'),
+                  ),
+                ),
+              ],
             ),
             if (orderController.pickedImage != null)
               Column(
