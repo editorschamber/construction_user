@@ -13,11 +13,16 @@ import '../widgets/return_order_dialog.dart';
 class MainOrderController extends GetxController {
   final box = GetStorage();
   var orders = <Order>[].obs;
-  var materialNameController = TextEditingController();
-  var quantityController = TextEditingController();
   var selectedSupplier = ''.obs;
   var selectedSite = ''.obs;
+  var orderInputs = <OrderInput>[].obs; // New list to handle multiple order inputs
   var sites = <Site>[].obs;
+  var materials = <String>[].obs; // Added for material dropdown
+  var qualityChecks = <String, bool>{
+    'materialQuality': false,
+    'quantityAccuracy': false,
+    'packaging': false,
+  }.obs; // Added for quality checks
   File? pickedImage;
   final ImagePicker _picker = ImagePicker();
   int _orderIdCounter = 0; // ID counter for orders
@@ -65,14 +70,39 @@ class MainOrderController extends GetxController {
     ),
   ];
 
+  // List of random 10 construction materials
+  List<String> defaultMaterials = [
+    'Cement',
+    'Steel',
+    'Bricks',
+    'Gravel',
+    'Sand',
+    'Concrete',
+    'Lime',
+    'Clay',
+    'Timber',
+    'Glass',
+  ];
+
   @override
   void onInit() {
     super.onInit();
-    log("onINITTTTTT");
     loadOrders();
     loadOrderIdCounter();
     orders.addAll(defaultOrders);
     loadSites();
+    materials.addAll(defaultMaterials); // Add default materials to the list
+    addOrderInput(); // Initialize with one set of input fields
+  }
+
+  void addOrderInput() {
+    orderInputs.add(OrderInput());
+  }
+
+  void removeOrderInput(int index) {
+    if (orderInputs.length > 1) {
+      orderInputs.removeAt(index);
+    }
   }
 
   void updater(){
@@ -144,8 +174,6 @@ class MainOrderController extends GetxController {
       loadOrders();
       update();
     }
-    // orders.value = storedOrders;
-    // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
   }
 
   void saveOrders() {
@@ -186,9 +214,6 @@ class MainOrderController extends GetxController {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
       if (image != null) {
         pickedImage = File(image.path);
-        log(image.path.toString());
-        log(pickedImage!.path.split('/').last.toString());
-        receiveOrderDialog();
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -200,9 +225,6 @@ class MainOrderController extends GetxController {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
       if (image != null) {
         pickedImage = File(image.path);
-        log(image.path.toString());
-        log(pickedImage!.path.split('/').last.toString());
-        showReturnOrderDialog();
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -211,7 +233,7 @@ class MainOrderController extends GetxController {
 
   void receiveOrderDialog() {
     Get.dialog(
-      ReceiveOrderDialog(),
+      ReceiveOrderDialog(order: orders.first),
     );
   }
 
@@ -222,59 +244,65 @@ class MainOrderController extends GetxController {
   }
 
   void addOrder({String status = 'pending'}) {
-    bool hasImage = pickedImage != null;
-    bool hasMaterial = materialNameController.text.isNotEmpty;
-    bool hasQuantity = quantityController.text.isNotEmpty;
-    bool hasSite = selectedSite.value.isNotEmpty;
+    for (final input in orderInputs) {
+      bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
+      bool hasQuantity = input.quantityController.text.isNotEmpty;
 
-    if (hasImage || (hasMaterial && hasQuantity)) {
-      _orderIdCounter++;
-      final order = Order(
-        id: _orderIdCounter.toString(), // Assign incrementing ID
-        status: status,
-        materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
-        imagePath: hasImage ? pickedImage!.path : "",
-        siteName: selectedSite.value, // New field
-        returnedQuantity: '',
-      );
+      if (hasMaterial && hasQuantity) {
+        _orderIdCounter++;
+        final order = Order(
+          id: _orderIdCounter.toString(),
+          status: status,
+          materialName: input.selectedMaterial.value,
+          supplierName: selectedSupplier.value,
+          quantity: input.quantityController.text,
+          siteName: selectedSite.value,
+          orderCreateDate: input.orderCreateDate.value,
+          expectedDeliveryDate: input.expectedDeliveryDate.value, imagePath: '', returnedQuantity: '',
+        );
 
-      orders.add(order);
-      saveOrders();
-      saveOrderIdCounter(); // Save the updated counter
-      clearControllers();
-    } else {
-      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
+        // Implement quality check logic
+        if (qualityChecks['materialQuality'] == true) {
+          log("Material Quality Checked");
+        }
+        if (qualityChecks['quantityAccuracy'] == true) {
+          log("Quantity Accuracy Checked");
+        }
+        if (qualityChecks['packaging'] == true) {
+          log("Packaging Checked");
+        }
+
+        orders.add(order);
+      }
     }
+    saveOrders();
+    saveOrderIdCounter();
+    clearControllers();
   }
 
   void returnOrder({bool isReceivedOrder = false}) {
-    bool hasImage = pickedImage != null;
-    bool hasMaterial = materialNameController.text.isNotEmpty;
-    bool hasQuantity = quantityController.text.isNotEmpty;
-    bool hasSite = selectedSite.value.isNotEmpty;
+    for (final input in orderInputs) {
+      bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
+      bool hasQuantity = input.quantityController.text.isNotEmpty;
 
-    if (hasImage || (hasMaterial && hasQuantity)) {
-      _orderIdCounter++;
-      final order = Order(
-        id: _orderIdCounter.toString(), // Assign incrementing ID
-        status: 'returned',
-        materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
-        imagePath: hasImage ? pickedImage!.path : "",
-        siteName: selectedSite.value, // New field
-        returnedQuantity: '',
-      );
+      if (hasMaterial && hasQuantity) {
+        _orderIdCounter++;
+        final order = Order(
+          id: _orderIdCounter.toString(),
+          status: 'returned',
+          materialName: input.selectedMaterial.value,
+          supplierName: selectedSupplier.value,
+          quantity: input.quantityController.text,
+          siteName: selectedSite.value,
+          returnedQuantity: '', imagePath: '',
+        );
 
-      orders.add(order);
-      saveOrders();
-      saveOrderIdCounter(); // Save the updated counter
-      clearControllers();
-    } else {
-      log("Order cannot be added. Please provide either an image, material, quantity, and site.");
+        orders.add(order);
+      }
     }
+    saveOrders();
+    saveOrderIdCounter();
+    clearControllers();
   }
 
   void deleteOrder(int index) {
@@ -288,8 +316,6 @@ class MainOrderController extends GetxController {
       await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null && result.files.single.path != null) {
         pickedImage = File(result.files.single.path!);
-        log(result.files.single.path!.toString());
-        log(pickedImage!.path.split('/').last.toString());
       }
     } catch (e) {
       log("Error picking file: $e");
@@ -297,10 +323,18 @@ class MainOrderController extends GetxController {
   }
 
   void clearControllers() {
-    materialNameController.clear();
-    quantityController.clear();
     selectedSupplier.value = '';
     selectedSite.value = '';
-    pickedImage = null;
+    orderInputs.clear();
+    qualityChecks.updateAll((key, value) => false); // Clear all quality checks
+    addOrderInput(); // Reset with one set of input fields
   }
+}
+
+// Class to handle individual order input
+class OrderInput {
+  var selectedMaterial = ''.obs;
+  var quantityController = TextEditingController();
+  var orderCreateDate = Rx<DateTime>(DateTime.now());
+  var expectedDeliveryDate = Rx<DateTime?>(null);
 }

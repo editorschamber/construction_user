@@ -7,6 +7,8 @@ class Order {
   final String siteName;
   String returnedQuantity;
   String? status = 'pending';
+  DateTime? orderCreateDate;
+  DateTime? expectedDeliveryDate;
   //pending , approved, returned, received
 
   Order({
@@ -17,7 +19,9 @@ class Order {
     required this.imagePath,
     required this.siteName,
     required this.returnedQuantity,
-    this.status
+    this.status,
+    this.orderCreateDate,
+    this.expectedDeliveryDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -29,7 +33,9 @@ class Order {
       'imagePath': imagePath,
       'siteName': siteName,
       'status': status,
-      'returnedQuantity': returnedQuantity, // Include new field
+      'returnedQuantity': returnedQuantity,
+      'orderCreateDate': orderCreateDate?.toIso8601String(),
+      'expectedDeliveryDate': expectedDeliveryDate?.toIso8601String(),
     };
   }
 
@@ -43,7 +49,13 @@ class Order {
       siteName: json['siteName'] ?? '',
       status: json['status'],
       returnedQuantity:
-      json['returnedQuantity'] ?? '', // Default value for new field
+      json['returnedQuantity'] ?? '',
+      orderCreateDate: json['orderCreateDate'] != null
+          ? DateTime.parse(json['orderCreateDate'])
+          : null, // Parse if not null
+      expectedDeliveryDate: json['expectedDeliveryDate'] != null
+          ? DateTime.parse(json['expectedDeliveryDate'])
+          : null,
     );
   }
 }

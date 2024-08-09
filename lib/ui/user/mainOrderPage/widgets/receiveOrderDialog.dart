@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/orderModel.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
-import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
+
+import '../controller/main_order_controller.dart';
 
 class ReceiveOrderDialog extends GetView<MainOrderController> {
-  ReceiveOrderDialog({super.key});
+  final Order order;
+
+  ReceiveOrderDialog({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,30 +16,48 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            controller: controller.materialNameController,
-            decoration: const InputDecoration(labelText: 'Material Name'),
+          // Displaying Material Name, Quantity, and Site as text fields with default values
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('Material: ${order.materialName}'),
           ),
-          TextField(
-            controller: controller.quantityController,
-            decoration: const InputDecoration(labelText: 'Quantity'),
-            keyboardType: TextInputType.number,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('Quantity: ${order.quantity}'),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text('Site: ${order.siteName}'),
+          ),
+
+          // Quality checkboxes
+          const SizedBox(height: 16),
+          const Text('Quality Checks', style: TextStyle(fontWeight: FontWeight.bold)),
           Obx(() {
-            return DropdownButton<String>(
-              hint: const Text("Select Site"),
-              value: controller.selectedSite.value.isEmpty ? null : controller.selectedSite.value,
-              items: controller.sites.map((Site site) {
-                return DropdownMenuItem<String>(
-                  value: site.siteName,
-                  child: Text(site.siteName),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  controller.selectedSite.value = newValue;
-                }
-              },
+            return Column(
+              children: [
+                CheckboxListTile(
+                  title: const Text('Check Material Quality'),
+                  value: controller.qualityChecks['materialQuality'],
+                  onChanged: (bool? value) {
+                    controller.qualityChecks['materialQuality'] = value ?? false;
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Check Quantity Accuracy'),
+                  value: controller.qualityChecks['quantityAccuracy'],
+                  onChanged: (bool? value) {
+                    controller.qualityChecks['quantityAccuracy'] = value ?? false;
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Check Packaging'),
+                  value: controller.qualityChecks['packaging'],
+                  onChanged: (bool? value) {
+                    controller.qualityChecks['packaging'] = value ?? false;
+                  },
+                ),
+              ],
             );
           }),
         ],
@@ -45,17 +65,15 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
       actions: [
         TextButton(
           onPressed: () {
-            Get.back(); // Close the dialog
+            Get.back(result: false); // Close the dialog and return false
             controller.clearControllers(); // Clear controllers if canceled
           },
           child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
-            Get.back(); // Close the dialog
-            controller.addOrder(
-              status: 'received'
-            );
+            Get.back(result: true); // Close the dialog and return true
+            controller.addOrder(status: 'received');
           },
           child: const Text('Add Order'),
         ),
