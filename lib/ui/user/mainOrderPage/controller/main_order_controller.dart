@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_construct/core/data/orderModel.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../widgets/return_order_dialog.dart';
 
@@ -209,11 +209,14 @@ class MainOrderController extends GetxController {
     ];
   }
 
-  Future<void> pickImageFromCamera() async {
+  Future<void> pickImageFromCamera(Order order) async {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
       if (image != null) {
         pickedImage = File(image.path);
+        log(image.path);
+        order.imagePath = image.path;
+        updateOrderById(order.id!, order);
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -326,8 +329,8 @@ class MainOrderController extends GetxController {
     selectedSupplier.value = '';
     selectedSite.value = '';
     orderInputs.clear();
-    qualityChecks.updateAll((key, value) => false); // Clear all quality checks
-    addOrderInput(); // Reset with one set of input fields
+    qualityChecks.updateAll((key, value) => false);
+    addOrderInput();
   }
 }
 
@@ -337,4 +340,5 @@ class OrderInput {
   var quantityController = TextEditingController();
   var orderCreateDate = Rx<DateTime>(DateTime.now());
   var expectedDeliveryDate = Rx<DateTime?>(null);
+  var expectedDeliveryDateController = TextEditingController();
 }

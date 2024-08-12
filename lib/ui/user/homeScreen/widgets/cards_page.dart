@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/site.dart';
+import '../../../../core/data/site.dart';
 
 class CardsPage extends StatelessWidget {
   final Site site;

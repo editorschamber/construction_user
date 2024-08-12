@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 
 import '../../../routes/route.dart';
 import '../allSitePlan/all_site_plans_screen.dart';

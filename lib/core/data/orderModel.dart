@@ -1,14 +1,17 @@
 class Order {
-  final String id;
+  final String? id;
   final String materialName;
   final String supplierName;
   String quantity;
-  final String imagePath;
+  String imagePath;
   final String siteName;
   String returnedQuantity;
   String? status = 'pending';
   DateTime? orderCreateDate;
   DateTime? expectedDeliveryDate;
+  bool? materialCheck = false;
+  bool? quantityCheck = false;
+  bool? packagingCheck = false;
   //pending , approved, returned, received
 
   Order({
@@ -22,6 +25,10 @@ class Order {
     this.status,
     this.orderCreateDate,
     this.expectedDeliveryDate,
+    this.materialCheck,
+    this.quantityCheck,
+    this.packagingCheck,
+
   });
 
   Map<String, dynamic> toJson() {
@@ -34,6 +41,9 @@ class Order {
       'siteName': siteName,
       'status': status,
       'returnedQuantity': returnedQuantity,
+      'materialCheck': materialCheck,
+      'quantityCheck': quantityCheck,
+      'packagingCheck': packagingCheck,
       'orderCreateDate': orderCreateDate?.toIso8601String(),
       'expectedDeliveryDate': expectedDeliveryDate?.toIso8601String(),
     };
@@ -48,6 +58,9 @@ class Order {
       imagePath: json['imagePath'],
       siteName: json['siteName'] ?? '',
       status: json['status'],
+      materialCheck: json['materialCheck'],
+      quantityCheck: json['quantityCheck'],
+      packagingCheck: json['packagingCheck'],
       returnedQuantity:
       json['returnedQuantity'] ?? '',
       orderCreateDate: json['orderCreateDate'] != null

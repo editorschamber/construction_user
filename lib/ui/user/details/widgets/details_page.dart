@@ -4,7 +4,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
 import '../../../../routes/route.dart';
-import '../../homeScreen/models/site.dart';
+import '../../../../core/data/site.dart';
 
 class DetailsPage extends StatelessWidget {
   final Site site;

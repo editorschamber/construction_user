@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/orderModel.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 
 class ReturnOrderDialog extends GetView<MainOrderController> {

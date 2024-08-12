@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:site_construct/utils/userModel.dart';
+import 'package:site_construct/core/data/userModel.dart';
 
 class ProfileController extends GetxController {
   var displayName = ''.obs;

@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_construct/core/data/orderModel.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 
 class OrderController extends GetxController {

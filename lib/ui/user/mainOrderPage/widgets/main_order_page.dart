@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/add_order_page.dart';
 import 'package:site_construct/ui/user/orderDetailsPage/orderDetailsScreen.dart';
@@ -69,48 +69,48 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (order.imagePath.isNotEmpty)
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Image.file(
-                                              File(order.imagePath),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery.of(context).size.width,
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                                child: const Text('Close'),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.file(
-                                    File(order.imagePath),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                            // if (order.imagePath.isNotEmpty)
+                            //   GestureDetector(
+                            //     onTap: () {
+                            //       showDialog(
+                            //         context: context,
+                            //         builder: (context) => Dialog(
+                            //           shape: RoundedRectangleBorder(
+                            //             borderRadius: BorderRadius.circular(16),
+                            //           ),
+                            //           child: ClipRRect(
+                            //             borderRadius: BorderRadius.circular(16),
+                            //             child: Column(
+                            //               mainAxisSize: MainAxisSize.min,
+                            //               children: [
+                            //                 Image.file(
+                            //                   File(order.imagePath),
+                            //                   fit: BoxFit.cover,
+                            //                 ),
+                            //                 SizedBox(
+                            //                   width: MediaQuery.of(context).size.width,
+                            //                   child: TextButton(
+                            //                     onPressed: () {
+                            //                       Get.back();
+                            //                     },
+                            //                     child: const Text('Close'),
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       );
+                            //     },
+                            //     child: ClipRRect(
+                            //       borderRadius: BorderRadius.circular(12),
+                            //       child: Image.file(
+                            //         File(order.imagePath),
+                            //         width: double.infinity,
+                            //         fit: BoxFit.cover,
+                            //       ),
+                            //     ),
+                            //   ),
                             const SizedBox(height: 8),
                             Text(
                               'Material: ${order.materialName}',
@@ -316,48 +316,48 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (order.imagePath.isNotEmpty)
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Image.file(
-                                              File(order.imagePath),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            SizedBox(
-                                              width: MediaQuery.of(context).size.width,
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  Get.back();
-                                                },
-                                                child: const Text('Close'),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.file(
-                                    File(order.imagePath),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                            // if (order.imagePath.isNotEmpty)
+                            //   GestureDetector(
+                            //     onTap: () {
+                            //       showDialog(
+                            //         context: context,
+                            //         builder: (context) => Dialog(
+                            //           shape: RoundedRectangleBorder(
+                            //             borderRadius: BorderRadius.circular(16),
+                            //           ),
+                            //           child: ClipRRect(
+                            //             borderRadius: BorderRadius.circular(16),
+                            //             child: Column(
+                            //               mainAxisSize: MainAxisSize.min,
+                            //               children: [
+                            //                 Image.file(
+                            //                   File(order.imagePath),
+                            //                   fit: BoxFit.cover,
+                            //                 ),
+                            //                 SizedBox(
+                            //                   width: MediaQuery.of(context).size.width,
+                            //                   child: TextButton(
+                            //                     onPressed: () {
+                            //                       Get.back();
+                            //                     },
+                            //                     child: const Text('Close'),
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       );
+                            //     },
+                            //     child: ClipRRect(
+                            //       borderRadius: BorderRadius.circular(12),
+                            //       child: Image.file(
+                            //         File(order.imagePath),
+                            //         width: double.infinity,
+                            //         fit: BoxFit.cover,
+                            //       ),
+                            //     ),
+                            //   ),
                             const SizedBox(height: 8),
                             Text(
                               'Material: ${order.materialName}',

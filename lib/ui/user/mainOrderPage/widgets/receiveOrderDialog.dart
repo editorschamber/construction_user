@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 
 import '../controller/main_order_controller.dart';
@@ -40,6 +41,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Material Quality'),
                   value: controller.qualityChecks['materialQuality'],
                   onChanged: (bool? value) {
+                    order.materialCheck = value;
                     controller.qualityChecks['materialQuality'] = value ?? false;
                   },
                 ),
@@ -47,6 +49,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Quantity Accuracy'),
                   value: controller.qualityChecks['quantityAccuracy'],
                   onChanged: (bool? value) {
+                    order.quantityCheck = value;
                     controller.qualityChecks['quantityAccuracy'] = value ?? false;
                   },
                 ),
@@ -54,6 +57,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Packaging'),
                   value: controller.qualityChecks['packaging'],
                   onChanged: (bool? value) {
+                    order.packagingCheck = value;
                     controller.qualityChecks['packaging'] = value ?? false;
                   },
                 ),
@@ -75,7 +79,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
             Get.back(result: true); // Close the dialog and return true
             controller.addOrder(status: 'received');
           },
-          child: const Text('Add Order'),
+          child: const Text('Receive Order'),
         ),
       ],
     );

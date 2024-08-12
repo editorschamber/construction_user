@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/ui/user/homeScreen/models/site.dart';
+import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
 
 import '../availableStock/available_stock.dart';

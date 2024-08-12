@@ -4,7 +4,7 @@ import 'package:site_construct/ui/user/details/widgets/details_page.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
 import '../../../routes/route.dart';
-import '../homeScreen/models/site.dart';
+import '../../../core/data/site.dart';
 
 class DetailsScreen extends StatefulWidget {
   final Site site;

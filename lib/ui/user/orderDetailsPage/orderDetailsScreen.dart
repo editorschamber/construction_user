@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/orderModel.dart';
@@ -23,10 +24,15 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (order.imagePath.isNotEmpty)
-              Center(
-                child: Image.file(
-                  File(order.imagePath),
-                  fit: BoxFit.cover,
+              Expanded(
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                    child: Image.file(
+                      File(order.imagePath.replaceFirst('File: ', '')), // Remove the 'File: ' prefix if present
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             const SizedBox(height: 16),
@@ -50,11 +56,39 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
             Text('Expected Delivery Date: ${order.expectedDeliveryDate}'),
             const SizedBox(height: 16),
 
+            Row(
+              children: [
+                Checkbox(
+                  value: order.materialCheck ?? false,
+                  onChanged: null, // Read-only
+                ),
+                const Text('Material Check'),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: order.packagingCheck ?? false,
+                  onChanged: null, // Read-only
+                ),
+                const Text('Packaging Check'),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: order.quantityCheck ?? false,
+                  onChanged: null, // Read-only
+                ),
+                const Text('Quantity Check'),
+              ],
+            ),
+
             if (tabType == 'orderList')
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    controller.pickImageFromCamera();
+                    controller.pickImageFromCamera(order);
                     // Open the ReceiveOrderDialog first with the existing order
                     final result = await Get.dialog<bool>(ReceiveOrderDialog(order: order));
 
@@ -63,7 +97,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                       Get.snackbar('Received', 'The order is now received',
                           backgroundColor: Colors.greenAccent.shade200);
                       order.status = "received";
-                      controller.updateOrderById(order.id, order);
+                      controller.updateOrderById(order.id!, order);
                       controller.updater();
                     }
                   },
@@ -77,12 +111,14 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                     Get.snackbar('Return', 'The order is now returned',
                         backgroundColor: Colors.red.shade200);
                     order.status = "returned";
-                    controller.updateOrderById(order.id, order);
+                    controller.updateOrderById(order.id!, order);
                     controller.update();
                   },
                   child: const Text('Return Order', style: TextStyle(color: Colors.red)),
                 ),
               ),
+
+
           ],
         ),
       ),
