@@ -45,9 +45,9 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
             const SizedBox(height: 8),
             Text('Status: ${order.status}'),
             const SizedBox(height: 8),
-            Text('Status: ${order.orderCreateDate}'),
+            Text('Order date: ${order.orderCreateDate}'),
             const SizedBox(height: 8),
-            Text('Status: ${order.expectedDeliveryDate}'),
+            Text('Expected Delivery Date: ${order.expectedDeliveryDate}'),
             const SizedBox(height: 16),
 
             if (tabType == 'orderList')
