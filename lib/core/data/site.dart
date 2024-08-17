@@ -3,6 +3,8 @@ class Site {
   final String siteName;
   final String siteDetails;
   final String location;
+  String? startDate;
+  String? endDate;
 
   Site(
       {required this.imageUrl,

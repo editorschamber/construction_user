@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/site.dart';
 import '../controller/main_order_controller.dart';
 import 'package:intl/intl.dart';
@@ -101,25 +102,58 @@ class AddOrderPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: DropdownButton<String>(
-                                  isExpanded: true,
-                                  hint: const Text("Select Material"),
-                                  value: input.selectedMaterial.value.isEmpty
-                                      ? null
-                                      : input.selectedMaterial.value,
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      input.selectedMaterial.value = newValue;
-                                    }
-                                  },
-                                  items: orderController.materials
-                                      .map<DropdownMenuItem<String>>(
-                                          (String material) {
-                                        return DropdownMenuItem<String>(
-                                          value: material,
-                                          child: Text(material),
-                                        );
-                                      }).toList(),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: input.searchController,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Search Material'),
+                                      onChanged: (query) {
+                                        input.filteredMaterials.value =
+                                            orderController.materials
+                                                .where((material) => material
+                                                .toLowerCase()
+                                                .contains(query
+                                                .toLowerCase()))
+                                                .toList();
+                                      },
+                                    ),
+                                    Obx(() {
+                                      return input.filteredMaterials.isNotEmpty
+                                          ? Container(
+                                        constraints: BoxConstraints(
+                                          maxHeight: 150,
+                                        ),
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: input
+                                              .filteredMaterials.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title: Text(input
+                                                  .filteredMaterials[
+                                              index]
+                                                  .toString()),
+                                              onTap: () {
+                                                input.selectedMaterial
+                                                    .value =
+                                                input.filteredMaterials[
+                                                index];
+                                                input.searchController
+                                                    .text = input
+                                                    .selectedMaterial
+                                                    .value;
+                                                input
+                                                    .filteredMaterials
+                                                    .clear();
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      )
+                                          : const SizedBox();
+                                    }),
+                                  ],
                                 ),
                               ),
                               if (orderController.orderInputs.length > 1)
@@ -142,14 +176,14 @@ class AddOrderPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Obx(() {
-                            // Ensure the TextEditingController is updated with the selected date
                             input.expectedDeliveryDateController.text =
                             input.expectedDeliveryDate.value != null
                                 ? DateFormat('yyyy-MM-dd').format(
                                 input.expectedDeliveryDate.value!)
                                 : '';
                             return TextField(
-                              controller: input.expectedDeliveryDateController,
+                              controller:
+                              input.expectedDeliveryDateController,
                               readOnly: true,
                               decoration: const InputDecoration(
                                 labelText: 'Expected Delivery Date',
@@ -158,17 +192,17 @@ class AddOrderPage extends StatelessWidget {
                               onTap: () async {
                                 DateTime? pickedDate = await showDatePicker(
                                   context: context,
-                                  initialDate:
-                                  input.expectedDeliveryDate.value ??
+                                  initialDate: input.expectedDeliveryDate
+                                      .value ??
                                       DateTime.now(),
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2101),
                                 );
                                 if (pickedDate != null) {
                                   input.expectedDeliveryDate.value = pickedDate;
-                                  // Update the TextEditingController with the selected date
                                   input.expectedDeliveryDateController.text =
-                                      DateFormat('yyyy-MM-dd').format(pickedDate);
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
                                 }
                               },
                             );
@@ -180,6 +214,10 @@ class AddOrderPage extends StatelessWidget {
                 );
               }),
               const SizedBox(height: 10),
+              TextField(
+                controller: orderController.instructionsController,
+                decoration: const InputDecoration(labelText: 'Instructions'),
+              ),
               ElevatedButton(
                 onPressed: () {
                   orderController.addOrder();

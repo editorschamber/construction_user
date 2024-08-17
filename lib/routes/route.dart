@@ -9,6 +9,8 @@ import 'package:site_construct/ui/user/labour/labour_screen.dart';
 import 'package:site_construct/ui/user/login/binding/login_binding.dart';
 import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/login/widgets/login_page.dart';
+import 'package:site_construct/ui/user/mainOrderPage/binding/order_binding.dart';
+import 'package:site_construct/ui/user/mainOrderPage/main_order_screen.dart';
 import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
 import 'package:site_construct/ui/user/onBoarding/binding/on_boarding_binding.dart';
 import 'package:site_construct/ui/user/onBoarding/on_boarding_screen.dart';
@@ -40,6 +42,7 @@ const String profileScreen = "/profileScreen";
 const String addNewSiteScreen = "/addNewSiteScreen";
 const String allSitePlans = "/allSitePlans";
 const String orderScreen = "/orderScreen";
+const String mainOrderScreen = "/mainOrderScreen";
 const String splashScreen = "/splashScreen";
 const String navigationMenu = "/navigationMenu";
 
@@ -107,6 +110,14 @@ List<GetPage<dynamic>> routes = [
       return OrderScreen();
     },
     binding: OrderBinding(),
+  ),
+  GetPage(
+    name: mainOrderScreen,
+    transition: Transition.rightToLeft,
+    page: () {
+      return MainOrderScreen();
+    },
+    binding: MainOrderBinding(),
   ),
   GetPage(
     name: splashScreen,

@@ -5,6 +5,7 @@ class UserModel {
   String phoneNumber;
 
   UserModel({
+    // required this.name,
     required this.username,
     required this.phoneNumber,
   });
@@ -20,6 +21,7 @@ class UserModel {
   // Convert a map into a UserModel object
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      // name: json['name'],
       username: json['username'],
       phoneNumber: json['phoneNumber'],
     );

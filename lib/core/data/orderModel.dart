@@ -1,18 +1,19 @@
 class Order {
-  final String? id;
-  final String materialName;
-  final String supplierName;
-  String quantity;
-  String imagePath;
-  final String siteName;
-  String returnedQuantity;
-  String? status = 'pending';
-  DateTime? orderCreateDate;
-  DateTime? expectedDeliveryDate;
-  bool? materialCheck = false;
-  bool? quantityCheck = false;
-  bool? packagingCheck = false;
-  //pending , approved, returned, received
+  final String? id;  //
+  String materialName; //
+  final String supplierName; //
+  String quantity; //
+  String imagePath; //
+  final String siteName; //
+  String returnedQuantity; //
+  String? status = 'pending'; // pending, approved, received, returned
+  DateTime? orderCreateDate; //
+  DateTime? expectedDeliveryDate; //
+  bool? materialCheck = false; //
+  bool? quantityCheck = false; //
+  bool? packagingCheck = false; //
+  String? instructions = ''; //
+  String? reason = ''; //
 
   Order({
     required this.id,
@@ -28,7 +29,8 @@ class Order {
     this.materialCheck,
     this.quantityCheck,
     this.packagingCheck,
-
+    this.instructions,
+    this.reason,
   });
 
   Map<String, dynamic> toJson() {
@@ -46,6 +48,8 @@ class Order {
       'packagingCheck': packagingCheck,
       'orderCreateDate': orderCreateDate?.toIso8601String(),
       'expectedDeliveryDate': expectedDeliveryDate?.toIso8601String(),
+      'instructions': instructions,
+      'reason': reason,
     };
   }
 
@@ -61,14 +65,15 @@ class Order {
       materialCheck: json['materialCheck'],
       quantityCheck: json['quantityCheck'],
       packagingCheck: json['packagingCheck'],
-      returnedQuantity:
-      json['returnedQuantity'] ?? '',
+      returnedQuantity: json['returnedQuantity'] ?? '',
       orderCreateDate: json['orderCreateDate'] != null
           ? DateTime.parse(json['orderCreateDate'])
-          : null, // Parse if not null
+          : null,
       expectedDeliveryDate: json['expectedDeliveryDate'] != null
           ? DateTime.parse(json['expectedDeliveryDate'])
           : null,
+      instructions: json['instructions'] ?? '',
+      reason: json['reason'] ?? '',
     );
   }
 }

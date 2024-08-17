@@ -5,19 +5,26 @@ import 'package:get_storage/get_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../widgets/return_order_dialog.dart';
 
 class MainOrderController extends GetxController {
+  var filterQuery = ''.obs;
+  final instructionsController = TextEditingController();
+  final returnReasonController = TextEditingController();
+
   final box = GetStorage();
   var orders = <Order>[].obs;
   var selectedSupplier = ''.obs;
   var selectedSite = ''.obs;
-  var orderInputs = <OrderInput>[].obs; // New list to handle multiple order inputs
+  var filterSelectedSite = ''.obs;
+  var orderInputs =
+      <OrderInput>[].obs;
   var sites = <Site>[].obs;
-  var materials = <String>[].obs; // Added for material dropdown
+  var materials = <String>[].obs;
   var qualityChecks = <String, bool>{
     'materialQuality': false,
     'quantityAccuracy': false,
@@ -29,45 +36,57 @@ class MainOrderController extends GetxController {
 
   List<Order> defaultOrders = [
     Order(
-      id: '1',
-      materialName: "Brick",
-      supplierName: 'Hinduja',
-      quantity: '100',
-      imagePath: '',
-      siteName: "Site 1",
-      returnedQuantity: '',
-      status: 'pending',
-    ),
+        id: '1',
+        materialName: "Bricks",
+        supplierName: 'Hinduja',
+        quantity: '100',
+        imagePath: '',
+        siteName: "Site 1",
+        returnedQuantity: '',
+        status: 'pending',
+        orderCreateDate: DateTime.now(),
+        expectedDeliveryDate: DateTime.now(),
+        instructions: 'Wrap the bricks in plastic, leave at door',
+        reason: 'Quality is not good'),
     Order(
-      id: '2',
-      materialName: "Brick",
-      supplierName: 'Hinduja',
-      quantity: '100',
-      imagePath: '',
-      siteName: "Site 1",
-      returnedQuantity: '',
-      status: 'approved',
-    ),
+        id: '2',
+        materialName: "Bricks",
+        supplierName: 'Hinduja',
+        quantity: '100',
+        imagePath: '',
+        siteName: "Site 1",
+        returnedQuantity: '',
+        status: 'approved',
+        orderCreateDate: DateTime.now(),
+        expectedDeliveryDate: DateTime.now(),
+        instructions: 'Wrap the bricks in plastic, leave at door',
+        reason: 'Quality is not good'),
     Order(
-      id: '3',
-      materialName: "Sand",
-      supplierName: 'Malviya',
-      quantity: '10',
-      imagePath: '',
-      siteName: "Site 2",
-      returnedQuantity: '5',
-      status: 'received',
-    ),
+        id: '3',
+        materialName: "Sand",
+        supplierName: 'Malviya',
+        quantity: '10',
+        imagePath: '',
+        siteName: "Site 2",
+        returnedQuantity: '5',
+        status: 'received',
+        orderCreateDate: DateTime.now(),
+        expectedDeliveryDate: DateTime.now(),
+        instructions: 'Wrap the bricks in plastic, leave at door',
+        reason: 'Quality is not good'),
     Order(
-      id: '4',
-      materialName: "Cement",
-      supplierName: 'Malviya',
-      quantity: '10',
-      imagePath: '',
-      siteName: "Site 2",
-      returnedQuantity: '',
-      status: 'returned',
-    ),
+        id: '4',
+        materialName: "Cement",
+        supplierName: 'Malviya',
+        quantity: '10',
+        imagePath: '',
+        siteName: "Site 2",
+        returnedQuantity: '',
+        status: 'returned',
+        orderCreateDate: DateTime.now(),
+        expectedDeliveryDate: DateTime.now().add(Duration(days: 5)),
+        instructions: 'Wrap the bricks in plastic, leave at door',
+        reason: 'Quality is not good'),
   ];
 
   // List of random 10 construction materials
@@ -91,8 +110,20 @@ class MainOrderController extends GetxController {
     loadOrderIdCounter();
     orders.addAll(defaultOrders);
     loadSites();
+    materials.clear();
     materials.addAll(defaultMaterials); // Add default materials to the list
     addOrderInput(); // Initialize with one set of input fields
+    update();
+  }
+
+  List<Order> get filteredOrders {
+    final query = filterQuery.value.toLowerCase();
+    return orders.where((order) {
+      final siteMatch = order.siteName.toLowerCase().contains(query);
+      final materialMatch = order.materialName.toLowerCase().contains(query);
+      final statusMatch = order.status == 'pending' || order.status == 'approved';
+      return (siteMatch || materialMatch) && statusMatch;
+    }).toList();
   }
 
   void addOrderInput() {
@@ -105,7 +136,7 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updater(){
+  void updater() {
     loadOrders();
     update();
   }
@@ -130,8 +161,9 @@ class MainOrderController extends GetxController {
     if (index != -1) {
       orders[index] = updatedOrder;
       saveOrders();
+      loadOrders();
     } else {
-      Get.snackbar("Order with id $id not found.",'');
+      Get.snackbar("Order with id $id not found.", '');
     }
   }
 
@@ -144,9 +176,9 @@ class MainOrderController extends GetxController {
     update();
   }
 
-  void showReturnOrderDialog() {
-    Get.dialog(const ReturnOrderDialog());
-  }
+  // void showReturnOrderDialog() {
+  //   Get.dialog(const ReturnOrderDialog());
+  // }
 
   void addReturnedOrder(Order order) {
     orders.add(order);
@@ -168,7 +200,7 @@ class MainOrderController extends GetxController {
     List<Order>? storedOrders = (box.read<List>('orders') as List?)
         ?.map((orderJson) => Order.fromJson(orderJson))
         .toList();
-    if(storedOrders?.length==0){
+    if (storedOrders?.length == 0) {
       orders.addAll(defaultOrders);
       saveOrders();
       loadOrders();
@@ -240,17 +272,16 @@ class MainOrderController extends GetxController {
     );
   }
 
-  void showReturnDialog({bool isReceivedOrder = false}) {
-    Get.dialog(
-      const ReturnOrderDialog(),
-    );
-  }
+  // void showReturnDialog({bool isReceivedOrder = false}) {
+  //   Get.dialog(
+  //     const ReturnOrderDialog(),
+  //   );
+  // }
 
   void addOrder({String status = 'pending'}) {
     for (final input in orderInputs) {
       bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
       bool hasQuantity = input.quantityController.text.isNotEmpty;
-
       if (hasMaterial && hasQuantity) {
         _orderIdCounter++;
         final order = Order(
@@ -261,10 +292,13 @@ class MainOrderController extends GetxController {
           quantity: input.quantityController.text,
           siteName: selectedSite.value,
           orderCreateDate: input.orderCreateDate.value,
-          expectedDeliveryDate: input.expectedDeliveryDate.value, imagePath: '', returnedQuantity: '',
+          expectedDeliveryDate: input.expectedDeliveryDate.value,
+          imagePath: '',
+          returnedQuantity: '',
+          instructions: instructionsController.text,
+          reason: returnReasonController.text, // Ensure reason is stored
         );
 
-        // Implement quality check logic
         if (qualityChecks['materialQuality'] == true) {
           log("Material Quality Checked");
         }
@@ -283,26 +317,24 @@ class MainOrderController extends GetxController {
     clearControllers();
   }
 
-  void returnOrder({bool isReceivedOrder = false}) {
-    for (final input in orderInputs) {
-      bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
-      bool hasQuantity = input.quantityController.text.isNotEmpty;
+  void returnOrder(Order oldOrder) {
+    _orderIdCounter++;
+    final order = Order(
+      id: oldOrder.id,
+      status: 'returned',
+      materialName: oldOrder.materialName,
+      supplierName: oldOrder.supplierName,
+      quantity: oldOrder.quantity,
+      siteName: oldOrder.siteName,
+      orderCreateDate: oldOrder.orderCreateDate,
+      expectedDeliveryDate: oldOrder.expectedDeliveryDate,
+      returnedQuantity: 'FULL',
+      imagePath: '',
+      reason: returnReasonController.text, // Store the return reason here
+    );
 
-      if (hasMaterial && hasQuantity) {
-        _orderIdCounter++;
-        final order = Order(
-          id: _orderIdCounter.toString(),
-          status: 'returned',
-          materialName: input.selectedMaterial.value,
-          supplierName: selectedSupplier.value,
-          quantity: input.quantityController.text,
-          siteName: selectedSite.value,
-          returnedQuantity: '', imagePath: '',
-        );
+    orders.add(order);
 
-        orders.add(order);
-      }
-    }
     saveOrders();
     saveOrderIdCounter();
     clearControllers();
@@ -316,12 +348,23 @@ class MainOrderController extends GetxController {
   Future<void> pickImage() async {
     try {
       FilePickerResult? result =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null && result.files.single.path != null) {
         pickedImage = File(result.files.single.path!);
       }
     } catch (e) {
       log("Error picking file: $e");
+    }
+  }
+
+  void updateOrderMaterial(String orderId, String newMaterial) {
+    int index = orders.indexWhere((order) => order.id == orderId);
+    if (index != -1) {
+      orders[index].materialName = newMaterial;
+      saveOrders(); // Save the updated orders list
+      update(); // Notify the UI to refresh
+    } else {
+      Get.snackbar("Order Not Found", "No order found with ID $orderId");
     }
   }
 
@@ -335,10 +378,22 @@ class MainOrderController extends GetxController {
 }
 
 // Class to handle individual order input
+// Class to handle individual order input
 class OrderInput {
   var selectedMaterial = ''.obs;
   var quantityController = TextEditingController();
   var orderCreateDate = Rx<DateTime>(DateTime.now());
   var expectedDeliveryDate = Rx<DateTime?>(null);
   var expectedDeliveryDateController = TextEditingController();
+
+  // Adding the searchController and filteredMaterials
+  var searchController = TextEditingController();
+  var filteredMaterials = <String>[].obs;
+
+  // Ensure you dispose the controllers when no longer needed
+  void dispose() {
+    quantityController.dispose();
+    expectedDeliveryDateController.dispose();
+    searchController.dispose();
+  }
 }

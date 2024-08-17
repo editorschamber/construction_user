@@ -74,7 +74,7 @@ class DetailsPage extends StatelessWidget {
             buttonColor: Colors.purple,
             buttonText: "Order",
             // onTap: () => Get.toNamed(orderScreen),
-            onTap: () => Get.toNamed(orderScreen),
+            onTap: () => Get.toNamed(mainOrderScreen),
           ),
         ],
       ),

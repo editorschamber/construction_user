@@ -16,7 +16,7 @@ class MainOrderPage extends GetView<MainOrderController> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Orders Management'),
+          title: const Text('Orders'),
           bottom: const TabBar(
             tabs: [
               Tab(
@@ -129,7 +129,7 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                           },
                         ),
                         onTap: () {
-                          Get.to(() => OrderDetailsScreen(order: order, tabType: 'receiveOrder'));
+                          Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order),order: order, tabType: 'receiveOrder'));
                         },
                       ),
                     );
@@ -161,6 +161,7 @@ class OrderListTab extends GetView<MainOrderController> {
   @override
   Widget build(BuildContext context) {
     controller.loadOrders();
+    final TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -186,34 +187,29 @@ class OrderListTab extends GetView<MainOrderController> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Obx(() {
-                return DropdownButton<String>(
-                  hint: const Text("Select Site"),
-                  value: controller.selectedSite.value.isEmpty
-                      ? null
-                      : controller.selectedSite.value,
-                  items: controller.sites.map<DropdownMenuItem<String>>((Site site) {
-                    return DropdownMenuItem<String>(
-                      value: site.siteName,
-                      child: Text(site.siteName),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      controller.selectedSite.value = newValue;
-                    }
-                  },
-                );
-              }),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: "Search by Site or Material",
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                  ),
+                ),
+                onChanged: (query) {
+                  controller.filterQuery.value = query.toLowerCase();
+                },
+              ),
             ),
             Expanded(
               child: Obx(() {
+                final query = controller.filterQuery.value;
                 final filteredOrders = controller.orders.where((order) {
-                  return order.status == 'pending' ||
-                      (order.status == 'approved' &&
-                          (controller.selectedSite.value == 'ALL' ||
-                              controller.selectedSite.value.isEmpty ||
-                              order.siteName == controller.selectedSite.value));
+                  final statusMatch = order.status == 'pending' || order.status == 'approved';
+                  final siteMatch = order.siteName.toLowerCase().contains(query);
+                  final materialMatch = order.materialName.toLowerCase().contains(query);
+                  return statusMatch && (siteMatch || materialMatch);
                 }).toList();
 
                 return Padding(
@@ -267,7 +263,7 @@ class OrderListTab extends GetView<MainOrderController> {
                             },
                           ),
                           onTap: () {
-                            Get.to(() => OrderDetailsScreen(order: order, tabType: 'orderList'));
+                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order), order: order, tabType: 'orderList'));
                           },
                         ),
                       );
@@ -380,7 +376,7 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                           },
                         ),
                         onTap: () {
-                          Get.to(() => OrderDetailsScreen(order: order, tabType: 'returnedOrder'));
+                          Get.to(() => OrderDetailsScreen(index:controller.orders.indexOf(order) ,order: order, tabType: 'returnedOrder'));
                         },
                       ),
                     );
