@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
@@ -15,7 +16,7 @@ class MainOrderController extends GetxController {
   var filterQuery = ''.obs;
   final instructionsController = TextEditingController();
   final returnReasonController = TextEditingController();
-
+  Rx<DateTime?> filterDate = Rx<DateTime?>(null);
   final box = GetStorage();
   var orders = <Order>[].obs;
   var selectedSupplier = ''.obs;
@@ -44,7 +45,7 @@ class MainOrderController extends GetxController {
         siteName: "Site 1",
         returnedQuantity: '',
         status: 'pending',
-        orderCreateDate: DateTime.now(),
+        orderCreateDate: DateTime.now().subtract(Duration(days: 10)),
         expectedDeliveryDate: DateTime.now(),
         instructions: 'Wrap the bricks in plastic, leave at door',
         reason: 'Quality is not good'),
@@ -57,7 +58,7 @@ class MainOrderController extends GetxController {
         siteName: "Site 1",
         returnedQuantity: '',
         status: 'approved',
-        orderCreateDate: DateTime.now(),
+        orderCreateDate: DateTime.now().subtract(Duration(days: 11)),
         expectedDeliveryDate: DateTime.now(),
         instructions: 'Wrap the bricks in plastic, leave at door',
         reason: 'Quality is not good'),
@@ -118,11 +119,15 @@ class MainOrderController extends GetxController {
 
   List<Order> get filteredOrders {
     final query = filterQuery.value.toLowerCase();
+
     return orders.where((order) {
       final siteMatch = order.siteName.toLowerCase().contains(query);
       final materialMatch = order.materialName.toLowerCase().contains(query);
       final statusMatch = order.status == 'pending' || order.status == 'approved';
-      return (siteMatch || materialMatch) && statusMatch;
+
+      final dateMatch = filterDate.value == null || order.orderCreateDate!.isAfter(filterDate.value!);
+
+      return (siteMatch || materialMatch) && statusMatch && dateMatch;
     }).toList();
   }
 

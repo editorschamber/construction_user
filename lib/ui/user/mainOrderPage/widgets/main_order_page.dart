@@ -162,6 +162,7 @@ class OrderListTab extends GetView<MainOrderController> {
   Widget build(BuildContext context) {
     controller.loadOrders();
     final TextEditingController searchController = TextEditingController();
+    DateTime? selectedDate;
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -187,29 +188,54 @@ class OrderListTab extends GetView<MainOrderController> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: "Search by Site or Material",
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        hintText: "Search by Site or Material",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                        ),
+                      ),
+                      onChanged: (query) {
+                        controller.filterQuery.value = query.toLowerCase();
+                      },
+                    ),
                   ),
-                ),
-                onChanged: (query) {
-                  controller.filterQuery.value = query.toLowerCase();
-                },
+                  IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (selectedDate != null) {
+                        controller.filterDate?.value = selectedDate!;
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
             Expanded(
               child: Obx(() {
                 final query = controller.filterQuery.value;
+                final dateFilter = controller.filterDate?.value;
                 final filteredOrders = controller.orders.where((order) {
                   final statusMatch = order.status == 'pending' || order.status == 'approved';
                   final siteMatch = order.siteName.toLowerCase().contains(query);
                   final materialMatch = order.materialName.toLowerCase().contains(query);
-                  return statusMatch && (siteMatch || materialMatch);
+                  final dateMatch = dateFilter == null ||
+                      (order.orderCreateDate != null &&
+                          order.orderCreateDate!.toLocal().toString().substring(0, 10) ==
+                              dateFilter.toLocal().toString().substring(0, 10));
+                  return statusMatch && (siteMatch || materialMatch) && dateMatch;
                 }).toList();
 
                 return Padding(
@@ -368,12 +394,6 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                             // const SizedBox(height: 8),
                             // Text('Site: ${order.siteName}'),
                           ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            controller.deleteOrder(controller.orders.indexOf(order));
-                          },
                         ),
                         onTap: () {
                           Get.to(() => OrderDetailsScreen(index:controller.orders.indexOf(order) ,order: order, tabType: 'returnedOrder'));
