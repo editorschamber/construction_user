@@ -20,6 +20,7 @@ class EditOrderPage extends GetView<MainOrderController> {
     String? quantity = order.quantity;
     String? siteName = order.siteName;
     String? status = order.status;
+    String? instructions = order.instructions;
     DateTime? expectedDeliveryDate = order.expectedDeliveryDate;
 
     bool? materialCheck = order.materialCheck ?? false;
@@ -106,17 +107,6 @@ class EditOrderPage extends GetView<MainOrderController> {
                     ),
                   ),
                   const SizedBox(height: 8),
-
-                  // Status
-                  TextFormField(
-                    initialValue: status,
-                    decoration: const InputDecoration(labelText: 'Status'),
-                    onChanged: (value) {
-                      status = value;
-                    },
-                  ),
-                  const SizedBox(height: 8),
-
                   // Expected Delivery Date
                   TextFormField(
                     initialValue: expectedDeliveryDate?.toString().split(' ')[0],
@@ -132,6 +122,13 @@ class EditOrderPage extends GetView<MainOrderController> {
                       if (picked != null && picked != expectedDeliveryDate) {
                         expectedDeliveryDate = picked;
                       }
+                    },
+                  ),
+                  TextFormField(
+                    initialValue: instructions,
+                    decoration: const InputDecoration(labelText: 'Instructions'),
+                    onChanged: (value) {
+                      instructions = value;
                     },
                   ),
                   const SizedBox(height: 16),
@@ -155,6 +152,7 @@ class EditOrderPage extends GetView<MainOrderController> {
                           materialCheck: materialCheck,
                           packagingCheck: packagingCheck,
                           quantityCheck: quantityCheck,
+                          instructions: instructions
                         );
 
                         controller.updateOrderById(order.id!, updatedOrder);

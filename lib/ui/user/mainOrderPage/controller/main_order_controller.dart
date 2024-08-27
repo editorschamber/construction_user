@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
@@ -34,6 +37,7 @@ class MainOrderController extends GetxController {
   File? pickedImage;
   final ImagePicker _picker = ImagePicker();
   int _orderIdCounter = 0; // ID counter for orders
+  RxBool isFullReturn = false.obs;
 
   List<Order> defaultOrders = [
     Order(
@@ -103,6 +107,8 @@ class MainOrderController extends GetxController {
     'Timber',
     'Glass',
   ];
+
+  TextEditingController partialReturnQuantityController = TextEditingController();
 
   @override
   void onInit() {
@@ -322,32 +328,151 @@ class MainOrderController extends GetxController {
     clearControllers();
   }
 
-  void returnOrder(Order oldOrder) {
-    _orderIdCounter++;
-    final order = Order(
-      id: oldOrder.id,
-      status: 'returned',
-      materialName: oldOrder.materialName,
-      supplierName: oldOrder.supplierName,
-      quantity: oldOrder.quantity,
-      siteName: oldOrder.siteName,
-      orderCreateDate: oldOrder.orderCreateDate,
-      expectedDeliveryDate: oldOrder.expectedDeliveryDate,
-      returnedQuantity: 'FULL',
-      imagePath: '',
-      reason: returnReasonController.text, // Store the return reason here
-    );
+  void returnOrder(Order oldOrder, {bool isFullReturn = true, int? partialQuantity}) async {
 
-    orders.add(order);
+    //partial return handling
+    if (!isFullReturn && partialQuantity != null) {
+      _orderIdCounter++;
 
+      String returnedQuantity = partialQuantity.toString();
+
+      final returnedOrder = Order(
+        id: _orderIdCounter.toString(),
+        status: 'returned',
+        materialName: oldOrder.materialName,
+        supplierName: oldOrder.supplierName,
+        quantity: returnedQuantity,
+        siteName: oldOrder.siteName,
+        orderCreateDate: oldOrder.orderCreateDate,
+        expectedDeliveryDate: oldOrder.expectedDeliveryDate,
+        returnedQuantity: returnedQuantity,
+        imagePath: '',
+        reason: returnReasonController.text,
+      );
+      int oldQuantity = int.parse(oldOrder.quantity);
+      int newQuantity = oldQuantity - partialQuantity;
+
+      if (newQuantity > 0) {
+        oldOrder.quantity = newQuantity.toString();
+        orders.add(returnedOrder);
+      } else {
+        oldOrder.status = 'returned';
+      }
+
+      update();
+      Get.back();
+      Timer(const Duration(seconds: 1), () {
+        Get.snackbar(
+          'Order Returned',
+          'The order is now returned',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          borderRadius: 10,
+          margin: const EdgeInsets.all(16),
+          icon: const Icon(Icons.check, color: Colors.white),
+          duration: const Duration(seconds: 3),
+          animationDuration: const Duration(milliseconds: 500),
+          barBlur: 10,
+          isDismissible: true,
+          dismissDirection: DismissDirection.horizontal,
+        );
+      });
+
+
+    }
+
+    else if (isFullReturn) {
+      oldOrder.status = 'returned';
+      Get.back();
+      update();
+      Timer(const Duration(seconds: 1), () {
+        Get.snackbar(
+          'Order Returned',
+          'The order is now returned',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          borderRadius: 10,
+          margin: const EdgeInsets.all(16),
+          icon: const Icon(Icons.check, color: Colors.white),
+          duration: const Duration(seconds: 3),
+          animationDuration: const Duration(milliseconds: 500),
+          barBlur: 10,
+          isDismissible: true,
+          dismissDirection: DismissDirection.horizontal,
+        );
+      });
+      Timer(const Duration(seconds: 1), () {
+        updater();
+        update();
+      });
+    }
+
+    update();
     saveOrders();
     saveOrderIdCounter();
     clearControllers();
   }
 
   void deleteOrder(int index) {
-    orders.removeAt(index);
-    saveOrders();
+    Get.dialog(
+      Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Confirm Delete',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              const Text('Are you sure you want to delete this order?'),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back(); // Close the dialog
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      orders.removeAt(index);
+                      saveOrders();
+                      Get.back();
+
+                      Get.snackbar(
+                        'Order Deleted',
+                        'The order has been successfully deleted.',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                        borderRadius: 10,
+                        margin: const EdgeInsets.all(16),
+                        icon: const Icon(Icons.delete, color: Colors.white),
+                        duration: const Duration(seconds: 3),
+                        animationDuration: const Duration(milliseconds: 500),
+                        barBlur: 10,
+                        isDismissible: true,
+                        dismissDirection: DismissDirection.horizontal,
+                      );
+                    },
+                    child: const Text(
+                      'Delete',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> pickImage() async {

@@ -20,7 +20,7 @@ class MainOrderPage extends GetView<MainOrderController> {
           bottom: const TabBar(
             tabs: [
               Tab(
-                child: Center(child: Text("Receive Orders", textAlign: TextAlign.center,
+                child: Center(child: Text("Received Orders", textAlign: TextAlign.center,
                 )),
               ),
               Tab(child: Center(child: Text('Order List', textAlign: TextAlign.center))),
@@ -28,8 +28,12 @@ class MainOrderPage extends GetView<MainOrderController> {
             ],
           ),
         ),
-        body: const TabBarView(
-          children: [ReceiveOrdersTab(), OrderListTab(), ReturnedOrdersTab()],
+        body: TabBarView(
+          children: [
+            ReceiveOrdersTab(),
+             OrderListTab(),
+             ReturnedOrdersTab(),
+          ],
         ),
       ),
     );
@@ -43,113 +47,65 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
   Widget build(BuildContext context) {
     controller.loadOrders();
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(() {
-              final filteredOrders = controller.orders
-                  .where((order) => order.status == 'received')
-                  .toList();
+      body: Container(
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(() {
+                final filteredOrders = controller.orders
+                    .where((order) => order.status == 'received')
+                    .toList();
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: filteredOrders.length,
-                  itemBuilder: (context, index) {
-                    final order = filteredOrders[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.green[100],
-                        border: Border.all(color: Colors.green, width: 2),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(8.0),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // if (order.imagePath.isNotEmpty)
-                            //   GestureDetector(
-                            //     onTap: () {
-                            //       showDialog(
-                            //         context: context,
-                            //         builder: (context) => Dialog(
-                            //           shape: RoundedRectangleBorder(
-                            //             borderRadius: BorderRadius.circular(16),
-                            //           ),
-                            //           child: ClipRRect(
-                            //             borderRadius: BorderRadius.circular(16),
-                            //             child: Column(
-                            //               mainAxisSize: MainAxisSize.min,
-                            //               children: [
-                            //                 Image.file(
-                            //                   File(order.imagePath),
-                            //                   fit: BoxFit.cover,
-                            //                 ),
-                            //                 SizedBox(
-                            //                   width: MediaQuery.of(context).size.width,
-                            //                   child: TextButton(
-                            //                     onPressed: () {
-                            //                       Get.back();
-                            //                     },
-                            //                     child: const Text('Close'),
-                            //                   ),
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       );
-                            //     },
-                            //     child: ClipRRect(
-                            //       borderRadius: BorderRadius.circular(12),
-                            //       child: Image.file(
-                            //         File(order.imagePath),
-                            //         width: double.infinity,
-                            //         fit: BoxFit.cover,
-                            //       ),
-                            //     ),
-                            //   ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Material: ${order.materialName}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text('Supplier: ${order.supplierName}'),
-                            // const SizedBox(height: 8),
-                            // Text('Quantity: ${order.quantity}'),
-                          ],
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: filteredOrders.length,
+                    itemBuilder: (context, index) {
+                      final order = filteredOrders[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.green[100],
+                          border: Border.all(color: Colors.green, width: 2),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            controller.deleteOrder(controller.orders.indexOf(order));
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8.0),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Material: ${order.materialName}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text('Supplier: ${order.supplierName}'),
+                            ],
+                          ),
+                          onTap: () {
+                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order),order: order, tabType: 'receiveOrder'));
                           },
                         ),
-                        onTap: () {
-                          Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order),order: order, tabType: 'receiveOrder'));
-                        },
-                      ),
-                    );
-                  },
-                ),
-              );
-            }),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Center(
-          //     child: ElevatedButton(
-          //       onPressed: () {
-          //         controller.pickImageFromCamera();
-          //       },
-          //       child: const Text('Receive Orders'),
-          //     ),
-          //   ),
-          // ),
-        ],
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -175,7 +131,7 @@ class OrderListTab extends GetView<MainOrderController> {
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -197,7 +153,7 @@ class OrderListTab extends GetView<MainOrderController> {
                         hintText: "Search by Site or Material",
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
                         ),
                       ),
@@ -216,7 +172,7 @@ class OrderListTab extends GetView<MainOrderController> {
                         lastDate: DateTime(2101),
                       );
                       if (selectedDate != null) {
-                        controller.filterDate?.value = selectedDate!;
+                        controller.filterDate.value = selectedDate!;
                       }
                     },
                   ),
@@ -282,11 +238,28 @@ class OrderListTab extends GetView<MainOrderController> {
                               Text('Supplier: ${order.supplierName}'),
                             ],
                           ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              controller.deleteOrder(controller.orders.indexOf(order));
-                            },
+                          trailing: Wrap(
+                            spacing: 8, // space between the chip and delete icon
+                            children: [
+                              Chip(
+                                label: Text(
+                                  order.status!.capitalizeFirst!,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: order.status == 'approved'
+                                    ? Colors.green
+                                    : Colors.blueAccent,
+                              ),
+                              if(order.status=='pending')
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    controller.deleteOrder(controller.orders.indexOf(order));
+                                  },
+                                ),
+                              if(order.status=='approved')
+                                const SizedBox(width: 40,)
+                            ],
                           ),
                           onTap: () {
                             Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order), order: order, tabType: 'orderList'));
@@ -307,116 +280,69 @@ class OrderListTab extends GetView<MainOrderController> {
 
 class ReturnedOrdersTab extends GetView<MainOrderController> {
   const ReturnedOrdersTab({super.key});
-
   @override
   Widget build(BuildContext context) {
     controller.loadOrders();
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Obx(() {
-              final filteredOrders = controller.orders
-                  .where((order) => order.status == 'returned')
-                  .toList();
+      body: Container(
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(() {
+                final filteredOrders = controller.orders
+                    .where((order) => order.status == 'returned')
+                    .toList();
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  itemCount: filteredOrders.length,
-                  itemBuilder: (context, index) {
-                    final order = filteredOrders[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.red[100],
-                        border: Border.all(color: Colors.red, width: 2),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(8.0),
-                        title: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // if (order.imagePath.isNotEmpty)
-                            //   GestureDetector(
-                            //     onTap: () {
-                            //       showDialog(
-                            //         context: context,
-                            //         builder: (context) => Dialog(
-                            //           shape: RoundedRectangleBorder(
-                            //             borderRadius: BorderRadius.circular(16),
-                            //           ),
-                            //           child: ClipRRect(
-                            //             borderRadius: BorderRadius.circular(16),
-                            //             child: Column(
-                            //               mainAxisSize: MainAxisSize.min,
-                            //               children: [
-                            //                 Image.file(
-                            //                   File(order.imagePath),
-                            //                   fit: BoxFit.cover,
-                            //                 ),
-                            //                 SizedBox(
-                            //                   width: MediaQuery.of(context).size.width,
-                            //                   child: TextButton(
-                            //                     onPressed: () {
-                            //                       Get.back();
-                            //                     },
-                            //                     child: const Text('Close'),
-                            //                   ),
-                            //                 ),
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       );
-                            //     },
-                            //     child: ClipRRect(
-                            //       borderRadius: BorderRadius.circular(12),
-                            //       child: Image.file(
-                            //         File(order.imagePath),
-                            //         width: double.infinity,
-                            //         fit: BoxFit.cover,
-                            //       ),
-                            //     ),
-                            //   ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Material: ${order.materialName}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text('Supplier: ${order.supplierName}'),
-                            // const SizedBox(height: 8),
-                            // Text('Quantity: ${order.quantity}'),
-                            // const SizedBox(height: 8),
-                            // Text('Returned Quantity: ${order.returnedQuantity}'),
-                            // const SizedBox(height: 8),
-                            // Text('Site: ${order.siteName}'),
-                          ],
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: filteredOrders.length,
+                    itemBuilder: (context, index) {
+                      final order = filteredOrders[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.red[100],
+                          border: Border.all(color: Colors.red, width: 2),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        onTap: () {
-                          Get.to(() => OrderDetailsScreen(index:controller.orders.indexOf(order) ,order: order, tabType: 'returnedOrder'));
-                        },
-                      ),
-                    );
-                  },
-                ),
-              );
-            }),
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Center(
-          //     child: ElevatedButton(
-          //       onPressed: () {
-          //         controller.showReturnOrderDialog();
-          //       },
-          //       child: const Text('Return Orders'),
-          //     ),
-          //   ),
-          // ),
-        ],
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(8.0),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Material: ${order.materialName}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text('Supplier: ${order.supplierName}'),
+                            ],
+                          ),
+                          onTap: () {
+                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order), order: order, tabType: 'returnedOrder'));
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

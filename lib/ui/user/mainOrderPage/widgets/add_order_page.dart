@@ -104,55 +104,23 @@ class AddOrderPage extends StatelessWidget {
                               Expanded(
                                 child: Column(
                                   children: [
-                                    TextField(
-                                      controller: input.searchController,
-                                      decoration: const InputDecoration(
-                                          hintText: 'Search Material'),
-                                      onChanged: (query) {
-                                        input.filteredMaterials.value =
-                                            orderController.materials
-                                                .where((material) => material
-                                                .toLowerCase()
-                                                .contains(query
-                                                .toLowerCase()))
-                                                .toList();
+                                    GestureDetector(
+                                      onTap: () {
+                                        _showMaterialsBottomSheet(
+                                          context,
+                                          input,
+                                          orderController.materials,
+                                        );
                                       },
+                                      child: AbsorbPointer(
+                                        child: TextField(
+                                          controller: input.searchController,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Select Material',
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    Obx(() {
-                                      return input.filteredMaterials.isNotEmpty
-                                          ? Container(
-                                        constraints: BoxConstraints(
-                                          maxHeight: 150,
-                                        ),
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: input
-                                              .filteredMaterials.length,
-                                          itemBuilder: (context, index) {
-                                            return ListTile(
-                                              title: Text(input
-                                                  .filteredMaterials[
-                                              index]
-                                                  .toString()),
-                                              onTap: () {
-                                                input.selectedMaterial
-                                                    .value =
-                                                input.filteredMaterials[
-                                                index];
-                                                input.searchController
-                                                    .text = input
-                                                    .selectedMaterial
-                                                    .value;
-                                                input
-                                                    .filteredMaterials
-                                                    .clear();
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      )
-                                          : const SizedBox();
-                                    }),
                                   ],
                                 ),
                               ),
@@ -165,6 +133,8 @@ class AddOrderPage extends StatelessWidget {
                                 ),
                             ],
                           ),
+                          const SizedBox(height: 10),
+
                           TextField(
                             controller: input.quantityController,
                             decoration:
@@ -218,6 +188,7 @@ class AddOrderPage extends StatelessWidget {
                 controller: orderController.instructionsController,
                 decoration: const InputDecoration(labelText: 'Instructions'),
               ),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   orderController.addOrder();
@@ -229,6 +200,35 @@ class AddOrderPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showMaterialsBottomSheet(BuildContext context, dynamic input, List<String> materials) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,  // Allows the bottom sheet to cover more vertical space
+      builder: (context) {
+        return DraggableScrollableSheet(
+          expand: false,  // Enables the sheet to be dragged and resized
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: materials.map((material) {
+                  return ListTile(
+                    title: Text(material),
+                    onTap: () {
+                      input.selectedMaterial.value = material;
+                      input.searchController.text = material;
+                      Get.back();                    },
+                  );
+                }).toList(),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

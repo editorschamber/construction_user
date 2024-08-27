@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/site.dart';
-
 import '../../../routes/route.dart';
 import '../allSitePlan/all_site_plans_screen.dart';
 
-class SitePlans extends GetView {
-  final List<Site> sites;
+class SitePlans extends StatelessWidget {
+  final Site? site;
 
-  const SitePlans({super.key, required this.sites});
+  const SitePlans({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
+    if (site == null) return Container(); // Handle null case
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           const Text(
             'Site Plans',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           GestureDetector(
-            onTap: () => Get.toNamed(detailsScreen, arguments: sites[1]),
+            onTap: () => Get.toNamed(detailsScreen, arguments: site),
             child: Card(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,15 +34,14 @@ class SitePlans extends GetView {
                       topRight: Radius.circular(12),
                     ),
                     child: Hero(
-                      tag: 1,
+                      tag: site!.siteName,
                       child: Image.asset(
-                        sites[1].imageUrl,
+                        site!.imageUrl,
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -52,7 +51,7 @@ class SitePlans extends GetView {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              sites[1].siteName,
+                              site!.siteName,
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
@@ -62,12 +61,12 @@ class SitePlans extends GetView {
                               children: [
                                 const Icon(Icons.maps_home_work),
                                 const SizedBox(height: 5),
-                                Text(sites[1].location),
+                                Text(site!.location),
                               ],
                             ),
                           ],
                         ),
-                        Text(sites[1].siteDetails)
+                        Text(site!.siteDetails)
                       ],
                     ),
                   )

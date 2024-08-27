@@ -26,7 +26,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: width,
             child: Column(
               children: [

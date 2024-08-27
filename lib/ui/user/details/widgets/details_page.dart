@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:site_construct/ui/user/dailyUse/dailyUsePage.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
 import '../../../../routes/route.dart';
@@ -61,13 +62,13 @@ class DetailsPage extends StatelessWidget {
             buttonText: "Labour Details",
             onTap: () => Get.toNamed(labourScreen),
           ),
-          const SizedBox(height: 15),
-          CustomButton(
-            width: width,
-            buttonColor: Colors.purple,
-            buttonText: "Material Details",
-            onTap: () => Get.toNamed(materialScreen),
-          ),
+          // const SizedBox(height: 15),
+          // CustomButton(
+          //   width: width,
+          //   buttonColor: Colors.purple,
+          //   buttonText: "Material Details",
+          //   onTap: () => Get.toNamed(materialScreen),
+          // ),
           const SizedBox(height: 15),
           CustomButton(
             width: width,
@@ -75,6 +76,14 @@ class DetailsPage extends StatelessWidget {
             buttonText: "Order",
             // onTap: () => Get.toNamed(orderScreen),
             onTap: () => Get.toNamed(mainOrderScreen),
+          ),
+          const SizedBox(height: 15),
+          CustomButton(
+            width: width,
+            buttonColor: Colors.purple,
+            buttonText: "Daily Usage",
+            // onTap: () => Get.toNamed(orderScreen),
+            onTap: () => Get.to(DailyUsagePage(siteName: site.siteName!)),
           ),
         ],
       ),

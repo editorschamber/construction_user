@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/ui/user/labour/labour_screen.dart';
+import 'package:site_construct/core/data/site.dart';
 
 class SiteTeam extends StatelessWidget {
-  const SiteTeam({super.key});
+  final Site? site;
+
+  const SiteTeam({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
+    if (site == null) return Container(); // Handle null case
+
+    // Dummy team data based on the selected site
+    final teamData = {
+      'Site 1': ['Plumber', 'Electrician', 'Engineer'],
+      'Site 2': ['Carpenter', 'Painter', 'Engineer'],
+      'Site 3': ['Plumber', 'Mason', 'Engineer'],
+    };
+
+    final siteTeam = teamData[site!.siteName] ?? [];
+
     return Column(
       children: [
         Row(
@@ -16,23 +29,18 @@ class SiteTeam extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () {
-                // Navigate to view all screen
+                // Get.to(ViewAllTeamScreen());
               },
-              child: TextButton(onPressed: (){
-                Get.to(LabourScreen());
-              },child: Text("View All"),),
+              child: const Text('View All'),
             ),
           ],
         ),
-        const SingleChildScrollView(
+        SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [
-              TeamMember(role: 'Plumber'),
-              TeamMember(role: 'Electrician'),
-              TeamMember(role: 'Engineer'),
-              TeamMember(role: 'Engineer'),
-            ],
+            children: siteTeam.map((role) {
+              return TeamMember(role: role);
+            }).toList(),
           ),
         ),
       ],

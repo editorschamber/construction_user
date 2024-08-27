@@ -8,12 +8,12 @@ import '../controller/main_order_controller.dart';
 class ReceiveOrderDialog extends GetView<MainOrderController> {
   final Order order;
 
-  ReceiveOrderDialog({required this.order, super.key});
+  const ReceiveOrderDialog({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Received Order Details'),
+      title: const Text('Confirm Order Details'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

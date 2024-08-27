@@ -1,37 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/data/staticData.dart';
 
-class AvailableStock extends GetView {
-  const AvailableStock({super.key});
+class AvailableStock extends StatelessWidget {
+  final Site? site;
+
+  const AvailableStock({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Available Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            TextButton(
-              onPressed: () {
-                Get.to(ViewAllScreen());
-              },
-              child: const Text('View All'),
-            ),
-          ],
-        ),
-        const SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
+    if (site == null) return Container(); // Handle null case
+
+    return Obx(() {
+      final siteStock = StaticData.siteMaterials[site!.siteName] ?? [];
+
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              StockCard(title: 'Total Bag', quantity: '42', icon: Icons.shopping_bag),
-              StockCard(title: 'Total Steel', quantity: '3100/kg', icon: Icons.build),
-              StockCard(title: 'Total Brick', quantity: '3100', icon: Icons.house),
+              const Text('Available Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              TextButton(
+                onPressed: () {
+                  Get.to(ViewAllScreen(siteName: site!.siteName));
+                },
+                child: const Text('View All'),
+              ),
             ],
           ),
-        ),
-      ],
-    );
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: siteStock.map((material) {
+                return StockCard(
+                  title: material.name,
+                  quantity: material.quantity.toString(),
+                  icon: Icons.inventory,
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -66,23 +78,24 @@ class StockCard extends StatelessWidget {
 }
 
 class ViewAllScreen extends StatelessWidget {
+  final String? siteName;
+
+  const ViewAllScreen({super.key, required this.siteName});
+
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> stockDetails = [
-      {'title': 'Total Bag', 'quantity': '42', 'icon': Icons.shopping_bag},
-      {'title': 'Total Steel', 'quantity': '3100/kg', 'icon': Icons.build},
-      {'title': 'Total Brick', 'quantity': '3100', 'icon': Icons.house},
-    ];
+    final siteStock = StaticData.siteMaterials[siteName] ?? [];
 
     return Scaffold(
       appBar: AppBar(title: Text('View All Stock')),
       body: ListView.builder(
-        itemCount: stockDetails.length,
+        itemCount: siteStock.length,
         itemBuilder: (context, index) {
+          final material = siteStock[index];
           return StockCard(
-            title: stockDetails[index]['title']!,
-            quantity: stockDetails[index]['quantity']!,
-            icon: stockDetails[index]['icon']!,
+            title: material.name,
+            quantity: material.quantity.toString(),
+            icon: Icons.inventory,
           );
         },
       ),
