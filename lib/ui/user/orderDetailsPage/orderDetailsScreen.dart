@@ -107,15 +107,15 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                             data: ThemeData(
                               checkboxTheme: CheckboxThemeData(
                                 fillColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                    if (states.contains(WidgetState.selected)) {
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    if (states.contains(MaterialState.selected)) {
                                       return Colors.green;
                                     }
                                     return Colors.grey;
                                   },
                                 ),
-                                checkColor: WidgetStateProperty.all(
+                                checkColor: MaterialStateProperty.all(
                                     Colors.white), // Checkmark color
                               ),
                             ),
@@ -133,9 +133,9 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                             data: ThemeData(
                               checkboxTheme: CheckboxThemeData(
                                 fillColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                    if (states.contains(WidgetState.selected)) {
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    if (states.contains(MaterialState.selected)) {
                                       return Colors
                                           .green; // Background color when checked
                                     }
@@ -143,7 +143,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                                         .grey; // Default color when unchecked
                                   },
                                 ),
-                                checkColor: WidgetStateProperty.all(
+                                checkColor: MaterialStateProperty.all(
                                     Colors.white), // Checkmark color
                               ),
                             ),
@@ -161,9 +161,9 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                             data: ThemeData(
                               checkboxTheme: CheckboxThemeData(
                                 fillColor:
-                                    WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                    if (states.contains(WidgetState.selected)) {
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    if (states.contains(MaterialState.selected)) {
                                       return Colors
                                           .green; // Background color when checked
                                     }
@@ -171,7 +171,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                                         .grey; // Default color when unchecked
                                   },
                                 ),
-                                checkColor: WidgetStateProperty.all(
+                                checkColor: MaterialStateProperty.all(
                                     Colors.white), // Checkmark color
                               ),
                             ),

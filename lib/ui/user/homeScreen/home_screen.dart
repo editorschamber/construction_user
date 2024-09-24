@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
+import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
+import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
 import '../availableStock/available_stock.dart';
 import '../profile/controller/profile_controller.dart';
 import '../sitePlans/site_plans.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ProfileController profileController = Get.find<ProfileController>();
+  final MainOrderController orderController = Get.find<MainOrderController>();
 
   final List<Site> sites = [
     Site(
@@ -99,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
 
                 // Available Stock widget updated with selected site
-                AvailableStock(site: selectedSite),
+                AvailableStock(site: selectedSite, orderController: orderController),
 
                 const SizedBox(height: 20),
 

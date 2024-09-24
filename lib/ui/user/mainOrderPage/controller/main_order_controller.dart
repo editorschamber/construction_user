@@ -15,6 +15,13 @@ import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../widgets/return_order_dialog.dart';
 
+class MaterialQuantity {
+  String materialName;
+  double quantity;
+
+  MaterialQuantity({required this.materialName, required this.quantity});
+}
+
 class MainOrderController extends GetxController {
   var filterQuery = ''.obs;
   final instructionsController = TextEditingController();
@@ -135,6 +142,39 @@ class MainOrderController extends GetxController {
 
       return (siteMatch || materialMatch) && statusMatch && dateMatch;
     }).toList();
+  }
+
+  // Lists
+
+
+  List<MaterialQuantity> get filteredReceivedOrders {
+    // Create a map to store the merged quantities for received orders
+    Map<String, double> quantitiesMap = {};
+
+    for (var order in orders) {
+      // Only consider orders with status 'received'
+      if (order.status == 'received') {
+        // Parse the quantity to a double value. Handle any potential parsing errors.
+        double quantity = double.tryParse(order.quantity) ?? 0;
+
+        // If the material name is already in the map, add the quantity, else initialize with the current quantity.
+        if (quantitiesMap.containsKey(order.materialName)) {
+          quantitiesMap[order.materialName] = quantitiesMap[order.materialName]! + quantity;
+        } else {
+          quantitiesMap[order.materialName] = quantity;
+        }
+      }
+    }
+
+    // Convert the map into a list of MaterialQuantity objects
+    List<MaterialQuantity> mergedQuantities = quantitiesMap.entries.map((entry) {
+      return MaterialQuantity(
+        materialName: entry.key,
+        quantity: entry.value,
+      );
+    }).toList();
+
+    return mergedQuantities;
   }
 
   void addOrderInput() {
@@ -294,6 +334,11 @@ class MainOrderController extends GetxController {
       bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
       bool hasQuantity = input.quantityController.text.isNotEmpty;
       if (hasMaterial && hasQuantity) {
+
+        if(int.parse(input.quantityController.text) * 100 < 10000){
+          status = "approved";
+        }
+
         _orderIdCounter++;
         final order = Order(
           id: _orderIdCounter.toString(),
@@ -503,6 +548,7 @@ class MainOrderController extends GetxController {
     selectedSite.value = '';
     orderInputs.clear();
     qualityChecks.updateAll((key, value) => false);
+    instructionsController.clear();
     addOrderInput();
   }
 }

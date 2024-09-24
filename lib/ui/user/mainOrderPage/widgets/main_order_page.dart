@@ -14,6 +14,7 @@ class MainOrderPage extends GetView<MainOrderController> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
+      initialIndex: 1,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Orders'),
@@ -88,6 +89,11 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Price: ${(int.parse(order.quantity) * 100)}',
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
@@ -235,6 +241,11 @@ class OrderListTab extends GetView<MainOrderController> {
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
+                              Text(
+                                'Price: ${(int.parse(order.quantity) * 100)}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                             ],
                           ),
@@ -325,6 +336,11 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Price: ${(int.parse(order.quantity) * 100)}',
                                 style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),

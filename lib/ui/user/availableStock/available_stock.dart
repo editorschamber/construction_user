@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/core/data/staticData.dart';
+import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 
 class AvailableStock extends StatelessWidget {
   final Site? site;
+  final MainOrderController orderController;
 
-  const AvailableStock({super.key, required this.site});
+  const AvailableStock({super.key, required this.site, required this.orderController});
 
   @override
   Widget build(BuildContext context) {
     if (site == null) return Container(); // Handle null case
 
     return Obx(() {
-      final siteStock = StaticData.siteMaterials[site!.siteName] ?? [];
+      final siteStock = orderController.filteredReceivedOrders ?? [];
 
       return Column(
         children: [
@@ -34,7 +36,7 @@ class AvailableStock extends StatelessWidget {
             child: Row(
               children: siteStock.map((material) {
                 return StockCard(
-                  title: material.name,
+                  title: material.materialName,
                   quantity: material.quantity.toString(),
                   icon: Icons.inventory,
                 );

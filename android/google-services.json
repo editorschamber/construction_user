@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "776535878596",
+    "project_id": "construction-site-admin",
+    "storage_bucket": "construction-site-admin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776535878596:android:fa1bbf53f8189cd68bd291",
+        "android_client_info": {
+          "package_name": "com.example.siteadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNHZl_spdYTpUo3-3aTGwnQf9MgjEmEp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
