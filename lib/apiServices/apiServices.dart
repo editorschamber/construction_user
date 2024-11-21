@@ -29,7 +29,7 @@ class APIServices {
     }
   }
 
-  Future<dynamic> PostApi(String endpoint,
+  Future<dynamic> postApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
     // String authToken = APIStrings.authToken;
@@ -59,7 +59,7 @@ class APIServices {
     }
   }
 
-  Future<dynamic> DeleteApi(String endpoint,
+  Future<dynamic> deleteApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
     // String? authToken = '${APIStrings.authToken}';

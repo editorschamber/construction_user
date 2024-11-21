@@ -53,7 +53,7 @@ List<GetPage<dynamic>> routes = [
       name: loginScreen,
       page: () => const LoginScreen(),
       binding: LoginBinding()),
-  GetPage(name: loginPage, page: () => const LoginPage()),
+  GetPage(name: loginPage, page: () =>  LoginPage()),
   GetPage(
       name: otpScreen, page: () => const OtpScreen(), binding: OtpBinding()),
   GetPage(name: otpPage, page: () => const OtpPage()),

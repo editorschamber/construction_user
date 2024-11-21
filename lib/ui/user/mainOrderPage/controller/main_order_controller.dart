@@ -13,6 +13,7 @@ import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
+import '../../../../apiServices/stockService.dart';
 import '../widgets/return_order_dialog.dart';
 
 class MaterialQuantity {
@@ -45,6 +46,7 @@ class MainOrderController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   int _orderIdCounter = 0; // ID counter for orders
   RxBool isFullReturn = false.obs;
+  final stockService = StockService();
 
   List<Order> defaultOrders = [
     Order(
@@ -122,7 +124,7 @@ class MainOrderController extends GetxController {
     super.onInit();
     loadOrders();
     loadOrderIdCounter();
-    orders.addAll(defaultOrders);
+    // orders.addAll(defaultOrders);
     loadSites();
     materials.clear();
     materials.addAll(defaultMaterials); // Add default materials to the list
@@ -145,8 +147,6 @@ class MainOrderController extends GetxController {
   }
 
   // Lists
-
-
   List<MaterialQuantity> get filteredReceivedOrders {
     // Create a map to store the merged quantities for received orders
     Map<String, double> quantitiesMap = {};
@@ -210,7 +210,7 @@ class MainOrderController extends GetxController {
   void updateOrderById(String id, Order updatedOrder) {
     int index = orders.indexWhere((order) => order.id == id);
     if (index != -1) {
-      orders[index] = updatedOrder;
+      orders.value[index] = updatedOrder;
       saveOrders();
       loadOrders();
     } else {
@@ -237,26 +237,39 @@ class MainOrderController extends GetxController {
   }
 
   void partialReturnOrder(int index, String quantity) {
-    orders[index].returnedQuantity += quantity;
-    orders[index].status = 'returned';
+    orders.value[index].returnedQuantity += quantity;
+    orders.value[index].status = 'returned';
   }
 
   void fullReturnOrder(int index) {
-    orders[index].returnedQuantity = orders[index].quantity;
-    orders[index].quantity = 'Full';
-    orders[index].status = 'returned';
+    orders.value[index].returnedQuantity = orders.value[index].quantity;
+    orders.value[index].quantity = 'Full';
+    orders.value[index].status = 'returned';
   }
 
   void loadOrders() {
-    List<Order>? storedOrders = (box.read<List>('orders') as List?)
-        ?.map((orderJson) => Order.fromJson(orderJson))
-        .toList();
-    if (storedOrders?.length == 0) {
-      orders.addAll(defaultOrders);
+    List<Order>? storedOrders = retrieveOrders();
+    print(storedOrders);
+    print(box.read<List>('orders'));
+    if (storedOrders.isEmpty) {
+      orders.value = defaultOrders;
       saveOrders();
-      loadOrders();
+      // loadOrders();
+      update();
+    }else{
+      orders.value = storedOrders.fold(<String?, Order>{}, (Map<String?, Order> acc, order) {
+        if (acc.containsKey(order.id)) {
+          // If an order with the same id exists, merge them (e.g., sum quantities)
+          acc[order.id] = acc[order.id]!.merge(order);
+        } else {
+          acc[order.id] = order;
+        }
+        return acc;
+      }).values.toList();;
       update();
     }
+
+    // saveOrders();
   }
 
   void saveOrders() {
@@ -328,6 +341,9 @@ class MainOrderController extends GetxController {
   //     const ReturnOrderDialog(),
   //   );
   // }
+
+
+
 
   void addOrder({String status = 'pending'}) {
     for (final input in orderInputs) {
@@ -535,11 +551,23 @@ class MainOrderController extends GetxController {
   void updateOrderMaterial(String orderId, String newMaterial) {
     int index = orders.indexWhere((order) => order.id == orderId);
     if (index != -1) {
-      orders[index].materialName = newMaterial;
+      orders.value[index].materialName = newMaterial;
       saveOrders(); // Save the updated orders list
       update(); // Notify the UI to refresh
     } else {
       Get.snackbar("Order Not Found", "No order found with ID $orderId");
+    }
+  }
+
+  void markAsReceived(Order order) {
+    int index = orders.indexWhere((value) => value.id == order.id);
+    print(index);
+    if (index != -1) {
+      orders.value[index] = order;
+      saveOrders(); // Save the updated orders list
+      update(); // Notify the UI to refresh
+    } else {
+      Get.snackbar("Error", "Something went wrong");
     }
   }
 
@@ -550,6 +578,12 @@ class MainOrderController extends GetxController {
     qualityChecks.updateAll((key, value) => false);
     instructionsController.clear();
     addOrderInput();
+  }
+}
+
+extension on Order {
+  Order merge(Order order) {
+    return order;
   }
 }
 

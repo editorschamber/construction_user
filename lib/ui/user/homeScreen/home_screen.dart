@@ -4,6 +4,7 @@ import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
+import 'package:site_construct/ui/user/profile/profile_screen.dart';
 import '../availableStock/available_stock.dart';
 import '../profile/controller/profile_controller.dart';
 import '../sitePlans/site_plans.dart';
@@ -68,9 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const CircleAvatar(
-                      backgroundImage: AssetImage('assets/img/person.jpg'),
-                      radius: 20,
+                    GestureDetector(
+                      onTap: (){
+                        Get.to(ProfileScreen());
+                      },
+                      child: const CircleAvatar(
+                        backgroundImage: AssetImage('assets/img/person.jpg'),
+                        radius: 20,
+                      ),
                     ),
                     Center(
                       child: DropdownButton<Site>(

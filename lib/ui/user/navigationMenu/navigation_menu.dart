@@ -26,8 +26,8 @@ class NavigationMenu extends StatelessWidget {
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: "Home"),
             NavigationDestination(icon: Icon(Icons.shopping_bag_rounded), label: "Orders"),
-            NavigationDestination(
-                icon: Icon(Icons.settings), label: "Settings"),
+            // NavigationDestination(
+            //     icon: Icon(Icons.settings), label: "Settings"),
           ],
         ),
       ),
@@ -39,11 +39,11 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [ HomeScreen(), const MainOrderScreen(), const ProfileScreen()];
+  final screens = [ HomeScreen(), const MainOrderScreen()];
 
   NavigationController() {
     AddNewSiteBinding().dependencies();
     MainOrderBinding().dependencies();
-    ProfileBinding().dependencies();
+    // ProfileBinding().dependencies();
   }
 }

@@ -16,11 +16,11 @@ class LoginScreen extends GetView<LoginController> {
         child: Container(
           width: width,
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-          child: const Column(
+          child:  Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              LoginPage(),
+               LoginPage(),
             ],
           ),
         ),

@@ -76,8 +76,9 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
         ),
         TextButton(
           onPressed: () {
-            Get.back(result: true); // Close the dialog and return true
-            controller.addOrder(status: 'received');
+            Get.back(result: true);
+            order.status = 'received';
+            controller.markAsReceived(order);
           },
           child: const Text('Receive Order'),
         ),

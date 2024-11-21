@@ -25,7 +25,7 @@ class AvailableStock extends StatelessWidget {
               const Text('Available Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               TextButton(
                 onPressed: () {
-                  Get.to(ViewAllScreen(siteName: site!.siteName));
+                  Get.to(ViewAllScreen(siteName: site!.siteName, orderController: orderController ));
                 },
                 child: const Text('View All'),
               ),
@@ -81,12 +81,13 @@ class StockCard extends StatelessWidget {
 
 class ViewAllScreen extends StatelessWidget {
   final String? siteName;
+  final MainOrderController orderController;
 
-  const ViewAllScreen({super.key, required this.siteName});
+  const ViewAllScreen({super.key, required this.siteName, required this.orderController});
 
   @override
   Widget build(BuildContext context) {
-    final siteStock = StaticData.siteMaterials[siteName] ?? [];
+    final siteStock = orderController.filteredReceivedOrders ?? [];
 
     return Scaffold(
       appBar: AppBar(title: Text('View All Stock')),
@@ -95,7 +96,7 @@ class ViewAllScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final material = siteStock[index];
           return StockCard(
-            title: material.name,
+            title: material.materialName,
             quantity: material.quantity.toString(),
             icon: Icons.inventory,
           );

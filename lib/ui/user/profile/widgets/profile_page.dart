@@ -74,14 +74,7 @@ class ProfilePage extends GetView<ProfileController> {
           SizedBox(
             height: height * 0.01,
           ),
-          const Text("Site: ").customStyle(),
-          SizedBox(
-            height: height * 0.006,
-          ),
-          CustomTextField(controller: controller.siteController),
-          SizedBox(
-            height: height * 0.02,
-          ),
+
           Center(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(

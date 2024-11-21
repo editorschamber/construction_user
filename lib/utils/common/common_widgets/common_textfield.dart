@@ -1,18 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomEnterNumber extends StatelessWidget {
+class CustomTextfield extends StatelessWidget {
   final String? hintText;
   final IconData? icon;
   final double? width;
-  final TextEditingController? countryCode;
-  final TextEditingController? numberController;
+  final TextEditingController? password;
 
-  const CustomEnterNumber({
+
+  const CustomTextfield({
     super.key,
     this.hintText,
     this.icon,
-    this.countryCode,
-    this.numberController,
+    this.password,
     this.width,
   });
 
@@ -21,7 +21,7 @@ class CustomEnterNumber extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 70,
+          width: 320,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.grey,
@@ -31,16 +31,6 @@ class CustomEnterNumber extends StatelessWidget {
               bottomLeft: Radius.circular(14),
             ),
           ),
-          child: TextField(
-            controller: countryCode,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-          ),
-        ),
-        Expanded(
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
@@ -52,11 +42,11 @@ class CustomEnterNumber extends StatelessWidget {
               ),
             ),
             child: TextField(
-              controller: numberController,
-              keyboardType: TextInputType.phone,
+              controller: password,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                hintText: "Enter Your Number",
+                hintText: "Enter Your Password",
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
                 ),
@@ -66,10 +56,8 @@ class CustomEnterNumber extends StatelessWidget {
             ),
           ),
         ),
+
       ],
     );
   }
 }
-
-
-

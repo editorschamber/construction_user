@@ -5,8 +5,15 @@ import 'package:site_construct/ui/user/login/controller/login_controller.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_enter_number.dart';
 
+import '../../../../utils/common/common_widgets/common_textfield.dart';
+
 class LoginPage extends GetView<LoginController> {
-  const LoginPage({super.key});
+   LoginPage({super.key});
+
+
+  final TextEditingController phoneController = TextEditingController();
+  final authController = Get.find<LoginController>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,29 +26,37 @@ class LoginPage extends GetView<LoginController> {
           "Login",
           style: TextStyle(color: CustomColor.textColor, fontSize: 33),
         ),
+
         SizedBox(
-          height: height * 0.01,
+          height: height * 0.04,
         ),
         const Text(
-          "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum.",
+          "Enter Your Mobile Number",
           style: TextStyle(color: CustomColor.lightGrey, fontSize: 14),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
+        ),
+
+        CustomEnterNumber(
+          countryCode: controller.countryCode,
+          numberController: authController.numberController,
+        ),
+
+        const Text(
+          "Enter Your Passowrd",
+          style: TextStyle(color: CustomColor.lightGrey, fontSize: 14),
+          textAlign: TextAlign.start,
+        ),
+        CustomTextfield(
+            password: authController.passwordController,
         ),
         SizedBox(
           height: height * 0.07,
         ),
-        CustomEnterNumber(
-          countryCode: controller.countryCode,
-          numberController: controller.numberController,
-        ),
-        SizedBox(
-          height: height * 0.05,
-        ),
         CustomButton(
           buttonColor: CustomColor.buttonColor,
-          buttonText: "Send OTP",
+          buttonText: "verify",
           onTap: () {
-            controller.verifyPhoneNumber();
+            authController.verifyPhoneNumber();
           },
         )
       ],

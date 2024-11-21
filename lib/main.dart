@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:site_construct/core/service/storageService.dart';
 import 'package:site_construct/firebase_options.dart';
 import 'package:site_construct/routes/route.dart';
+import 'package:site_construct/ui/user/login/binding/login_binding.dart';
+import 'package:site_construct/ui/user/login/login_screen.dart';
 import 'package:site_construct/ui/user/navigationMenu/navigation_menu.dart';
 
 void main() async {
@@ -12,11 +16,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GetStorage.init();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -28,7 +35,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: routes,
       // home: NavigationMenu(),
-      home: NavigationMenu(),
+      home: StorageService.isLoggedIn() ? NavigationMenu() : LoginScreen(),
+      initialBinding: _firebaseAuth.currentUser == null ? LoginBinding() : null,
       // initialBinding: ProfileBinding(),
 
     );

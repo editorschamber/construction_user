@@ -46,7 +46,7 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.loadOrders();
+    // controller.loadOrders();
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.all(8.0),
@@ -122,7 +122,7 @@ class OrderListTab extends GetView<MainOrderController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.loadOrders();
+    // controller.loadOrders();
     final TextEditingController searchController = TextEditingController();
     DateTime? selectedDate;
 
@@ -293,7 +293,7 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
   const ReturnedOrdersTab({super.key});
   @override
   Widget build(BuildContext context) {
-    controller.loadOrders();
+    // controller.loadOrders();
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.all(8.0),
