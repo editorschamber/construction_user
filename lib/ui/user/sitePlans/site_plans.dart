@@ -1,11 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
 import '../../../routes/route.dart';
 import '../allSitePlan/all_site_plans_screen.dart';
 
 class SitePlans extends StatelessWidget {
-  final Site? site;
+  final Sites? site;
 
   const SitePlans({super.key, required this.site});
 
@@ -34,11 +35,20 @@ class SitePlans extends StatelessWidget {
                       topRight: Radius.circular(12),
                     ),
                     child: Hero(
-                      tag: site!.siteName,
-                      child: Image.asset(
-                        site!.imageUrl,
+                      tag: site!.siteName ?? "",
+                      child: CachedNetworkImage(
+                        imageUrl: site!.imageUrl ?? "",
                         fit: BoxFit.cover,
                         width: double.infinity,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Center(
+                          child: Icon(
+                            Icons.broken_image,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -51,7 +61,7 @@ class SitePlans extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              site!.siteName,
+                              site!.siteName ?? "",
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
@@ -61,12 +71,12 @@ class SitePlans extends StatelessWidget {
                               children: [
                                 const Icon(Icons.maps_home_work),
                                 const SizedBox(height: 5),
-                                Text(site!.location),
+                                Text(site!.location ?? ""),
                               ],
                             ),
                           ],
                         ),
-                        Text(site!.siteDetails)
+                        // Text(site!.s ?? "")
                       ],
                     ),
                   )

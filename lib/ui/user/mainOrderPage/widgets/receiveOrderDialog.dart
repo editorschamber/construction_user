@@ -41,7 +41,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Material Quality'),
                   value: controller.qualityChecks['materialQuality'],
                   onChanged: (bool? value) {
-                    order.materialCheck = value;
+                    order.qualityCheck = value;
                     controller.qualityChecks['materialQuality'] = value ?? false;
                   },
                 ),
@@ -57,7 +57,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Packaging'),
                   value: controller.qualityChecks['packaging'],
                   onChanged: (bool? value) {
-                    order.packagingCheck = value;
+                    order.qualityCheck = value;
                     controller.qualityChecks['packaging'] = value ?? false;
                   },
                 ),

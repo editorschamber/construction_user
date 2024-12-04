@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
 import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
+import 'package:site_construct/ui/user/homeScreen/homebinding.dart';
 import 'package:site_construct/ui/user/mainOrderPage/binding/order_binding.dart';
 import 'package:site_construct/ui/user/mainOrderPage/main_order_screen.dart';
 import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
@@ -25,7 +26,8 @@ class NavigationMenu extends StatelessWidget {
               controller.selectedIndex.value = index,
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-            NavigationDestination(icon: Icon(Icons.shopping_bag_rounded), label: "Orders"),
+            NavigationDestination(
+                icon: Icon(Icons.shopping_bag_rounded), label: "Orders"),
             // NavigationDestination(
             //     icon: Icon(Icons.settings), label: "Settings"),
           ],
@@ -39,11 +41,11 @@ class NavigationMenu extends StatelessWidget {
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
-  final screens = [ HomeScreen(), const MainOrderScreen()];
+  final screens = [HomeScreen(), const MainOrderScreen()];
 
   NavigationController() {
+    HomeBinding().dependencies();
     AddNewSiteBinding().dependencies();
     MainOrderBinding().dependencies();
-    // ProfileBinding().dependencies();
   }
 }

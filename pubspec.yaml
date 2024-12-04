@@ -50,6 +50,7 @@ dependencies:
   permission_handler:
   intl:
   http:
+  cached_network_image: any
 
 dev_dependencies:
   flutter_test:

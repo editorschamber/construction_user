@@ -10,18 +10,19 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:site_construct/apiServices/apiServices.dart';
+import 'package:site_construct/apiServices/homeService.dart';
+import 'package:site_construct/apiServices/orderService.dart';
+import 'package:site_construct/apiServices/supplierService.dart';
 import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/models/matarialData.dart';
+import 'package:site_construct/core/models/supplierData.dart';
+import 'package:site_construct/core/notifiers/selectedSiteNotifier.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../../../../apiServices/stockService.dart';
+import '../../../../core/data/sitesModel.dart';
+import '../../../../core/models/materialQuantity.dart';
 import '../widgets/return_order_dialog.dart';
-
-class MaterialQuantity {
-  String materialName;
-  double quantity;
-
-  MaterialQuantity({required this.materialName, required this.quantity});
-}
 
 class MainOrderController extends GetxController {
   var filterQuery = ''.obs;
@@ -29,14 +30,13 @@ class MainOrderController extends GetxController {
   final returnReasonController = TextEditingController();
   Rx<DateTime?> filterDate = Rx<DateTime?>(null);
   final box = GetStorage();
-  var orders = <Order>[].obs;
-  var selectedSupplier = ''.obs;
-  var selectedSite = ''.obs;
+  RxList<Order> orders = <Order>[].obs;
+  Rx<SupplierData?> selectedSupplier = Rx<SupplierData?>(null);
+  Rx<SitesModel> sites = SitesModel().obs;
+  Rx<Sites>? selectedSite = Sites().obs;
   var filterSelectedSite = ''.obs;
-  var orderInputs =
-      <OrderInput>[].obs;
-  var sites = <Site>[].obs;
-  var materials = <String>[].obs;
+  var orderInputs = <OrderInput>[].obs;
+  RxList<Materials> materials = <Materials>[].obs;
   var qualityChecks = <String, bool>{
     'materialQuality': false,
     'quantityAccuracy': false,
@@ -47,134 +47,103 @@ class MainOrderController extends GetxController {
   int _orderIdCounter = 0; // ID counter for orders
   RxBool isFullReturn = false.obs;
   final stockService = StockService();
+  final OrderService orderService = OrderService();
+  final HomeService homeService = HomeService();
+
+  RxList<SupplierData> suppliers = <SupplierData>[].obs;
 
   List<Order> defaultOrders = [
-    Order(
-        id: '1',
-        materialName: "Bricks",
-        supplierName: 'Hinduja',
-        quantity: '100',
-        imagePath: '',
-        siteName: "Site 1",
-        returnedQuantity: '',
-        status: 'pending',
-        orderCreateDate: DateTime.now().subtract(Duration(days: 10)),
-        expectedDeliveryDate: DateTime.now(),
-        instructions: 'Wrap the bricks in plastic, leave at door',
-        reason: 'Quality is not good'),
-    Order(
-        id: '2',
-        materialName: "Bricks",
-        supplierName: 'Hinduja',
-        quantity: '100',
-        imagePath: '',
-        siteName: "Site 1",
-        returnedQuantity: '',
-        status: 'approved',
-        orderCreateDate: DateTime.now().subtract(Duration(days: 11)),
-        expectedDeliveryDate: DateTime.now(),
-        instructions: 'Wrap the bricks in plastic, leave at door',
-        reason: 'Quality is not good'),
-    Order(
-        id: '3',
-        materialName: "Sand",
-        supplierName: 'Malviya',
-        quantity: '10',
-        imagePath: '',
-        siteName: "Site 2",
-        returnedQuantity: '5',
-        status: 'received',
-        orderCreateDate: DateTime.now(),
-        expectedDeliveryDate: DateTime.now(),
-        instructions: 'Wrap the bricks in plastic, leave at door',
-        reason: 'Quality is not good'),
-    Order(
-        id: '4',
-        materialName: "Cement",
-        supplierName: 'Malviya',
-        quantity: '10',
-        imagePath: '',
-        siteName: "Site 2",
-        returnedQuantity: '',
-        status: 'returned',
-        orderCreateDate: DateTime.now(),
-        expectedDeliveryDate: DateTime.now().add(Duration(days: 5)),
-        instructions: 'Wrap the bricks in plastic, leave at door',
-        reason: 'Quality is not good'),
+    // Order(
+    //     id: '1',
+    //     materialName: "Bricks",
+    //     supplierName: 'Hinduja',
+    //     quantity: '100',
+    //     imagePath: '',
+    //     siteName: "Site 1",
+    //     returnedQuantity: '',
+    //     status: 'pending',
+    //     orderCreateDate: DateTime.now().subtract(Duration(days: 10)),
+    //     expectedDeliveryDate: DateTime.now(),
+    //     instructions: 'Wrap the bricks in plastic, leave at door',
+    //     reason: 'Quality is not good'),
+    // Order(
+    //     id: '2',
+    //     materialName: "Bricks",
+    //     supplierName: 'Hinduja',
+    //     quantity: '100',
+    //     imagePath: '',
+    //     siteName: "Site 1",
+    //     returnedQuantity: '',
+    //     status: 'approved',
+    //     orderCreateDate: DateTime.now().subtract(Duration(days: 11)),
+    //     expectedDeliveryDate: DateTime.now(),
+    //     instructions: 'Wrap the bricks in plastic, leave at door',
+    //     reason: 'Quality is not good'),
+    // Order(
+    //     id: '3',
+    //     materialName: "Sand",
+    //     supplierName: 'Malviya',
+    //     quantity: '10',
+    //     imagePath: '',
+    //     siteName: "Site 2",
+    //     returnedQuantity: '5',
+    //     status: 'received',
+    //     orderCreateDate: DateTime.now(),
+    //     expectedDeliveryDate: DateTime.now(),
+    //     instructions: 'Wrap the bricks in plastic, leave at door',
+    //     reason: 'Quality is not good'),
+    // Order(
+    //     id: '4',
+    //     materialName: "Cement",
+    //     supplierName: 'Malviya',
+    //     quantity: '10',
+    //     imagePath: '',
+    //     siteName: "Site 2",
+    //     returnedQuantity: '',
+    //     status: 'returned',
+    //     orderCreateDate: DateTime.now(),
+    //     expectedDeliveryDate: DateTime.now().add(Duration(days: 5)),
+    //     instructions: 'Wrap the bricks in plastic, leave at door',
+    //     reason: 'Quality is not good'),
   ];
 
-  // List of random 10 construction materials
-  List<String> defaultMaterials = [
-    'Cement',
-    'Steel',
-    'Bricks',
-    'Gravel',
-    'Sand',
-    'Concrete',
-    'Lime',
-    'Clay',
-    'Timber',
-    'Glass',
-  ];
+  TextEditingController partialReturnQuantityController =
+      TextEditingController();
 
-  TextEditingController partialReturnQuantityController = TextEditingController();
+  SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
+  SupplierService supplierService = SupplierService();
 
   @override
   void onInit() {
-    super.onInit();
-    loadOrders();
-    loadOrderIdCounter();
-    // orders.addAll(defaultOrders);
+    siteNotifier.addListener(() {
+      if (siteNotifier.value != null) {
+        loadOrders();
+      }
+    });
+
+    // loadOrders();
     loadSites();
-    materials.clear();
-    materials.addAll(defaultMaterials); // Add default materials to the list
-    addOrderInput(); // Initialize with one set of input fields
+    getData();
     update();
+
+    super.onInit();
   }
 
   List<Order> get filteredOrders {
     final query = filterQuery.value.toLowerCase();
 
     return orders.where((order) {
-      final siteMatch = order.siteName.toLowerCase().contains(query);
-      final materialMatch = order.materialName.toLowerCase().contains(query);
-      final statusMatch = order.status == 'pending' || order.status == 'approved';
+      final siteMatch = order.siteName?.toLowerCase().contains(query) ?? false;
+      final materialMatch =
+          order.materialName?.toLowerCase().contains(query) ?? false;
+      final statusMatch =
+          order.status == 'pending' || order.status == 'approved';
 
-      final dateMatch = filterDate.value == null || order.orderCreateDate!.isAfter(filterDate.value!);
+      final dateMatch = filterDate.value == null ||
+          order.orderCreateDate!.isAfter(filterDate.value!);
 
       return (siteMatch || materialMatch) && statusMatch && dateMatch;
     }).toList();
-  }
-
-  // Lists
-  List<MaterialQuantity> get filteredReceivedOrders {
-    // Create a map to store the merged quantities for received orders
-    Map<String, double> quantitiesMap = {};
-
-    for (var order in orders) {
-      // Only consider orders with status 'received'
-      if (order.status == 'received') {
-        // Parse the quantity to a double value. Handle any potential parsing errors.
-        double quantity = double.tryParse(order.quantity) ?? 0;
-
-        // If the material name is already in the map, add the quantity, else initialize with the current quantity.
-        if (quantitiesMap.containsKey(order.materialName)) {
-          quantitiesMap[order.materialName] = quantitiesMap[order.materialName]! + quantity;
-        } else {
-          quantitiesMap[order.materialName] = quantity;
-        }
-      }
-    }
-
-    // Convert the map into a list of MaterialQuantity objects
-    List<MaterialQuantity> mergedQuantities = quantitiesMap.entries.map((entry) {
-      return MaterialQuantity(
-        materialName: entry.key,
-        quantity: entry.value,
-      );
-    }).toList();
-
-    return mergedQuantities;
   }
 
   void addOrderInput() {
@@ -207,7 +176,7 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updateOrderById(String id, Order updatedOrder) {
+  void updateOrderById(var id, Order updatedOrder) {
     int index = orders.indexWhere((order) => order.id == id);
     if (index != -1) {
       orders.value[index] = updatedOrder;
@@ -236,73 +205,32 @@ class MainOrderController extends GetxController {
     update();
   }
 
-  void partialReturnOrder(int index, String quantity) {
-    orders.value[index].returnedQuantity += quantity;
+  void partialReturnOrder(int index, int quantity) {
+    orders.value[index].returnedQuantity =
+        (orders.value[index].returnedQuantity ?? 0) + quantity;
     orders.value[index].status = 'returned';
   }
 
   void fullReturnOrder(int index) {
     orders.value[index].returnedQuantity = orders.value[index].quantity;
-    orders.value[index].quantity = 'Full';
+    // orders.value[index].quantity = 'Full';
     orders.value[index].status = 'returned';
   }
 
-  void loadOrders() {
-    List<Order>? storedOrders = retrieveOrders();
-    print(storedOrders);
-    print(box.read<List>('orders'));
-    if (storedOrders.isEmpty) {
-      orders.value = defaultOrders;
-      saveOrders();
-      // loadOrders();
-      update();
-    }else{
-      orders.value = storedOrders.fold(<String?, Order>{}, (Map<String?, Order> acc, order) {
-        if (acc.containsKey(order.id)) {
-          // If an order with the same id exists, merge them (e.g., sum quantities)
-          acc[order.id] = acc[order.id]!.merge(order);
-        } else {
-          acc[order.id] = order;
-        }
-        return acc;
-      }).values.toList();;
-      update();
-    }
-
-    // saveOrders();
+  void loadOrders() async {
+    List<Order>? storedOrders =
+        await orderService.getOrdersBySite(siteId: siteNotifier.value);
+    orders.value = storedOrders;
+    update();
   }
 
   void saveOrders() {
     box.write('orders', orders.map((e) => e.toJson()).toList());
   }
 
-  void loadSites() {
-    sites.value = [
-      Site(
-        imageUrl: '',
-        siteName: 'ALL',
-        siteDetails: '',
-        location: '',
-      ),
-      Site(
-        imageUrl: 'assets/img/site1.jpg',
-        siteName: 'Site 1',
-        siteDetails: 'Details about Site 1',
-        location: 'Location 1',
-      ),
-      Site(
-        imageUrl: 'assets/img/site2.jpg',
-        siteName: 'Site 2',
-        siteDetails: 'Details about Site 2',
-        location: 'Location 2',
-      ),
-      Site(
-        imageUrl: 'assets/img/site3.jpg',
-        siteName: 'Site 3',
-        siteDetails: 'Details about Site 3',
-        location: 'Location 3',
-      ),
-    ];
+  void loadSites() async {
+    sites.value = await homeService.getSites();
+    update();
   }
 
   Future<void> pickImageFromCamera(Order order) async {
@@ -342,34 +270,27 @@ class MainOrderController extends GetxController {
   //   );
   // }
 
-
-
-
-  void addOrder({String status = 'pending'}) {
+  void addOrder({String status = 'pending'}) async {
     for (final input in orderInputs) {
       bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
       bool hasQuantity = input.quantityController.text.isNotEmpty;
       if (hasMaterial && hasQuantity) {
+        // if(int.parse(input.quantityController.text) * 100 < 10000){
+        //   status = "approved";
+        // }
 
-        if(int.parse(input.quantityController.text) * 100 < 10000){
-          status = "approved";
-        }
-
-        _orderIdCounter++;
         final order = Order(
-          id: _orderIdCounter.toString(),
-          status: status,
-          materialName: input.selectedMaterial.value,
-          supplierName: selectedSupplier.value,
-          quantity: input.quantityController.text,
-          siteName: selectedSite.value,
-          orderCreateDate: input.orderCreateDate.value,
-          expectedDeliveryDate: input.expectedDeliveryDate.value,
-          imagePath: '',
-          returnedQuantity: '',
-          instructions: instructionsController.text,
-          reason: returnReasonController.text, // Ensure reason is stored
-        );
+            materialName: input.selectedMaterial.value,
+            supplierId: selectedSupplier.value?.id,
+            price: (double.tryParse(input.quantityController.text) ?? 0) * 100,
+            quantity: double.tryParse(input.quantityController.text) ?? 0.0,
+            siteId: selectedSite?.value.id,
+            orderCreateDate: input.orderCreateDate.value,
+            expectedDeliveryDate: input.expectedDeliveryDate.value,
+            imagePath: '',
+            instructions: instructionsController.text,
+            qualityCheck: false,
+            quantityCheck: false);
 
         if (qualityChecks['materialQuality'] == true) {
           log("Material Quality Checked");
@@ -382,98 +303,28 @@ class MainOrderController extends GetxController {
         }
 
         orders.add(order);
+
+        orderService.createOrder(order);
       }
     }
-    saveOrders();
-    saveOrderIdCounter();
+    // saveOrders();
+    // saveOrderIdCounter();
     clearControllers();
   }
 
-  void returnOrder(Order oldOrder, {bool isFullReturn = true, int? partialQuantity}) async {
+  void returnOrder(Order oldOrder,
+      {bool isFullReturn = true, double? partialQuantity}) async {
+    Order returnedOrder = oldOrder;
+    returnedOrder.returnReason = returnReasonController.text;
 
-    //partial return handling
-    if (!isFullReturn && partialQuantity != null) {
-      _orderIdCounter++;
-
-      String returnedQuantity = partialQuantity.toString();
-
-      final returnedOrder = Order(
-        id: _orderIdCounter.toString(),
-        status: 'returned',
-        materialName: oldOrder.materialName,
-        supplierName: oldOrder.supplierName,
-        quantity: returnedQuantity,
-        siteName: oldOrder.siteName,
-        orderCreateDate: oldOrder.orderCreateDate,
-        expectedDeliveryDate: oldOrder.expectedDeliveryDate,
-        returnedQuantity: returnedQuantity,
-        imagePath: '',
-        reason: returnReasonController.text,
-      );
-      int oldQuantity = int.parse(oldOrder.quantity);
-      int newQuantity = oldQuantity - partialQuantity;
-
-      if (newQuantity > 0) {
-        oldOrder.quantity = newQuantity.toString();
-        orders.add(returnedOrder);
-      } else {
-        oldOrder.status = 'returned';
-      }
-
-      update();
-      Get.back();
-      Timer(const Duration(seconds: 1), () {
-        Get.snackbar(
-          'Order Returned',
-          'The order is now returned',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          borderRadius: 10,
-          margin: const EdgeInsets.all(16),
-          icon: const Icon(Icons.check, color: Colors.white),
-          duration: const Duration(seconds: 3),
-          animationDuration: const Duration(milliseconds: 500),
-          barBlur: 10,
-          isDismissible: true,
-          dismissDirection: DismissDirection.horizontal,
-        );
-      });
-
-
+    if (isFullReturn) {
+      returnedOrder.returnedQuantity = oldOrder.quantity;
+      await orderService.returnOrder(returnedOrder);
+    } else {
+      returnedOrder.returnedQuantity = partialQuantity;
+      await orderService.returnOrder(returnedOrder);
     }
-
-    else if (isFullReturn) {
-      oldOrder.status = 'returned';
-      Get.back();
-      update();
-      Timer(const Duration(seconds: 1), () {
-        Get.snackbar(
-          'Order Returned',
-          'The order is now returned',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-          borderRadius: 10,
-          margin: const EdgeInsets.all(16),
-          icon: const Icon(Icons.check, color: Colors.white),
-          duration: const Duration(seconds: 3),
-          animationDuration: const Duration(milliseconds: 500),
-          barBlur: 10,
-          isDismissible: true,
-          dismissDirection: DismissDirection.horizontal,
-        );
-      });
-      Timer(const Duration(seconds: 1), () {
-        updater();
-        update();
-      });
-    }
-
-    update();
-    saveOrders();
-    saveOrderIdCounter();
-    clearControllers();
+    loadOrders();
   }
 
   void deleteOrder(int index) {
@@ -548,10 +399,10 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updateOrderMaterial(String orderId, String newMaterial) {
+  void updateOrderMaterial(var orderId, Sites? newSite) {
     int index = orders.indexWhere((order) => order.id == orderId);
     if (index != -1) {
-      orders.value[index].materialName = newMaterial;
+      orders.value[index].siteId = newSite?.id;
       saveOrders(); // Save the updated orders list
       update(); // Notify the UI to refresh
     } else {
@@ -559,25 +410,24 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void markAsReceived(Order order) {
-    int index = orders.indexWhere((value) => value.id == order.id);
-    print(index);
-    if (index != -1) {
-      orders.value[index] = order;
-      saveOrders(); // Save the updated orders list
-      update(); // Notify the UI to refresh
-    } else {
-      Get.snackbar("Error", "Something went wrong");
-    }
+  void markAsReceived(Order order) async {
+    await orderService.markOrderAsReceived(order);
+    loadOrders();
   }
 
   void clearControllers() {
-    selectedSupplier.value = '';
-    selectedSite.value = '';
+    selectedSupplier.value = null;
+    selectedSite = Sites().obs;
     orderInputs.clear();
     qualityChecks.updateAll((key, value) => false);
     instructionsController.clear();
     addOrderInput();
+  }
+
+  void getData() async {
+    suppliers.value = await supplierService.getAllSuppliers();
+    materials.value = await orderService.getAllMaterials();
+    update();
   }
 }
 

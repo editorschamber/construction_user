@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
+import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
@@ -9,6 +11,7 @@ import '../availableStock/available_stock.dart';
 import '../profile/controller/profile_controller.dart';
 import '../sitePlans/site_plans.dart';
 import '../siteTeam/site_team.dart';
+import 'home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,107 +21,77 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ProfileController profileController = Get.find<ProfileController>();
+  final HomeController homeController = Get.put(HomeController());
   final MainOrderController orderController = Get.find<MainOrderController>();
-
-  final List<Site> sites = [
-    Site(
-      imageUrl: 'assets/img/site1.jpg',
-      siteName: 'Site 1',
-      siteDetails: 'Details about Site 1',
-      location: 'Location 1',
-    ),
-    Site(
-      imageUrl: 'assets/img/site2.jpg',
-      siteName: 'Site 2',
-      siteDetails: 'Details about Site 2',
-      location: 'Location 2',
-    ),
-    Site(
-      imageUrl: 'assets/img/site3.jpg',
-      siteName: 'Site 3',
-      siteDetails: 'Details about Site 3',
-      location: 'Location 3',
-    ),
-  ];
-
-  Site? selectedSite;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedSite = sites[0]; // Set initial site
-  }
-
-  void onSiteChanged(Site? site) {
-    setState(() {
-      selectedSite = site;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: (){
-                        Get.to(ProfileScreen());
-                      },
-                      child: const CircleAvatar(
-                        backgroundImage: AssetImage('assets/img/person.jpg'),
-                        radius: 20,
-                      ),
-                    ),
-                    Center(
-                      child: DropdownButton<Site>(
-                        value: selectedSite,
-                        onChanged: onSiteChanged,
-                        items: sites.map((Site site) {
-                          return DropdownMenuItem<Site>(
-                            value: site,
-                            child: Text(site.siteName),
+    return Scaffold(body: buildBody());
+  }
+
+  Widget buildBody() {
+    return Obx(() {
+      if (homeController.isLoading.value == true) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(onPressed: (){
+                        Get.toNamed(profileScreen);
+                      }, icon: Icon(Icons.account_circle_rounded)),
+                      Center(
+                        child: Obx(() {
+                          return DropdownButton<Sites>(
+                            value: homeController.selectedSite?.value,
+                            onChanged: homeController.onSiteChanged,
+                            items: homeController.siteModel.value.data
+                                ?.map((Sites site) {
+                              return DropdownMenuItem<Sites>(
+                                value: site,
+                                child: Text(site.siteName ?? ""),
+                              );
+                            }).toList(),
                           );
-                        }).toList(),
+                        }),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {
-                        Get.to(IconScreen());
-                      },
-                    ),
-                  ],
-                ),
-                // Dropdown to select site
+                      IconButton(
+                        icon: const Icon(Icons.notifications),
+                        onPressed: () {
+                          Get.to(IconScreen());
+                        },
+                      ),
+                    ],
+                  ),
+                  // Dropdown to select site
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    return SitePlans(site: homeController.selectedSite?.value);
+                  }),
+                  const SizedBox(height: 20),
+                  // Available Stock widget updated with selected site
+                  AvailableStock(
+                      site: homeController.selectedSite?.value,
+                      homeController: homeController),
+                  const SizedBox(height: 20),
 
-                const SizedBox(height: 20),
-
-                // Site Plans widget updated with selected site
-                SitePlans(site: selectedSite),
-
-                const SizedBox(height: 20),
-
-                // Available Stock widget updated with selected site
-                AvailableStock(site: selectedSite, orderController: orderController),
-
-                const SizedBox(height: 20),
-
-                // Site Team widget updated with selected site
-                SiteTeam(site: selectedSite),
-              ],
+                  // Site Team widget updated with selected site
+                  // SiteTeam(site: selectedSite),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        );
+      }
+    });
   }
 }

@@ -1,16 +1,32 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:site_construct/apiServices/apiStrings.dart';
+import 'package:site_construct/core/models/userModel.dart';
+
+import '../core/service/storageService.dart';
+import 'apiServices.dart';
 
 class UserService {
+  APIServices apiServices = APIServices();
+
 
   // Get all users
   Future<List<dynamic>> getUsers() async {
-    final response = await http.get(
-      Uri.parse('admin/users'),
+    final response = await apiServices.getApi(
+      APIStrings.users
     );
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body)['data'];
+    if (response != null) {
+      return response;
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
+
+  Future<UserData> getUserDetails() async {
+    final response = await apiServices.getApi("${APIStrings.getUserDetails}?id=${StorageService.userId}");
+
+    if (response != null) {
+      return userDataFromJson(jsonEncode(response["data"]));
     } else {
       throw Exception('Failed to load users');
     }
@@ -18,9 +34,8 @@ class UserService {
 
   // Create a new user
   Future<Map<String, dynamic>> createUser(String username, String password, String role) async {
-    final response = await http.post(
-      Uri.parse('admin/users'),
-      headers: {'Content-Type': 'application/json'},
+    final response = await apiServices.postApi(
+      APIStrings.users,
       body: json.encode({
         'username': username,
         'password': password,
@@ -28,8 +43,8 @@ class UserService {
       }),
     );
 
-    if (response.statusCode == 201) {
-      return json.decode(response.body);
+    if (response != null) {
+      return response;
     } else {
       throw Exception('Failed to create user');
     }

@@ -21,19 +21,27 @@ class MainOrderPage extends GetView<MainOrderController> {
           bottom: const TabBar(
             tabs: [
               Tab(
-                child: Center(child: Text("Received Orders", textAlign: TextAlign.center,
+                child: Center(
+                    child: Text(
+                  "Received Orders",
+                  textAlign: TextAlign.center,
                 )),
               ),
-              Tab(child: Center(child: Text('Order List', textAlign: TextAlign.center))),
-              Tab(child: Center(child: Text('Returned Orders', textAlign: TextAlign.center))),
+              Tab(
+                  child: Center(
+                      child: Text('Order List', textAlign: TextAlign.center))),
+              Tab(
+                  child: Center(
+                      child: Text('Returned Orders',
+                          textAlign: TextAlign.center))),
             ],
           ),
         ),
         body: TabBarView(
           children: [
             ReceiveOrdersTab(),
-             OrderListTab(),
-             ReturnedOrdersTab(),
+            OrderListTab(),
+            ReturnedOrdersTab(),
           ],
         ),
       ),
@@ -89,19 +97,24 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Price: ${(int.parse(order.quantity) * 100)}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                'Price: ${order.price}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                             ],
                           ),
                           onTap: () {
-                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order),order: order, tabType: 'receiveOrder'));
+                            Get.to(() => OrderDetailsScreen(
+                                index: controller.orders.indexOf(order),
+                                order: order,
+                                tabType: 'receiveOrder'));
                           },
                         ),
                       );
@@ -129,7 +142,7 @@ class OrderListTab extends GetView<MainOrderController> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(() => const AddOrderPage());
+          Get.to(() => AddOrderPage());
         },
         child: const Icon(Icons.add),
       ),
@@ -160,7 +173,8 @@ class OrderListTab extends GetView<MainOrderController> {
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: Colors.grey.withOpacity(0.5)),
+                          borderSide:
+                              BorderSide(color: Colors.grey.withOpacity(0.5)),
                         ),
                       ),
                       onChanged: (query) {
@@ -190,14 +204,23 @@ class OrderListTab extends GetView<MainOrderController> {
                 final query = controller.filterQuery.value;
                 final dateFilter = controller.filterDate?.value;
                 final filteredOrders = controller.orders.where((order) {
-                  final statusMatch = order.status == 'pending' || order.status == 'approved';
-                  final siteMatch = order.siteName.toLowerCase().contains(query);
-                  final materialMatch = order.materialName.toLowerCase().contains(query);
+                  final statusMatch =
+                      order.status == 'pending' || order.status == 'approved';
+                  final siteMatch =
+                      order.siteName?.toLowerCase().contains(query) ?? false;
+                  final materialMatch =
+                      order.materialName?.toLowerCase().contains(query) ??
+                          false;
                   final dateMatch = dateFilter == null ||
                       (order.orderCreateDate != null &&
-                          order.orderCreateDate!.toLocal().toString().substring(0, 10) ==
+                          order.orderCreateDate!
+                                  .toLocal()
+                                  .toString()
+                                  .substring(0, 10) ==
                               dateFilter.toLocal().toString().substring(0, 10));
-                  return statusMatch && (siteMatch || materialMatch) && dateMatch;
+                  return statusMatch &&
+                      (siteMatch || materialMatch) &&
+                      dateMatch;
                 }).toList();
 
                 return Padding(
@@ -238,19 +261,22 @@ class OrderListTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Price: ${(int.parse(order.quantity) * 100)}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                'Price: ${order.price}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                             ],
                           ),
                           trailing: Wrap(
-                            spacing: 8, // space between the chip and delete icon
+                            spacing: 8,
+                            // space between the chip and delete icon
                             children: [
                               Chip(
                                 label: Text(
@@ -261,19 +287,25 @@ class OrderListTab extends GetView<MainOrderController> {
                                     ? Colors.green
                                     : Colors.blueAccent,
                               ),
-                              if(order.status=='pending')
+                              if (order.status == 'pending')
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
-                                    controller.deleteOrder(controller.orders.indexOf(order));
+                                    controller.deleteOrder(
+                                        controller.orders.indexOf(order));
                                   },
                                 ),
-                              if(order.status=='approved')
-                                const SizedBox(width: 40,)
+                              if (order.status == 'approved')
+                                const SizedBox(
+                                  width: 40,
+                                )
                             ],
                           ),
                           onTap: () {
-                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order), order: order, tabType: 'orderList'));
+                            Get.to(() => OrderDetailsScreen(
+                                index: controller.orders.indexOf(order),
+                                order: order,
+                                tabType: 'orderList'));
                           },
                         ),
                       );
@@ -291,6 +323,7 @@ class OrderListTab extends GetView<MainOrderController> {
 
 class ReturnedOrdersTab extends GetView<MainOrderController> {
   const ReturnedOrdersTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     // controller.loadOrders();
@@ -313,7 +346,8 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
             Expanded(
               child: Obx(() {
                 final filteredOrders = controller.orders
-                    .where((order) => order.status == 'returned')
+                    .where((order) => (order.status == 'returned' ||
+                        order.status == "partially"))
                     .toList();
 
                 return Padding(
@@ -336,19 +370,24 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Price: ${(int.parse(order.quantity) * 100)}',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                'Price: ${order.price}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                             ],
                           ),
                           onTap: () {
-                            Get.to(() => OrderDetailsScreen(index: controller.orders.indexOf(order), order: order, tabType: 'returnedOrder'));
+                            Get.to(() => OrderDetailsScreen(
+                                index: controller.orders.indexOf(order),
+                                order: order,
+                                tabType: 'returnedOrder'));
                           },
                         ),
                       );

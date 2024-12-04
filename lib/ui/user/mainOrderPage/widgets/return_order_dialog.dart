@@ -94,13 +94,13 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
         TextButton(
           onPressed: () {
             if (controller.isFullReturn.value) {
-              // controller.returnOrder(order); // Full return
+              controller.returnOrder(order); // Full return
               Get.back(result: true);
             } else {
-              int? partialQuantity = int.tryParse(controller.partialReturnQuantityController.text);
+              double? partialQuantity = double.tryParse(controller.partialReturnQuantityController.text);
 
               if (partialQuantity != null && partialQuantity > 0) {
-                if (partialQuantity > int.parse(order.quantity)) {
+                if (partialQuantity > (double.tryParse(order.quantity.toString()) ?? 0)) {
                   Get.snackbar(
                     'Error',
                     'Partial return quantity cannot exceed the available quantity of ${order.quantity}.',
@@ -119,7 +119,7 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
 
                   return;
                 }
-
+                Get.back(result: true);
                 controller.returnOrder(order, isFullReturn: false, partialQuantity: partialQuantity);
                 // Partial return
               } else {

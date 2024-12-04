@@ -1,10 +1,12 @@
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
 import 'package:site_construct/ui/user/addNewSite/add_new_site.dart';
 import 'package:site_construct/ui/user/addNewSite/binding/add_new_site_binding.dart';
 import 'package:site_construct/ui/user/details/details_screen.dart';
 import 'package:site_construct/ui/user/homeScreen/home_screen.dart';
 import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/ui/user/homeScreen/homebinding.dart';
 import 'package:site_construct/ui/user/labour/labour_screen.dart';
 import 'package:site_construct/ui/user/login/binding/login_binding.dart';
 import 'package:site_construct/ui/user/login/login_screen.dart';
@@ -47,13 +49,13 @@ const String splashScreen = "/splashScreen";
 const String navigationMenu = "/navigationMenu";
 
 List<GetPage<dynamic>> routes = [
-  GetPage(name: homeScreen, page: () =>  HomeScreen()),
+  GetPage(name: homeScreen, page: () => const HomeScreen(), binding: HomeBinding()),
   GetPage(name: navigationMenu, page: () => const NavigationMenu()),
   GetPage(
       name: loginScreen,
       page: () => const LoginScreen(),
       binding: LoginBinding()),
-  GetPage(name: loginPage, page: () =>  LoginPage()),
+  GetPage(name: loginPage, page: () => LoginPage()),
   GetPage(
       name: otpScreen, page: () => const OtpScreen(), binding: OtpBinding()),
   GetPage(name: otpPage, page: () => const OtpPage()),
@@ -61,7 +63,7 @@ List<GetPage<dynamic>> routes = [
     name: detailsScreen,
     transition: Transition.rightToLeft,
     page: () {
-      final Site site = Get.arguments;
+      final Sites site = Get.arguments;
       return DetailsScreen(site: site);
     },
   ),

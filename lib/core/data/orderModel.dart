@@ -1,79 +1,159 @@
+// To parse this JSON data, do
+//
+//     final order = orderFromJson(jsonString);
+
+import 'dart:convert';
+
+List<Order> orderFromJson(String str) => List<Order>.from(json.decode(str).map((x) => Order.fromJson(x)));
+
+String orderToJson(List<Order> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
 class Order {
-  final String? id;  //
-  String materialName; //
-  final String supplierName; //
-  String quantity; //
-  String imagePath; //
-  final String siteName; //
-  String returnedQuantity; //
-  String? status = 'pending'; // pending, approved, received, returned
-  DateTime? orderCreateDate; //
-  DateTime? expectedDeliveryDate; //
-  bool? materialCheck = false; //
-  bool? quantityCheck = false; //
-  bool? packagingCheck = false; //
-  String? instructions = ''; //
-  String? reason = ''; //
+  int? id;
+  String? materialName;
+  String? supplier;
+  int? supplierId;
+  double? quantity;
+  double? returnedQuantity;
+  bool? qualityCheck;
+  bool? quantityCheck;
+  double? price;
+  String? status;
+  DateTime? orderCreateDate;
+  DateTime? expectedDeliveryDate;
+  String? deliveryAddress;
+  dynamic imagePath;
+  dynamic returnReason;
+  dynamic returnImage;
+  int? siteId;
+  String? userId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  SiteData? site;
+  SupplierDetails? supplierDetails;
+  String? supplierName;
+  String? siteName;
+  String? instructions;
 
   Order({
-    required this.id,
-    required this.materialName,
-    required this.supplierName,
-    required this.quantity,
-    required this.imagePath,
-    required this.siteName,
-    required this.returnedQuantity,
+    this.id,
+    this.materialName,
+    this.supplier,
+    this.supplierId,
+    this.quantity,
+    this.returnedQuantity,
+    this.qualityCheck,
+    this.quantityCheck,
+    this.price,
     this.status,
     this.orderCreateDate,
     this.expectedDeliveryDate,
-    this.materialCheck,
-    this.quantityCheck,
-    this.packagingCheck,
-    this.instructions,
-    this.reason,
+    this.deliveryAddress,
+    this.imagePath,
+    this.returnReason,
+    this.returnImage,
+    this.siteId,
+    this.userId,
+    this.createdAt,
+    this.updatedAt,
+    this.site,
+    this.supplierDetails,
+    this.supplierName,
+    this.siteName, this.instructions,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'materialName': materialName,
-      'supplierName': supplierName,
-      'quantity': quantity,
-      'imagePath': imagePath,
-      'siteName': siteName,
-      'status': status,
-      'returnedQuantity': returnedQuantity,
-      'materialCheck': materialCheck,
-      'quantityCheck': quantityCheck,
-      'packagingCheck': packagingCheck,
-      'orderCreateDate': orderCreateDate?.toIso8601String(),
-      'expectedDeliveryDate': expectedDeliveryDate?.toIso8601String(),
-      'instructions': instructions,
-      'reason': reason,
-    };
-  }
+  factory Order.fromJson(Map<String, dynamic> json) => Order(
+    id: json["id"],
+    materialName: json["materialName"],
+    supplier: json["supplier"],
+    supplierId: json["supplierId"],
+    quantity: double.tryParse(json["quantity"].toString()),
+    returnedQuantity: double.tryParse(json["returnedQuantity"].toString()),
+    qualityCheck: json["qualityCheck"],
+    quantityCheck: json["quantityCheck"],
+    price: double.tryParse(json["price"].toString()),
+    status: json["status"],
+    orderCreateDate: json["orderCreateDate"] == null ? null : DateTime.parse(json["orderCreateDate"]),
+    expectedDeliveryDate: json["expectedDeliveryDate"] == null ? null : DateTime.parse(json["expectedDeliveryDate"]),
+    deliveryAddress: json["deliveryAddress"],
+    imagePath: json["imagePath"],
+    returnReason: json["returnReason"],
+    returnImage: json["returnImage"],
+    siteId: json["siteId"],
+    userId: json["userId"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
+    supplierDetails: json["supplierDetails"] == null ? null : SupplierDetails.fromJson(json["supplierDetails"]),
+    supplierName: json["supplierName"],
+    siteName: json["siteName"], instructions: json['instructions'],
+  );
 
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      id: json['id'],
-      materialName: json['materialName'],
-      supplierName: json['supplierName'],
-      quantity: json['quantity'],
-      imagePath: json['imagePath'],
-      siteName: json['siteName'] ?? '',
-      status: json['status'],
-      materialCheck: json['materialCheck'],
-      quantityCheck: json['quantityCheck'],
-      packagingCheck: json['packagingCheck'],
-      returnedQuantity: json['returnedQuantity'] ?? '',
-      orderCreateDate: json['orderCreateDate'] != null
-          ? DateTime.parse(json['orderCreateDate'])
-          : null,
-      expectedDeliveryDate: json['expectedDeliveryDate'] != null
-          ? DateTime.parse(json['expectedDeliveryDate'])
-          : null,
-      instructions: json['instructions'] ?? '',
-      reason: json['reason'] ?? '',
-    );
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "materialName": materialName,
+    "supplier": supplier,
+    "supplierId": supplierId,
+    "quantity": quantity,
+    "returnedQuantity": returnedQuantity,
+    "qualityCheck": qualityCheck,
+    "quantityCheck": quantityCheck,
+    "price": price,
+    "status": status,
+    "orderCreateDate": orderCreateDate?.toIso8601String(),
+    "expectedDeliveryDate": expectedDeliveryDate?.toIso8601String(),
+    "deliveryAddress": deliveryAddress,
+    "imagePath": imagePath,
+    "returnReason": returnReason,
+    "returnImage": returnImage,
+    "siteId": siteId,
+    "userId": userId,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "site": site?.toJson(),
+    "supplierDetails": supplierDetails?.toJson(),
+    "supplierName": supplierName,
+    "siteName": siteName,
+    "instructions": instructions
+  };
+}
+
+class SiteData {
+  int? id;
+  String? siteName;
+
+  SiteData({
+    this.id,
+    this.siteName,
+  });
+
+  factory SiteData.fromJson(Map<String, dynamic> json) => SiteData(
+    id: json["id"],
+    siteName: json["siteName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "siteName": siteName,
+  };
+}
+
+class SupplierDetails {
+  int? id;
+  String? supplierName;
+
+  SupplierDetails({
+    this.id,
+    this.supplierName,
+  });
+
+  factory SupplierDetails.fromJson(Map<String, dynamic> json) => SupplierDetails(
+    id: json["id"],
+    supplierName: json["supplierName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "supplierName": supplierName,
+  };
 }

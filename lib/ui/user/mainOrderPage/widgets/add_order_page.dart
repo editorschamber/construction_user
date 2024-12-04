@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
+import 'package:site_construct/core/models/supplierData.dart';
+import '../../../../core/models/matarialData.dart';
+import '../../homeScreen/home_controller.dart';
 import '../controller/main_order_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 
 class AddOrderPage extends StatelessWidget {
-  const AddOrderPage({Key? key}) : super(key: key);
+  AddOrderPage({super.key});
+
+  final HomeController homeController = Get.put(HomeController());
+  final MainOrderController orderController = Get.put(MainOrderController());
 
   @override
   Widget build(BuildContext context) {
-    final orderController = Get.find<MainOrderController>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Order'),
@@ -28,56 +33,47 @@ class AddOrderPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
+                    flex: 3,
                     child: Obx(() {
-                      final distinctSuppliers = orderController.orders
-                          .map((order) => order.supplierName)
-                          .toSet()
-                          .toList();
-
-                      return DropdownButton<String>(
-                        hint: const Text('Supplier'),
-                        value: orderController.selectedSupplier.value.isNotEmpty
-                            ? orderController.selectedSupplier.value
-                            : null,
+                      return DropdownButton<SupplierData?>(
+                        hint: Text(orderController
+                                .selectedSupplier.value?.supplierName ??
+                            'Select Supplier'),
+                        value: orderController.selectedSupplier.value,
                         onChanged: (newValue) {
-                          orderController.selectedSupplier.value = newValue!;
+                          print(newValue?.toJson());
+                          if (newValue != null) {
+                            orderController.selectedSupplier.value = newValue;
+                            orderController.update();
+                          }
                         },
-                        items: distinctSuppliers
-                            .map((supplier) => DropdownMenuItem<String>(
-                          value: supplier,
-                          child: Text(supplier),
-                        ))
+                        items: orderController.suppliers.value
+                            .map((supplier) => DropdownMenuItem<SupplierData?>(
+                                  value: supplier,
+                                  child: Text(supplier.supplierName ?? ""),
+                                ))
                             .toList(),
                       );
                     }),
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
                   Expanded(
+                    flex: 2,
                     child: Obx(() {
-                      return DropdownButton<String>(
-                        hint: const Text("Site"),
-                        value: orderController.selectedSite.value.isEmpty
-                            ? null
-                            : orderController.selectedSite.value,
-                        items: orderController.sites
-                            .map<DropdownMenuItem<String>>((Site site) {
-                          return DropdownMenuItem<String>(
-                            value: site.siteName,
-                            child: Text(site.siteName),
+                      return DropdownButton<Sites>(
+                        hint: Text(
+                            homeController.selectedSite?.value.siteName ??
+                                'Select Site'),
+                        value: homeController.selectedSite?.value,
+                        onChanged: homeController.onSiteChanged,
+                        items: homeController.siteModel.value.data
+                            ?.map((Sites site) {
+                          return DropdownMenuItem<Sites>(
+                            value: site,
+                            child: Text(site.siteName ?? ""),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            orderController.selectedSite.value = newValue;
-                          }
-                        },
                       );
                     }),
-                  ),
-                  const SizedBox(
-                    width: 15,
                   ),
                   IconButton(
                     icon: const Icon(Icons.add),
@@ -109,7 +105,6 @@ class AddOrderPage extends StatelessWidget {
                                         _showMaterialsBottomSheet(
                                           context,
                                           input,
-                                          orderController.materials,
                                         );
                                       },
                                       child: AbsorbPointer(
@@ -134,11 +129,10 @@ class AddOrderPage extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 10),
-
                           TextField(
                             controller: input.quantityController,
                             decoration:
-                            const InputDecoration(labelText: 'Quantity'),
+                                const InputDecoration(labelText: 'Quantity'),
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly,
@@ -147,13 +141,12 @@ class AddOrderPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           Obx(() {
                             input.expectedDeliveryDateController.text =
-                            input.expectedDeliveryDate.value != null
-                                ? DateFormat('yyyy-MM-dd').format(
-                                input.expectedDeliveryDate.value!)
-                                : '';
+                                input.expectedDeliveryDate.value != null
+                                    ? DateFormat('yyyy-MM-dd').format(
+                                        input.expectedDeliveryDate.value!)
+                                    : '';
                             return TextField(
-                              controller:
-                              input.expectedDeliveryDateController,
+                              controller: input.expectedDeliveryDateController,
                               readOnly: true,
                               decoration: const InputDecoration(
                                 labelText: 'Expected Delivery Date',
@@ -162,9 +155,9 @@ class AddOrderPage extends StatelessWidget {
                               onTap: () async {
                                 DateTime? pickedDate = await showDatePicker(
                                   context: context,
-                                  initialDate: input.expectedDeliveryDate
-                                      .value ??
-                                      DateTime.now(),
+                                  initialDate:
+                                      input.expectedDeliveryDate.value ??
+                                          DateTime.now(),
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2101),
                                 );
@@ -203,30 +196,42 @@ class AddOrderPage extends StatelessWidget {
     );
   }
 
-  void _showMaterialsBottomSheet(BuildContext context, dynamic input, List<String> materials) {
+  void _showMaterialsBottomSheet(BuildContext context, dynamic input) {
+    if (orderController.materials.isEmpty == true) {
+      print("Materials list is empty");
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,  // Allows the bottom sheet to cover more vertical space
+      isScrollControlled: true,
       builder: (context) {
-        return DraggableScrollableSheet(
-          expand: false,  // Enables the sheet to be dragged and resized
-          builder: (context, scrollController) {
-            return SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: materials.map((material) {
-                  return ListTile(
-                    title: Text(material),
-                    onTap: () {
-                      input.selectedMaterial.value = material;
-                      input.searchController.text = material;
-                      Get.back();                    },
-                  );
-                }).toList(),
-              ),
-            );
-          },
+        return Container(
+          color: Colors.white,
+          child: DraggableScrollableSheet(
+            expand: false,
+            builder: (context, scrollController) {
+              return SingleChildScrollView(
+                controller: scrollController,
+                child: Container(
+                  constraints: BoxConstraints(minHeight: 100),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: orderController.materials.value.map((material) {
+                      return ListTile(
+                        title: Text(material.materialName ?? ""),
+                        onTap: () {
+                          input.selectedMaterial.value = material;
+                          input.searchController.text = material;
+                          Get.back();
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );

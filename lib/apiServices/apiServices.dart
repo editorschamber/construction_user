@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:site_construct/apiServices/apiStrings.dart';
+import 'package:site_construct/core/service/storageService.dart';
 
 class APIServices {
   final http.Client client = http.Client();
@@ -9,16 +10,18 @@ class APIServices {
   Future<dynamic> getApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body, String? authToken}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    // String? authToken = '${APIStrings.authToken}';
+    print("access tokem is ${StorageService.accessToken} and path is ${url}");
     try {
       final http.Response response;
       response = await client.get(
         url,
         headers: {
-          // 'Authorization': '$authToken',
+          'Authorization': 'Bearer ${StorageService.accessToken}',
           'Content-Type': 'application/json',
         },
       );
+      print("response is  ${response.body} status code is ${response.statusCode}");
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -32,14 +35,14 @@ class APIServices {
   Future<dynamic> postApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    // String authToken = APIStrings.authToken;
+    print("access tokem is ${StorageService.accessToken} and path is ${url}");
 
     try {
       final http.Response response;
       response = await client.post(
         url,
         headers: {
-          // 'Authorization': authToken,
+          'Authorization': 'Bearer ${StorageService.accessToken}',
           'Content-Type': 'application/json',
         },
         body: body,
@@ -62,14 +65,13 @@ class APIServices {
   Future<dynamic> deleteApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    // String? authToken = '${APIStrings.authToken}';
 
     try {
       final http.Response response;
       response = await client.delete(
         url,
         headers: {
-          // 'Authorization': '$authToken',
+          'Authorization': 'Bearer ${StorageService.accessToken}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(body),
@@ -87,18 +89,21 @@ class APIServices {
   Future<dynamic> putApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    // String? authToken = '${APIStrings.authToken}';
+    print("access tokem is ${StorageService.accessToken} and path is ${url}");
 
     try {
       final http.Response response;
       response = await client.put(
         url,
         headers: {
-          // 'Authorization': '$authToken',
+          'Authorization': 'Bearer ${StorageService.accessToken}',
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(body),
+        body: jsonEncode(body)
       );
+
+      print(response.body);
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {

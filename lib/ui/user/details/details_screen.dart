@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
 import 'package:site_construct/ui/user/details/widgets/details_page.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
@@ -7,7 +8,7 @@ import '../../../routes/route.dart';
 import '../../../core/data/site.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final Site site;
+  final Sites site;
 
   const DetailsScreen({super.key, required this.site});
 

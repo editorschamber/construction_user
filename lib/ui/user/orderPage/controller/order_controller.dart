@@ -9,6 +9,9 @@ import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 
+import '../../../../core/notifiers/selectedSiteNotifier.dart';
+import '../../homeScreen/home_controller.dart';
+
 class OrderController extends GetxController {
   final box = GetStorage();
   var orders = <Order>[].obs;
@@ -21,51 +24,16 @@ class OrderController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   int _orderIdCounter = 0; // ID counter for orders
 
-  List<Order> defaultOrders = [
-    Order(
-      id: '1',
-      materialName: "Brick",
-      supplierName: 'Hinduja',
-      quantity: '100',
-      imagePath: '',
-      siteName: "Site 1",
-      returnedQuantity: '',
-      status: 'pending',
-    ),
-    Order(
-      id: '2',
-      materialName: "Brick",
-      supplierName: 'Hinduja',
-      quantity: '100',
-      imagePath: '',
-      siteName: "Site 1",
-      returnedQuantity: '',
-      status: 'approved',
-    ),
-    Order(
-      id: '3',
-      materialName: "Sand",
-      supplierName: 'Malviya',
-      quantity: '10',
-      imagePath: '',
-      siteName: "Site 2",
-      returnedQuantity: '5',
-      status: 'received',
-    ),
-    Order(
-      id: '4',
-      materialName: "Cement",
-      supplierName: 'Malviya',
-      quantity: '10',
-      imagePath: '',
-      siteName: "Site 2",
-      returnedQuantity: '',
-      status: 'returned',
-    ),
-  ];
+  List<Order> defaultOrders = [];
+  SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
 
   @override
   void onInit() {
+    siteNotifier.addListener(() {
+      if(siteNotifier.value != null){
+        loadOrders();
+      }
+    });
     super.onInit();
     log("onINITTTTTT");
     loadOrders();
@@ -130,16 +98,14 @@ class OrderController extends GetxController {
     bool hasSite = selectedSite.value.isNotEmpty;
 
     if (hasImage || (hasMaterial && hasQuantity)) {
-      _orderIdCounter++;
-      final order = Order(
-        id: _orderIdCounter.toString(), // Assign incrementing ID
+      // _orderIdCounter++;
+      final order = Order(// Assign incrementing ID
         status: 'pending',
         materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
+        supplier: selectedSupplier.value,
+        quantity: double.tryParse(quantityController.text),
         imagePath: hasImage ? pickedImage!.path : "",
-        siteName: selectedSite.value,
-        returnedQuantity: '',
+        siteId: siteNotifier.value,
       );
 
       orders.add(order);
@@ -158,16 +124,13 @@ class OrderController extends GetxController {
     bool hasSite = selectedSite.value.isNotEmpty;
 
     if (hasImage || (hasMaterial && hasQuantity)) {
-      _orderIdCounter++;
       final order = Order(
-        id: _orderIdCounter.toString(), // Assign incrementing ID
         status: '',
         materialName: hasMaterial ? materialNameController.text : "",
         supplierName: selectedSupplier.value,
-        quantity: hasQuantity ? quantityController.text : "",
+        quantity: double.tryParse(quantityController.text),
         imagePath: hasImage ? pickedImage!.path : "",
-        siteName: selectedSite.value, // New field
-        returnedQuantity: '',
+        siteName: selectedSite.value
       );
 
       orders.add(order);

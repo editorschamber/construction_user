@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/site.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
 import 'package:site_construct/core/data/staticData.dart';
+import 'package:site_construct/ui/user/homeScreen/home_controller.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 
 class AvailableStock extends StatelessWidget {
-  final Site? site;
-  final MainOrderController orderController;
+  final Sites? site;
+  final HomeController homeController;
 
-  const AvailableStock({super.key, required this.site, required this.orderController});
+  const AvailableStock(
+      {super.key, required this.site, required this.homeController});
 
   @override
   Widget build(BuildContext context) {
     if (site == null) return Container(); // Handle null case
 
     return Obx(() {
-      final siteStock = orderController.filteredReceivedOrders ?? [];
-
       return Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Available Stock', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text('Available Stock',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               TextButton(
                 onPressed: () {
-                  Get.to(ViewAllScreen(siteName: site!.siteName, orderController: orderController ));
+                  Get.to(ViewAllScreen(siteName: site!.siteName,
+                      homeController: homeController));
                 },
                 child: const Text('View All'),
               ),
@@ -34,9 +37,9 @@ class AvailableStock extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: siteStock.map((material) {
+              children: homeController.filteredReceivedOrders.map((material) {
                 return StockCard(
-                  title: material.materialName,
+                  title: material.materialName ?? "",
                   quantity: material.quantity.toString(),
                   icon: Icons.inventory,
                 );
@@ -54,7 +57,8 @@ class StockCard extends StatelessWidget {
   final String quantity;
   final IconData icon;
 
-  const StockCard({super.key, required this.title, required this.quantity, required this.icon});
+  const StockCard(
+      {super.key, required this.title, required this.quantity, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +74,11 @@ class StockCard extends StatelessWidget {
         children: [
           Icon(icon, size: 50, color: Colors.deepPurple.shade400),
           const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(title, style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
-          Text(quantity, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+          Text(quantity,
+              style: const TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
     );
@@ -81,27 +87,28 @@ class StockCard extends StatelessWidget {
 
 class ViewAllScreen extends StatelessWidget {
   final String? siteName;
-  final MainOrderController orderController;
+  final HomeController homeController;
 
-  const ViewAllScreen({super.key, required this.siteName, required this.orderController});
+  const ViewAllScreen(
+      {super.key, required this.siteName, required this.homeController});
 
   @override
   Widget build(BuildContext context) {
-    final siteStock = orderController.filteredReceivedOrders ?? [];
-
     return Scaffold(
       appBar: AppBar(title: Text('View All Stock')),
-      body: ListView.builder(
-        itemCount: siteStock.length,
-        itemBuilder: (context, index) {
-          final material = siteStock[index];
-          return StockCard(
-            title: material.materialName,
-            quantity: material.quantity.toString(),
-            icon: Icons.inventory,
-          );
-        },
-      ),
+      body: Obx(() {
+        return ListView.builder(
+          itemCount: homeController.filteredReceivedOrders.length,
+          itemBuilder: (context, index) {
+            final material = homeController.filteredReceivedOrders[index];
+            return StockCard(
+              title: "${material.materialName}",
+              quantity: material.quantity.toString(),
+              icon: Icons.inventory,
+            );
+          },
+        );
+      }),
     );
   }
 }

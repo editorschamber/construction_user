@@ -1,14 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:site_construct/ui/user/dailyUse/dailyUsePage.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 
+import '../../../../core/data/sitesModel.dart';
 import '../../../../routes/route.dart';
 import '../../../../core/data/site.dart';
 
 class DetailsPage extends StatelessWidget {
-  final Site site;
+  final Sites site;
 
   const DetailsPage({super.key, required this.site});
 
@@ -26,11 +28,19 @@ class DetailsPage extends StatelessWidget {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Hero(
               tag: 1,
-              child: Image.asset(
-                site.imageUrl,
-                height: height * 0.3,
-                width: width,
+              child:CachedNetworkImage(
+                imageUrl: site!.imageUrl ?? "",
                 fit: BoxFit.cover,
+                width: double.infinity,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => Center(
+                  child: Icon(
+                    Icons.broken_image,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
             ),
           ),
@@ -39,7 +49,7 @@ class DetailsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                site.siteName,
+                site.siteName ?? "",
                 style: const TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -49,19 +59,20 @@ class DetailsPage extends StatelessWidget {
                 children: [
                   const Icon(Icons.maps_home_work),
                   const SizedBox(height: 5),
-                  Text(site.location),
+                  Text(site.location ?? ""),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 15),
           // Text(site.siteDetails).greyStyled(),
-          CustomButton(
-            width: width,
-            buttonColor: Colors.purple,
-            buttonText: "Labour Details",
-            onTap: () => Get.toNamed(labourScreen),
-          ),
+          //Todo : remove for now
+          // CustomButton(
+          //   width: width,
+          //   buttonColor: Colors.purple,
+          //   buttonText: "Labour Details",
+          //   onTap: () => Get.toNamed(labourScreen),
+          // ),
           // const SizedBox(height: 15),
           // CustomButton(
           //   width: width,

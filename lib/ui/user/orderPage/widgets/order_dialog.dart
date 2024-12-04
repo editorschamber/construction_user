@@ -36,7 +36,7 @@ class OrderDialog extends StatelessWidget {
                 items: orderController.orders
                     .map((order) => DropdownMenuItem<String>(
                   value: order.supplierName,
-                  child: Text(order.supplierName),
+                  child: Text(order.supplierName ?? ""),
                 ))
                     .toList(),
               );

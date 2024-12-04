@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/orderModel.dart';
+import 'package:site_construct/core/data/sitesModel.dart';
+import 'package:site_construct/core/models/matarialData.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 
 class EditOrderPage extends GetView<MainOrderController> {
@@ -15,35 +17,36 @@ class EditOrderPage extends GetView<MainOrderController> {
     final MainOrderController controller = Get.find();
 
     // Temporary variables to hold updated values
-    String? materialName = order.materialName;
+    Materials? materialName = Materials();
     String? supplierName = order.supplierName;
-    String? quantity = order.quantity;
+    String? quantity = "${order.quantity}";
     String? siteName = order.siteName;
     String? status = order.status;
     String? instructions = order.instructions;
     DateTime? expectedDeliveryDate = order.expectedDeliveryDate;
 
-    bool? materialCheck = order.materialCheck ?? false;
-    bool? packagingCheck = order.packagingCheck ?? false;
+    bool? materialCheck = order.qualityCheck ?? false;
+    bool? packagingCheck = order.qualityCheck ?? false;
     bool? quantityCheck = order.quantityCheck ?? false;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Order Details'),
       ),
-      body: Obx(()=>
-        SingleChildScrollView(
+      body: Obx(
+        () => SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (order.imagePath.isNotEmpty)
+                  if (order.imagePath != null && order.imagePath.isNotEmpty)
                     Expanded(
                       child: Center(
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(12)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12)),
                           child: Image.file(
                             File(order.imagePath.replaceFirst('File: ', '')),
                             fit: BoxFit.cover,
@@ -54,13 +57,13 @@ class EditOrderPage extends GetView<MainOrderController> {
                   const SizedBox(height: 16),
 
                   // Material Name
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<Materials>(
                     value: materialName,
                     decoration: const InputDecoration(labelText: 'Material'),
-                    items: controller.materials.value.map((String material) {
-                      return DropdownMenuItem<String>(
+                    items: controller.materials.value.map((Materials material) {
+                      return DropdownMenuItem<Materials>(
                         value: material,
-                        child: Text(material),
+                        child: Text(material.materialName ?? ""),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -91,15 +94,16 @@ class EditOrderPage extends GetView<MainOrderController> {
                   const SizedBox(height: 8),
 
                   // Site Name
-                  DropdownButtonFormField<String>(
-                    value: order.siteName,
+                  DropdownButtonFormField<Sites>(
+                    value: controller.sites.value.data
+                        ?.firstWhereOrNull((site) => site.id == order.siteId),
                     onChanged: (value) {
-                      controller.updateOrderMaterial(order.id!, value ?? '');
+                      controller.updateOrderMaterial(order.id!, value);
                     },
-                    items: controller.sites.map((site) {
-                      return DropdownMenuItem<String>(
-                        value: site.siteName,
-                        child: Text(site.siteName),
+                    items: controller.sites.value.data?.map((site) {
+                      return DropdownMenuItem<Sites>(
+                        value: site,
+                        child: Text(site.siteName ?? ""),
                       );
                     }).toList(),
                     decoration: const InputDecoration(
@@ -109,8 +113,10 @@ class EditOrderPage extends GetView<MainOrderController> {
                   const SizedBox(height: 8),
                   // Expected Delivery Date
                   TextFormField(
-                    initialValue: expectedDeliveryDate?.toString().split(' ')[0],
-                    decoration: const InputDecoration(labelText: 'Expected Delivery Date'),
+                    initialValue:
+                        expectedDeliveryDate?.toString().split(' ')[0],
+                    decoration: const InputDecoration(
+                        labelText: 'Expected Delivery Date'),
                     readOnly: true,
                     onTap: () async {
                       final DateTime? picked = await showDatePicker(
@@ -126,7 +132,8 @@ class EditOrderPage extends GetView<MainOrderController> {
                   ),
                   TextFormField(
                     initialValue: instructions,
-                    decoration: const InputDecoration(labelText: 'Instructions'),
+                    decoration:
+                        const InputDecoration(labelText: 'Instructions'),
                     onChanged: (value) {
                       instructions = value;
                     },
@@ -139,21 +146,19 @@ class EditOrderPage extends GetView<MainOrderController> {
                     child: ElevatedButton(
                       onPressed: () {
                         final updatedOrder = Order(
-                          id: order.id,
-                          materialName: materialName!,
-                          supplierName: supplierName!,
-                          quantity: quantity!,
-                          siteName: siteName,
-                          status: status!,
-                          orderCreateDate: order.orderCreateDate,
-                          expectedDeliveryDate: expectedDeliveryDate,
-                          imagePath: order.imagePath,
-                          returnedQuantity: order.returnedQuantity,
-                          materialCheck: materialCheck,
-                          packagingCheck: packagingCheck,
-                          quantityCheck: quantityCheck,
-                          instructions: instructions
-                        );
+                            id: order.id,
+                            materialName: materialName?.materialName ?? "",
+                            supplierName: supplierName!,
+                            quantity: double.tryParse(quantity ?? "0"),
+                            siteName: siteName,
+                            status: status!,
+                            orderCreateDate: order.orderCreateDate,
+                            expectedDeliveryDate: expectedDeliveryDate,
+                            imagePath: order.imagePath,
+                            returnedQuantity: order.returnedQuantity,
+                            qualityCheck: materialCheck,
+                            quantityCheck: quantityCheck,
+                            instructions: instructions);
 
                         controller.updateOrderById(order.id!, updatedOrder);
                         controller.updater();

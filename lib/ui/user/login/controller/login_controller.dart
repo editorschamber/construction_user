@@ -13,7 +13,6 @@ import '../../../../routes/route.dart';
 import '../../navigationMenu/navigation_menu.dart';
 import '../login_screen.dart';
 
-
 class LoginController extends GetxController {
   TextEditingController countryCode = TextEditingController(text: '+91');
   TextEditingController numberController = TextEditingController();
@@ -23,9 +22,7 @@ class LoginController extends GetxController {
 
   void verifyPhoneNumber() async {
     String phoneNumber = countryCode.text + numberController.text.trim();
-   String password = passwordController.text.trim();
-
-
+    String password = passwordController.text.trim();
 
     if (phoneNumber.length < 10) {
       Get.defaultDialog(
@@ -36,20 +33,23 @@ class LoginController extends GetxController {
     }
 
     try {
+      var response = await apiServices.postApi(
+        APIStrings.login,
+        body: jsonEncode(
+            {'username': numberController.text.trim(), 'password': password}),
+      );
 
-    var response  = await apiServices.postApi(APIStrings.login ,
-      body: jsonEncode({'username': numberController.text.trim(),'password': password}),);
-
-    if (response != null) {
-      // final data = jsonDecode(response);
-      final accessToken = response['accessToken'];
-      final refreshToken = response['refreshToken'];
-      StorageService.saveTokens(accessToken, refreshToken);
-      Get.offAll(NavigationMenu());
-    } else {
-      Get.snackbar('Error', 'Failed to verify phone number. Please try again.');
-    }
-
+      if (response != null) {
+        // final data = jsonDecode(response);
+        final accessToken = response['accessToken'];
+        final refreshToken = response['refreshToken'];
+        final userId = response['userId'];
+        StorageService.saveUserData(accessToken, refreshToken, userId);
+        Get.offAll(NavigationMenu());
+      } else {
+        Get.snackbar(
+            'Error', 'Failed to verify phone number. Please try again.');
+      }
     } catch (e) {
       // Catch any other exceptions
       log(e.toString());
