@@ -30,6 +30,17 @@ class OrderService {
     }
   }
 
+  Future<List<Order>> getOrdersByUser({required String? userId}) async {
+    final response =
+    await apiService.getApi("${APIStrings.getOrdersByUser}?userId=$userId");
+
+    if (response != null) {
+      return orderFromJson(jsonEncode(response['data']));
+    } else {
+      throw Exception('Failed to load approved orders');
+    }
+  }
+
   Future<List<Materials>> getAllMaterials() async {
     final response = await apiService.getApi(APIStrings.getAllMaterial);
 
@@ -47,8 +58,9 @@ class OrderService {
       body: jsonEncode(orderData.toJson()),
     );
 
-    if (response.statusCode == 201) {
-      return json.decode(response.body);
+    print("response create order $response");
+    if (response != null) {
+      return json.decode(response['data']);
     } else {
       throw Exception('Failed to create order');
     }

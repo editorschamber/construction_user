@@ -37,10 +37,10 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      // home: NavigationMenu(),
-      home: StorageService.isLoggedIn() ? NavigationMenu() : LoginScreen(),
-      initialBinding: _firebaseAuth.currentUser == null ? LoginBinding() : null,
-      // initialBinding: ProfileBinding(),
+      home: LoginScreen(),
+      // home: StorageService.isLoggedIn() ? NavigationMenu() : LoginScreen(),
+      // initialBinding: _firebaseAuth.currentUser == null ? LoginBinding() : null,
+      initialBinding: LoginBinding(),
 
     );
   }

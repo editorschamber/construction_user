@@ -18,6 +18,7 @@ class APIStrings {
   static const String createOrder = "orders/create";
   static const String receiveOrder = "receive";
   static const String getOrdersBySite = 'orders/getOrderBySiteId';
+  static const String getOrdersByUser = 'orders/getOrderByUserId';
 
   // Stock and Material Endpoints
   static const String availableStocks =

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/extension/text_style_extension.dart';
+import 'package:site_construct/core/service/storageService.dart';
+import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/profile/controller/profile_controller.dart';
 
 import '../../../../constrant/custom_color.dart';
@@ -83,6 +85,20 @@ class ProfilePage extends GetView<ProfileController> {
               ),
               onPressed: () => controller.updateProfile(),
               child: const Text("Update"),
+            ),
+          ),
+
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black, // Button color
+                backgroundColor: Colors.red.shade100, // Text color
+              ),
+              onPressed: () {
+                StorageService.clearTokens();
+                Get.toNamed(loginScreen);
+              },
+              child: const Text("Logout"),
             ),
           )
         ],

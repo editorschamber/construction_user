@@ -18,6 +18,7 @@ import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/core/models/matarialData.dart';
 import 'package:site_construct/core/models/supplierData.dart';
 import 'package:site_construct/core/notifiers/selectedSiteNotifier.dart';
+import 'package:site_construct/core/service/storageService.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
 import '../../../../apiServices/stockService.dart';
 import '../../../../core/data/sitesModel.dart';
@@ -49,69 +50,18 @@ class MainOrderController extends GetxController {
   final stockService = StockService();
   final OrderService orderService = OrderService();
   final HomeService homeService = HomeService();
+  RxBool isLoading = true.obs;
 
   RxList<SupplierData> suppliers = <SupplierData>[].obs;
 
-  List<Order> defaultOrders = [
-    // Order(
-    //     id: '1',
-    //     materialName: "Bricks",
-    //     supplierName: 'Hinduja',
-    //     quantity: '100',
-    //     imagePath: '',
-    //     siteName: "Site 1",
-    //     returnedQuantity: '',
-    //     status: 'pending',
-    //     orderCreateDate: DateTime.now().subtract(Duration(days: 10)),
-    //     expectedDeliveryDate: DateTime.now(),
-    //     instructions: 'Wrap the bricks in plastic, leave at door',
-    //     reason: 'Quality is not good'),
-    // Order(
-    //     id: '2',
-    //     materialName: "Bricks",
-    //     supplierName: 'Hinduja',
-    //     quantity: '100',
-    //     imagePath: '',
-    //     siteName: "Site 1",
-    //     returnedQuantity: '',
-    //     status: 'approved',
-    //     orderCreateDate: DateTime.now().subtract(Duration(days: 11)),
-    //     expectedDeliveryDate: DateTime.now(),
-    //     instructions: 'Wrap the bricks in plastic, leave at door',
-    //     reason: 'Quality is not good'),
-    // Order(
-    //     id: '3',
-    //     materialName: "Sand",
-    //     supplierName: 'Malviya',
-    //     quantity: '10',
-    //     imagePath: '',
-    //     siteName: "Site 2",
-    //     returnedQuantity: '5',
-    //     status: 'received',
-    //     orderCreateDate: DateTime.now(),
-    //     expectedDeliveryDate: DateTime.now(),
-    //     instructions: 'Wrap the bricks in plastic, leave at door',
-    //     reason: 'Quality is not good'),
-    // Order(
-    //     id: '4',
-    //     materialName: "Cement",
-    //     supplierName: 'Malviya',
-    //     quantity: '10',
-    //     imagePath: '',
-    //     siteName: "Site 2",
-    //     returnedQuantity: '',
-    //     status: 'returned',
-    //     orderCreateDate: DateTime.now(),
-    //     expectedDeliveryDate: DateTime.now().add(Duration(days: 5)),
-    //     instructions: 'Wrap the bricks in plastic, leave at door',
-    //     reason: 'Quality is not good'),
-  ];
+  List<Order> defaultOrders = [];
 
   TextEditingController partialReturnQuantityController =
       TextEditingController();
 
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
   SupplierService supplierService = SupplierService();
+  StorageService storageService = StorageService();
 
   @override
   void onInit() {
@@ -121,6 +71,7 @@ class MainOrderController extends GetxController {
       }
     });
 
+    addOrderInput();
     // loadOrders();
     loadSites();
     getData();
@@ -218,9 +169,11 @@ class MainOrderController extends GetxController {
   }
 
   void loadOrders() async {
+    isLoading.value = true;
     List<Order>? storedOrders =
-        await orderService.getOrdersBySite(siteId: siteNotifier.value);
+        await orderService.getOrdersByUser(userId: StorageService.userId);
     orders.value = storedOrders;
+    isLoading.value = false;
     update();
   }
 
@@ -229,7 +182,9 @@ class MainOrderController extends GetxController {
   }
 
   void loadSites() async {
+    isLoading.value = true;
     sites.value = await homeService.getSites();
+    isLoading.value = false;
     update();
   }
 
@@ -271,6 +226,7 @@ class MainOrderController extends GetxController {
   // }
 
   void addOrder({String status = 'pending'}) async {
+    isLoading.value = true;
     for (final input in orderInputs) {
       bool hasMaterial = input.selectedMaterial.value.isNotEmpty;
       bool hasQuantity = input.quantityController.text.isNotEmpty;
@@ -278,6 +234,8 @@ class MainOrderController extends GetxController {
         // if(int.parse(input.quantityController.text) * 100 < 10000){
         //   status = "approved";
         // }
+
+        print("selectedSite?.value.id ${selectedSite?.value.id}");
 
         final order = Order(
             materialName: input.selectedMaterial.value,
@@ -304,7 +262,9 @@ class MainOrderController extends GetxController {
 
         orders.add(order);
 
-        orderService.createOrder(order);
+        await orderService.createOrder(order);
+        isLoading.value = false;
+        loadOrders();
       }
     }
     // saveOrders();

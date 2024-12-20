@@ -19,10 +19,12 @@ class LoginController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   final GetStorage storage = GetStorage();
   APIServices apiServices = APIServices();
+  RxBool isLoading = false.obs;
 
   void verifyPhoneNumber() async {
     String phoneNumber = countryCode.text + numberController.text.trim();
     String password = passwordController.text.trim();
+    isLoading.value = true;
 
     if (phoneNumber.length < 10) {
       Get.defaultDialog(
@@ -41,6 +43,7 @@ class LoginController extends GetxController {
 
       if (response != null) {
         // final data = jsonDecode(response);
+        isLoading.value = false;
         final accessToken = response['accessToken'];
         final refreshToken = response['refreshToken'];
         final userId = response['userId'];
@@ -52,6 +55,7 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       // Catch any other exceptions
+      isLoading.value = false;
       log(e.toString());
       Get.snackbar('Error', 'Failed to verify phone number. Please try again.');
     }
