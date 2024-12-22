@@ -4,66 +4,228 @@ import 'package:site_construct/constrant/custom_color.dart';
 import 'package:site_construct/ui/user/login/controller/login_controller.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_button.dart';
 import 'package:site_construct/utils/common/common_widgets/custom_enter_number.dart';
+import 'package:site_construct/utils/common/common_widgets/common_textfield.dart';
 
-import '../../../../utils/common/common_widgets/common_textfield.dart';
+import 'common_textfield.dart';
 
 class LoginPage extends GetView<LoginController> {
-  LoginPage({super.key});
-
+  LoginPage({Key? key}) : super(key: key);
 
   final TextEditingController phoneController = TextEditingController();
   final authController = Get.find<LoginController>();
 
-
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery
-        .sizeOf(context)
-        .height;
-    return Obx(() {
-      return authController.isLoading.value ? Center(child: CircularProgressIndicator(),) : Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      body: Stack(
         children: [
-          const Text(
-            "Login",
-            style: TextStyle(color: CustomColor.textColor, fontSize: 33),
-          ),
-
-          SizedBox(
-            height: height * 0.04,
-          ),
-          const Text(
-            "Enter Your Mobile Number",
-            style: TextStyle(color: CustomColor.lightGrey, fontSize: 14),
-            textAlign: TextAlign.start,
-          ),
-
-          CustomEnterNumber(
-            countryCode: controller.countryCode,
-            numberController: authController.numberController,
-          ),
-
-          const Text(
-            "Enter Your Passowrd",
-            style: TextStyle(color: CustomColor.lightGrey, fontSize: 14),
-            textAlign: TextAlign.start,
-          ),
-          CustomTextfield(
-            password: authController.passwordController,
-          ),
-          SizedBox(
-            height: height * 0.07,
-          ),
-          CustomButton(
-            buttonColor: CustomColor.buttonColor,
-            buttonText: "verify",
-            onTap: () {
-              authController.verifyPhoneNumber();
-            },
-          )
+          _buildBackground(),
+          Obx(() {
+            return authController.isLoading.value
+                ? Center(child: CircularProgressIndicator(color: Colors.white))
+                : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                    _buildLogo(),
+                    SizedBox(height: 48),
+                    _buildWelcomeText(),
+                    SizedBox(height: 48),
+                    _buildInputFields(),
+                    SizedBox(height: 24),
+                    _buildLoginButton(),
+                    SizedBox(height: 16),
+                    _buildSignUpRow(),
+                  ],
+                ),
+              ),
+            );
+          }),
         ],
-      );
-    });
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E88E5),
+            Color(0xFF1565C0),
+          ],
+        ),
+      ),
+      child: CustomPaint(
+        painter: BackgroundPainter(),
+        child: Container(),
+      ),
+    );
+  }
+
+  Widget _buildLogo() {
+    return Hero(
+      tag: 'logo',
+      child: Container(
+        height: 120,
+        width: 120,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: Icon(
+          Icons.lock,
+          size: 60,
+          color: Color(0xFF1565C0),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeText() {
+    return Column(
+      children: [
+        Text(
+          "Welcome Back",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 8),
+        Text(
+          "Sign in to continue",
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.8),
+            fontSize: 16,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Mobile Number",
+          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: 8),
+        CustomEnterNumber(
+          countryCode: controller.countryCode,
+          numberController: authController.numberController,
+        ),
+        SizedBox(height: 24),
+        Text(
+          "Password",
+          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: 8),
+        CustomTextfield(
+          password: authController.passwordController,
+          prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
+        ),
+        SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () {
+              // TODO: Implement forgot password functionality
+            },
+            child: Text(
+              "Forgot Password?",
+              style: TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return CustomButton(
+      buttonColor: Colors.white,
+      buttonText: "Login",
+      textColor: Color(0xFF1565C0),
+      onTap: () {
+        authController.verifyPhoneNumber();
+      },
+    );
+  }
+
+  Widget _buildSignUpRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Don't have an account?",
+          style: TextStyle(color: Colors.white70),
+        ),
+        TextButton(
+          onPressed: () {
+            // TODO: Navigate to sign up page
+          },
+          child: Text(
+            "Sign Up",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
+
+class BackgroundPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(0, size.height * 0.7)
+      ..quadraticBezierTo(
+        size.width * 0.25,
+        size.height * 0.7,
+        size.width * 0.5,
+        size.height * 0.8,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.75,
+        size.height * 0.9,
+        size.width,
+        size.height * 0.8,
+      )
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
+

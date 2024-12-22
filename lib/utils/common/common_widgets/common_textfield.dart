@@ -1,19 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextfield extends StatelessWidget {
+class CustomTextfield1 extends StatelessWidget {
   final String? hintText;
   final IconData? icon;
   final double? width;
   final TextEditingController? password;
+  Widget? prefixIcon;
 
 
-  const CustomTextfield({
+   CustomTextfield1({
     super.key,
     this.hintText,
     this.icon,
     this.password,
     this.width,
+    this.prefixIcon
   });
 
   @override
@@ -50,6 +52,7 @@ class CustomTextfield extends StatelessWidget {
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
                 ),
+                prefixIcon: prefixIcon,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
               ),
