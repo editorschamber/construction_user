@@ -52,7 +52,7 @@ class OrderService {
   }
 
   // Create a new order
-  Future<Map<String, dynamic>> createOrder(Order orderData) async {
+  Future createOrder(Order orderData) async {
     final response = await apiService.postApi(
       APIStrings.createOrder,
       body: jsonEncode(orderData.toJson()),
@@ -60,7 +60,7 @@ class OrderService {
 
     print("response create order $response");
     if (response != null) {
-      return json.decode(response['data']);
+      return true;
     } else {
       throw Exception('Failed to create order');
     }

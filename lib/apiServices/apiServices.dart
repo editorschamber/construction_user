@@ -20,7 +20,8 @@ class APIServices {
           'Content-Type': 'application/json',
         },
       );
-      print("response is  ${response.body} status code is ${response.statusCode}");
+      print(
+          "response is  ${response.body} status code is ${response.statusCode}");
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -51,7 +52,7 @@ class APIServices {
       log("POST API REQUEST IS $endpoint : ${body}");
       log(" POST API RESPONSE is $endpoint : ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode >= 200) {
         log(" POST API RESPONSE is $endpoint : ${response.body}");
         return jsonDecode(response.body);
       } else {
@@ -93,14 +94,12 @@ class APIServices {
 
     try {
       final http.Response response;
-      response = await client.put(
-        url,
-        headers: {
-          'Authorization': 'Bearer ${StorageService.accessToken}',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(body)
-      );
+      response = await client.put(url,
+          headers: {
+            'Authorization': 'Bearer ${StorageService.accessToken}',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(body));
 
       print(response.body);
 

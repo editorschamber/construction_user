@@ -23,6 +23,7 @@ import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.
 import '../../../../apiServices/stockService.dart';
 import '../../../../core/data/sitesModel.dart';
 import '../../../../core/models/materialQuantity.dart';
+import '../../homeScreen/home_controller.dart';
 import '../widgets/return_order_dialog.dart';
 
 class MainOrderController extends GetxController {
@@ -168,11 +169,14 @@ class MainOrderController extends GetxController {
     orders.value[index].status = 'returned';
   }
 
+  final HomeController homeController = Get.put(HomeController());
+
   void loadOrders() async {
     isLoading.value = true;
     List<Order>? storedOrders =
         await orderService.getOrdersByUser(userId: StorageService.userId);
     orders.value = storedOrders;
+    selectedSite = homeController.selectedSite;
     isLoading.value = false;
     update();
   }
@@ -239,7 +243,7 @@ class MainOrderController extends GetxController {
 
         final order = Order(
             materialName: input.selectedMaterial.value,
-            supplierId: selectedSupplier.value?.id,
+            supplierId: input.selectedSupplier.value.id,
             price: (double.tryParse(input.quantityController.text) ?? 0) * 100,
             quantity: double.tryParse(input.quantityController.text) ?? 0.0,
             siteId: selectedSite?.value.id,
@@ -269,6 +273,7 @@ class MainOrderController extends GetxController {
     }
     // saveOrders();
     // saveOrderIdCounter();
+    isLoading.value = false;
     clearControllers();
   }
 
@@ -401,6 +406,8 @@ extension on Order {
 // Class to handle individual order input
 class OrderInput {
   var selectedMaterial = ''.obs;
+  Rx<SupplierData> selectedSupplier =
+      SupplierData().obs; // To store the selected supplier for this order
   var quantityController = TextEditingController();
   var orderCreateDate = Rx<DateTime>(DateTime.now());
   var expectedDeliveryDate = Rx<DateTime?>(null);
@@ -410,10 +417,14 @@ class OrderInput {
   var searchController = TextEditingController();
   var filteredMaterials = <String>[].obs;
 
-  // Ensure you dispose the controllers when no longer needed
+  // Adding supplierController to manage supplier-specific input
+  var supplierController = TextEditingController();
+
+  // Ensure you dispose of the controllers when no longer needed
   void dispose() {
     quantityController.dispose();
     expectedDeliveryDateController.dispose();
     searchController.dispose();
+    supplierController.dispose(); // Dispose of the supplier controller as well
   }
 }
