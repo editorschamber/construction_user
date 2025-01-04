@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
 import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
-import 'package:site_construct/ui/user/orderPage/controller/order_controller.dart';
-import 'package:site_construct/ui/user/profile/profile_screen.dart';
 import '../availableStock/available_stock.dart';
-import '../profile/controller/profile_controller.dart';
 import '../sitePlans/site_plans.dart';
-import '../siteTeam/site_team.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,9 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: (){
-                        Get.toNamed(profileScreen);
-                      }, icon: Icon(Icons.account_circle_rounded)),
+                      IconButton(
+                          onPressed: () {
+                            Get.toNamed(profileScreen);
+                          },
+                          icon: Icon(Icons.account_circle_rounded)),
                       Center(
                         child: Obx(() {
                           return DropdownButton<Sites>(
@@ -83,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       site: homeController.selectedSite?.value,
                       homeController: homeController),
                   const SizedBox(height: 20),
-
                   // Site Team widget updated with selected site
                   // SiteTeam(site: selectedSite),
                 ],

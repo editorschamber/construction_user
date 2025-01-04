@@ -172,13 +172,19 @@ class MainOrderController extends GetxController {
   final HomeController homeController = Get.put(HomeController());
 
   void loadOrders() async {
-    isLoading.value = true;
-    List<Order>? storedOrders =
-        await orderService.getOrdersByUser(userId: StorageService.userId);
-    orders.value = storedOrders;
-    selectedSite = homeController.selectedSite;
-    isLoading.value = false;
-    update();
+    try {
+      isLoading.value = true;
+      List<Order>? storedOrders =
+          await orderService.getOrdersByUser(userId: StorageService.userId);
+      orders.value = storedOrders;
+      selectedSite = homeController.selectedSite;
+
+      isLoading.value = false;
+      update();
+    } on Exception catch (e) {
+      print("loadOrders error is $e");
+      isLoading.value = false;
+    }
   }
 
   void saveOrders() {
