@@ -102,6 +102,12 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                               ),
                               const SizedBox(height: 8),
                               Text(
+                                'Qty: ${order.quantity} ${order.unit}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
                                 'Price: ${order.price}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
@@ -261,6 +267,12 @@ class OrderListTab extends GetView<MainOrderController> {
                             children: [
                               Text(
                                 'Material: ${order.materialName}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Qty: ${order.quantity} ${order.unit}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),

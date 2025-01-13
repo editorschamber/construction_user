@@ -22,7 +22,7 @@ class EditOrderPage extends GetView<MainOrderController> {
     String? quantity = "${order.quantity}";
     String? siteName = order.siteName;
     String? status = order.status;
-    String? instructions = order.instructions;
+    String? instructions = order.instruction;
     DateTime? expectedDeliveryDate = order.expectedDeliveryDate;
 
     bool? materialCheck = order.qualityCheck ?? false;
@@ -158,7 +158,7 @@ class EditOrderPage extends GetView<MainOrderController> {
                             returnedQuantity: order.returnedQuantity,
                             qualityCheck: materialCheck,
                             quantityCheck: quantityCheck,
-                            instructions: instructions);
+                            instruction: instructions);
 
                         controller.updateOrderById(order.id!, updatedOrder);
                         controller.updater();

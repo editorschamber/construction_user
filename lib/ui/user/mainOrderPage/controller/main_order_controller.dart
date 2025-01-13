@@ -17,6 +17,7 @@ import 'package:site_construct/core/data/orderModel.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/core/models/matarialData.dart';
 import 'package:site_construct/core/models/supplierData.dart';
+import 'package:site_construct/core/notifiers/refreshNotifier.dart';
 import 'package:site_construct/core/notifiers/selectedSiteNotifier.dart';
 import 'package:site_construct/core/service/storageService.dart';
 import 'package:site_construct/ui/user/mainOrderPage/widgets/receiveOrderDialog.dart';
@@ -63,6 +64,7 @@ class MainOrderController extends GetxController {
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
   SupplierService supplierService = SupplierService();
   StorageService storageService = StorageService();
+  RefreshNotifier refreshNotifier = RefreshNotifier.getInstance();
 
   @override
   void onInit() {
@@ -171,7 +173,7 @@ class MainOrderController extends GetxController {
 
   final HomeController homeController = Get.put(HomeController());
 
-  void loadOrders() async {
+  Future<void> loadOrders() async {
     try {
       isLoading.value = true;
       List<Order>? storedOrders =
@@ -191,10 +193,15 @@ class MainOrderController extends GetxController {
     box.write('orders', orders.map((e) => e.toJson()).toList());
   }
 
-  void loadSites() async {
-    isLoading.value = true;
-    sites.value = await homeService.getSites();
-    isLoading.value = false;
+  Future<void> loadSites() async {
+    try {
+      isLoading.value = true;
+      sites.value = await homeService.getSites();
+      isLoading.value = false;
+    } on Exception catch (e) {
+      isLoading.value = false;
+      print("error in load sites $e");
+    }
     update();
   }
 
@@ -256,7 +263,7 @@ class MainOrderController extends GetxController {
             orderCreateDate: input.orderCreateDate.value,
             expectedDeliveryDate: input.expectedDeliveryDate.value,
             imagePath: '',
-            instructions: instructionsController.text,
+            instruction: instructionsController.text,
             qualityCheck: false,
             quantityCheck: false);
 
@@ -384,6 +391,7 @@ class MainOrderController extends GetxController {
   void markAsReceived(Order order) async {
     await orderService.markOrderAsReceived(order);
     loadOrders();
+    refreshNotifier.refresh(true);
   }
 
   void clearControllers() {

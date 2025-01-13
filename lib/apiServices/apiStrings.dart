@@ -24,6 +24,7 @@ class APIStrings {
   static const String availableStocks =
       "availableStocks/getAvilableStockBySiteId";
   static const String materials = "materials";
+  static const String materialUsage = 'materials/materialUsage';
 
   // Construction Sites and Labor Management
   static const String constructionSites = "constructionSites";

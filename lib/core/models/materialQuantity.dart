@@ -11,6 +11,7 @@ class MaterialQuantity {
   int? siteId;
   dynamic price;
   String? userId;
+  String? unit;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -23,6 +24,7 @@ class MaterialQuantity {
     this.userId,
     this.createdAt,
     this.updatedAt,
+    this.unit,
   });
 
   factory MaterialQuantity.fromJson(Map<String, dynamic> json) => MaterialQuantity(
@@ -32,6 +34,7 @@ class MaterialQuantity {
     siteId: json["siteId"],
     price: json["price"],
     userId: json["userId"],
+    unit: json["unit"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
   );
@@ -43,6 +46,7 @@ class MaterialQuantity {
     "siteId": siteId,
     "price": price,
     "userId": userId,
+    "unit": unit,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
   };

@@ -70,7 +70,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                     DateFormat('dd-MMM-yyyy').format(order.expectedDeliveryDate!),
                   ),
                   if (tabType == 'orderList')
-                    _buildDetailRow('Instructions:', order.instructions),
+                    _buildDetailRow('Instructions:', order.instruction),
                   if (order.status == 'returned')
                     _buildDetailRow('Return Reason:', order.returnReason),
                 ],

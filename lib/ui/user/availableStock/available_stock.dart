@@ -34,16 +34,23 @@ class AvailableStock extends StatelessWidget {
               ),
             ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: homeController.filteredReceivedOrders.map((material) {
-                return StockCard(
-                  title: material.materialName ?? "",
-                  quantity: material.quantity.toString(),
-                  icon: Icons.inventory,
+          SizedBox(
+            height: 150,
+            child: ListView.builder(
+              itemCount: homeController.filteredReceivedOrders.length,
+              itemExtent: 150,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                final material = homeController.filteredReceivedOrders[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: StockCard(
+                    title: "${material.materialName}",
+                    quantity: material.quantity.toString(),
+                    icon: Icons.inventory, unit: material.unit ?? "",
+                  ),
                 );
-              }).toList(),
+              }
             ),
           ),
         ],
@@ -55,29 +62,29 @@ class AvailableStock extends StatelessWidget {
 class StockCard extends StatelessWidget {
   final String title;
   final String quantity;
+  final String unit;
   final IconData icon;
 
   const StockCard(
-      {super.key, required this.title, required this.quantity, required this.icon});
+      {super.key, required this.title, required this.quantity, required this.icon, required this.unit});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 50, color: Colors.deepPurple.shade400),
           const SizedBox(height: 10),
           Text(title, style: const TextStyle(
               fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
-          Text(quantity,
+          Text("$quantity $unit",
               style: const TextStyle(fontSize: 14, color: Colors.grey)),
         ],
       ),
@@ -97,16 +104,19 @@ class ViewAllScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('View All Stock')),
       body: Obx(() {
-        return ListView.builder(
-          itemCount: homeController.filteredReceivedOrders.length,
-          itemBuilder: (context, index) {
-            final material = homeController.filteredReceivedOrders[index];
-            return StockCard(
-              title: "${material.materialName}",
-              quantity: material.quantity.toString(),
-              icon: Icons.inventory,
-            );
-          },
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: GridView.builder(
+            itemCount: homeController.filteredReceivedOrders.length,
+            itemBuilder: (context, index) {
+              final material = homeController.filteredReceivedOrders[index];
+              return StockCard(
+                title: "${material.materialName}",
+                quantity: material.quantity.toString(),
+                icon: Icons.inventory, unit: material.unit ?? "",
+              );
+            },  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 12, crossAxisSpacing: 12),
+          ),
         );
       }),
     );

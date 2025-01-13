@@ -33,7 +33,8 @@ class Order {
   SupplierDetails? supplierDetails;
   String? supplierName;
   String? siteName;
-  String? instructions;
+  String? instruction;
+  String? unit;
 
   Order({
     this.id,
@@ -59,7 +60,7 @@ class Order {
     this.site,
     this.supplierDetails,
     this.supplierName,
-    this.siteName, this.instructions,
+    this.siteName, this.instruction, this.unit
   });
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
@@ -86,7 +87,7 @@ class Order {
     site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
     supplierDetails: json["supplierDetails"] == null ? null : SupplierDetails.fromJson(json["supplierDetails"]),
     supplierName: json["supplierName"],
-    siteName: json["siteName"], instructions: json['instructions'],
+    siteName: json["siteName"], instruction: json['instruction'], unit: json['unit']
   );
 
   Map<String, dynamic> toJson() => {
@@ -114,7 +115,7 @@ class Order {
     "supplierDetails": supplierDetails?.toJson(),
     "supplierName": supplierName,
     "siteName": siteName,
-    "instructions": instructions
+    "instruction": instruction
   };
 }
 

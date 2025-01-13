@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:get/get.dart';
 import 'package:site_construct/apiServices/homeService.dart';
 import 'package:site_construct/apiServices/stockService.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
+import 'package:site_construct/core/notifiers/refreshNotifier.dart';
 
 import '../../../core/models/materialQuantity.dart';
 import '../../../core/notifiers/selectedSiteNotifier.dart';
@@ -15,9 +17,13 @@ class HomeController extends GetxController {
   RxBool isLoading = true.obs;
   StockService stockService = StockService();
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
+  RefreshNotifier refreshNotifier = RefreshNotifier.getInstance();
 
   @override
   void onInit() {
+    refreshNotifier.addListener((){
+      fetchStockBySiteName();
+    });
     getSitesData();
     super.onInit();
   }
@@ -28,6 +34,16 @@ class HomeController extends GetxController {
   Future<void> fetchStockBySiteName() async {
     filteredReceivedOrders.value =
         await stockService.getAvailableStocks(siteId: "${siteNotifier.value}");
+  }
+
+  Future<bool> submitDailyUsage(String materialName, double usedQty) async{
+    try {
+      var response = await stockService.addDailyUsage(siteId: siteNotifier.value, materialName: materialName, quantityUsed: usedQty);
+      print(response);
+      return jsonEncode(response).isNotEmpty;
+    } on Exception catch (e) {
+      return false;
+    }
   }
 
   Future getSitesData() async {

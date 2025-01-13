@@ -26,20 +26,22 @@ class StockService {
   }
 
   // Add a new stock
-  // Future<Map<String, dynamic>> addStock(String name, int quantity, double price) async {
-  //   final response = await apiServices.postApi(
-  //       APIStrings.availableStocks,
-  //     body: json.encode({
-  //       'name': name,
-  //       'quantity': quantity,
-  //       'price': price,
-  //     }),
-  //   );
-  //
-  //   if (response.statusCode == 201) {
-  //     return json.decode(response.body);
-  //   } else {
-  //     throw Exception('Failed to add stock');
-  //   }
-  // }
+  Future<Map<String, dynamic>> addDailyUsage(
+      {siteId, materialName, quantityUsed}) async {
+    final response = await apiServices.postApi(
+        APIStrings.materialUsage,
+      body: json.encode({
+        "siteId": siteId,
+        "materialName": materialName,
+        "quantityUsed": quantityUsed,
+        "dateUsed": DateTime.now().toIso8601String()
+      }),
+    );
+
+    if (response != null) {
+      return response;
+    } else {
+      throw Exception('Failed to add stock');
+    }
+  }
 }

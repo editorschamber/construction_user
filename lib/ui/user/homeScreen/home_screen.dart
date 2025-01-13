@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
-import 'package:site_construct/routes/route.dart';
 import 'package:site_construct/ui/user/icon/icon_screen.dart';
 import 'package:site_construct/ui/user/mainOrderPage/controller/main_order_controller.dart';
 import '../availableStock/available_stock.dart';
@@ -17,24 +16,37 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeController homeController = Get.put(HomeController());
-  final MainOrderController orderController = Get.find<MainOrderController>();
+  final MainOrderController orderController = Get.put(MainOrderController());
+  final PageController _pageController = PageController(); // Controller for horizontal scroll
+
+  @override
+  void initState() {
+    super.initState();
+    // homeController..getSitesData(); // Fetch sites initially
+  }
+
+  /// Function to refresh data when user pulls down
+  Future<void> _refreshData() async {
+    await orderController.loadOrders(); // Fetch updated order data
+    await homeController.fetchStockBySiteName();
+    homeController.update(); // Trigger UI update after data refresh
+    orderController.update(); // Ensure order data is refreshed too
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: buildBody());
-  }
+    return Scaffold(
+      body: Obx(() {
+        if (homeController.isLoading.value || homeController.siteModel.value.data == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          final List<Sites> sitesList = homeController.siteModel.value.data!;
 
-  Widget buildBody() {
-    return Obx(() {
-      if (homeController.isLoading.value == true) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else {
-        return SingleChildScrollView(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+          return RefreshIndicator(
+            onRefresh: _refreshData, // Trigger pull-to-refresh function
+            child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -42,52 +54,72 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                          onPressed: () {
-                            Get.toNamed(profileScreen);
-                          },
-                          icon: Icon(Icons.account_circle_rounded)),
-                      Center(
-                        child: Obx(() {
-                          return DropdownButton<Sites>(
-                            value: homeController.selectedSite?.value,
-                            onChanged: homeController.onSiteChanged,
-                            items: homeController.siteModel.value.data
-                                ?.map((Sites site) {
-                              return DropdownMenuItem<Sites>(
-                                value: site,
-                                child: Text(site.siteName ?? ""),
-                              );
-                            }).toList(),
-                          );
-                        }),
+                        onPressed: () {
+                          Get.toNamed('/profileScreen');
+                        },
+                        icon: const Icon(Icons.account_circle_rounded),
                       ),
                       IconButton(
                         icon: const Icon(Icons.notifications),
                         onPressed: () {
-                          Get.to(IconScreen());
+                          Get.to(() => IconScreen());
                         },
                       ),
                     ],
                   ),
-                  // Dropdown to select site
-                  const SizedBox(height: 20),
-                  Obx(() {
-                    return SitePlans(site: homeController.selectedSite?.value);
-                  }),
-                  const SizedBox(height: 20),
-                  // Available Stock widget updated with selected site
-                  AvailableStock(
-                      site: homeController.selectedSite?.value,
-                      homeController: homeController),
-                  const SizedBox(height: 20),
-                  // Site Team widget updated with selected site
-                  // SiteTeam(site: selectedSite),
+                  const SizedBox(height: 10),
+                  // PageView for horizontal site scrolling
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: sitesList.length,
+                      onPageChanged: (index) {
+                        // Update the selected site when the page changes
+                        homeController.onSiteChanged(sitesList[index]);
+                        _refreshData(); // Refresh data based on new site
+                      },
+                      itemBuilder: (context, index) {
+                        final site = sitesList[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                site.siteName ?? "No Site Name",
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  child: Column(
+                                    children: [
+                                      SitePlans(site: site),
+                                      const SizedBox(height: 20),
+                                      AvailableStock(
+                                        site: site,
+                                        homeController: homeController,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      }),
+    );
   }
 }

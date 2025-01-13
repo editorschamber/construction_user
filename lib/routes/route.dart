@@ -49,7 +49,7 @@ const String splashScreen = "/splashScreen";
 const String navigationMenu = "/navigationMenu";
 
 List<GetPage<dynamic>> routes = [
-  GetPage(name: homeScreen, page: () => const HomeScreen(), binding: HomeBinding()),
+  GetPage(name: homeScreen, page: () => HomeScreen(), binding: HomeBinding()),
   GetPage(name: navigationMenu, page: () => const NavigationMenu()),
   GetPage(
       name: loginScreen,
