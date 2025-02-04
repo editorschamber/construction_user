@@ -66,6 +66,22 @@ class OrderService {
     }
   }
 
+  // Create a new order
+  Future updateOrder(Order orderData) async {
+    print(orderData.toJson());
+    final response = await apiService.putApi(
+      APIStrings.updateOrder,
+      body: jsonEncode(orderData.toJson()),
+    );
+
+    print("response create order $response");
+    if (response != null) {
+      return true;
+    } else {
+      throw Exception('Failed to create order');
+    }
+  }
+
   // Mark an order as received
   Future<Map<String, dynamic>> markOrderAsReceived(Order order) async {
     final response = await apiService.putApi('orders/receiveOrders', body: {

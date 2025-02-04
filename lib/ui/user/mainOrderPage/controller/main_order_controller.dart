@@ -130,15 +130,13 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updateOrderById(var id, Order updatedOrder) {
-    int index = orders.indexWhere((order) => order.id == id);
-    if (index != -1) {
-      orders.value[index] = updatedOrder;
-      saveOrders();
-      loadOrders();
-    } else {
-      Get.snackbar("Order with id $id not found.", '');
-    }
+  void updateOrderById(var id, Order updatedOrder) async{
+    updatedOrder.id == id;
+     var response = await orderService.updateOrder(updatedOrder);
+     if(response){
+       Get.snackbar("Success", "Order updated successfully");
+       loadOrders();
+     }
   }
 
   void loadOrderIdCounter() {
@@ -196,7 +194,9 @@ class MainOrderController extends GetxController {
   Future<void> loadSites() async {
     try {
       isLoading.value = true;
-      sites.value = await homeService.getSites();
+      var data = await homeService.getSites();
+      SitesModel siteData = SitesModel.fromJson(data);
+      sites.value = siteData;
       isLoading.value = false;
     } on Exception catch (e) {
       isLoading.value = false;
@@ -286,6 +286,7 @@ class MainOrderController extends GetxController {
     }
     // saveOrders();
     // saveOrderIdCounter();
+    loadOrders();
     isLoading.value = false;
     clearControllers();
   }
@@ -296,7 +297,7 @@ class MainOrderController extends GetxController {
     returnedOrder.returnReason = returnReasonController.text;
 
     if (isFullReturn) {
-      returnedOrder.returnedQuantity = oldOrder.quantity;
+      returnedOrder.returnedQuantity = (oldOrder.quantity ?? 0) - (oldOrder.returnedQuantity ?? 0);
       await orderService.returnOrder(returnedOrder);
     } else {
       returnedOrder.returnedQuantity = partialQuantity;
@@ -400,6 +401,13 @@ class MainOrderController extends GetxController {
     orderInputs.clear();
     qualityChecks.updateAll((key, value) => false);
     instructionsController.clear();
+    returnReasonController.clear();
+    partialReturnQuantityController.clear();
+    qualityChecks.value = <String, bool>{
+      'materialQuality': false,
+      'quantityAccuracy': false,
+      'packaging': false,
+    };
     addOrderInput();
   }
 

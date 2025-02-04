@@ -16,6 +16,7 @@ class APIStrings {
   static const String approvedOrders = "approvedOrders";
   static const String pendingOrders = "pendingOrders";
   static const String createOrder = "orders/create";
+  static const String updateOrder = "orders/update";
   static const String receiveOrder = "receive";
   static const String getOrdersBySite = 'orders/getOrderBySiteId';
   static const String getOrdersByUser = 'orders/getOrderByUserId';

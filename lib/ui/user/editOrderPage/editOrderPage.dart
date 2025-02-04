@@ -17,13 +17,14 @@ class EditOrderPage extends GetView<MainOrderController> {
     final MainOrderController controller = Get.find();
 
     // Temporary variables to hold updated values
-    Materials? materialName = Materials();
+    Materials? materialName = controller.materials.firstWhereOrNull((material) => material.materialName == order.materialName);
     String? supplierName = order.supplierName;
     String? quantity = "${order.quantity}";
     String? siteName = order.siteName;
     String? status = order.status;
     String? instructions = order.instruction;
     DateTime? expectedDeliveryDate = order.expectedDeliveryDate;
+    int? siteId = order.siteId;
 
     bool? materialCheck = order.qualityCheck ?? false;
     bool? packagingCheck = order.qualityCheck ?? false;
@@ -58,7 +59,7 @@ class EditOrderPage extends GetView<MainOrderController> {
 
                   // Material Name
                   DropdownButtonFormField<Materials>(
-                    value: materialName,
+                    value: controller.materials.value.firstWhereOrNull((m) => m.materialName == order.materialName),
                     decoration: const InputDecoration(labelText: 'Material'),
                     items: controller.materials.value.map((Materials material) {
                       return DropdownMenuItem<Materials>(
@@ -74,6 +75,7 @@ class EditOrderPage extends GetView<MainOrderController> {
 
                   // Supplier Name
                   TextFormField(
+                    enabled: false,
                     initialValue: supplierName,
                     decoration: const InputDecoration(labelText: 'Supplier'),
                     onChanged: (value) {
@@ -96,10 +98,12 @@ class EditOrderPage extends GetView<MainOrderController> {
                   // Site Name
                   DropdownButtonFormField<Sites>(
                     value: controller.sites.value.data
-                        ?.firstWhereOrNull((site) => site.id == order.siteId),
+                        ?.firstWhereOrNull((site) => site.id == siteId),
                     onChanged: (value) {
-                      controller.updateOrderMaterial(order.id!, value);
+                      // controller.updateOrderMaterial(order.id!, value);
+                      siteId = value?.id;
                     },
+
                     items: controller.sites.value.data?.map((site) {
                       return DropdownMenuItem<Sites>(
                         value: site,
@@ -145,19 +149,15 @@ class EditOrderPage extends GetView<MainOrderController> {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        final updatedOrder = Order(
-                            id: order.id,
+                        final updatedOrder = order.copyWith(
                             materialName: materialName?.materialName ?? "",
-                            supplierName: supplierName!,
                             quantity: double.tryParse(quantity ?? "0"),
-                            siteName: siteName,
                             status: status!,
-                            orderCreateDate: order.orderCreateDate,
                             expectedDeliveryDate: expectedDeliveryDate,
-                            imagePath: order.imagePath,
                             returnedQuantity: order.returnedQuantity,
                             qualityCheck: materialCheck,
                             quantityCheck: quantityCheck,
+                            siteId: siteId,
                             instruction: instructions);
 
                         controller.updateOrderById(order.id!, updatedOrder);

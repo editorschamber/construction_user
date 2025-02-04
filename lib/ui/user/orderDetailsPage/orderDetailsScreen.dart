@@ -32,96 +32,150 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Section
-              if (order.imagePath != null && order.imagePath.isNotEmpty)
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      File(order.imagePath.replaceFirst('File: ', '')),
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+          child: Obx(() {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image Section
+                if (controller.orders
+                    .firstWhere((element) => element.id == order.id)
+                    .imagePath != null && controller.orders
+                    .firstWhere((element) => element.id == order.id)
+                    .imagePath
+                    .isNotEmpty)
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(
+                        File(controller.orders
+                            .firstWhere((element) => element.id == order.id)
+                            .imagePath
+                            .replaceFirst('File: ', '')),
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Order Details Card
-              _buildSectionCard(
-                title: "Order Information",
-                children: [
-                  _buildDetailRow('Material:', order.materialName),
-                  _buildDetailRow('Order ID:', order.id),
-                  _buildDetailRow('Supplier:', order.supplierName),
-                  _buildDetailRow('Quantity:', order.quantity),
-                  _buildDetailRow('Site:', order.siteName),
-                  if (order.status == 'returned' || order.status == 'partially')
-                    _buildDetailRow('Returned Quantity:', order.returnedQuantity),
-                  _buildDetailRow(
-                    'Order Date:',
-                    DateFormat('dd-MMM-yyyy').format(order.orderCreateDate!),
-                  ),
-                  _buildDetailRow(
-                    'Expected Delivery:',
-                    DateFormat('dd-MMM-yyyy').format(order.expectedDeliveryDate!),
-                  ),
-                  if (tabType == 'orderList')
-                    _buildDetailRow('Instructions:', order.instruction),
-                  if (order.status == 'returned')
-                    _buildDetailRow('Return Reason:', order.returnReason),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // Status Section
-              _buildSectionCard(
-                title: "Status",
-                children: [
-                  Row(
-                    children: [
-                      Chip(
-                        label: Text(
-                          order.status!.capitalizeFirst!,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: _getStatusColor(order.status!),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 10.0),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        '(${_getStatusLabel(order.status!)})',
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // Quality Check Section
-              if (order.status == 'received')
+                // Order Details Card
                 _buildSectionCard(
-                  title: "Quality Checks",
+                  title: "Order Information",
                   children: [
-                    _buildQualityCheckRow('Material Check', order.qualityCheck),
-                    _buildQualityCheckRow('Packaging Check', order.qualityCheck),
-                    _buildQualityCheckRow('Quantity Check', order.quantityCheck),
+                    _buildDetailRow('Material:', controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .materialName),
+                    _buildDetailRow('Order ID:', controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .id),
+                    _buildDetailRow('Supplier:', controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .supplierName),
+                    _buildDetailRow('Quantity:', controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .quantity),
+                    _buildDetailRow('Site:', controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .siteName),
+                    if (controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .status == 'returned' || controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .status == 'partially')
+                      _buildDetailRow('Returned Quantity:', controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .returnedQuantity),
+                    _buildDetailRow(
+                      'Order Date:',
+                      DateFormat('dd-MMM-yyyy').format(controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .orderCreateDate!),
+                    ),
+                    _buildDetailRow(
+                      'Expected Delivery:',
+                      DateFormat('dd-MMM-yyyy').format(controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .expectedDeliveryDate!),
+                    ),
+                    if (tabType == 'orderList')
+                      _buildDetailRow('Instructions:', controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .instruction),
+                    if (controller.orders
+                        .firstWhere((element) => element.id == order.id)
+                        .status == 'returned')
+                      _buildDetailRow('Return Reason:', controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .returnReason),
                   ],
                 ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              // Action Buttons Section
-              _buildActionSection(context),
-            ],
-          ),
+                // Status Section
+                _buildSectionCard(
+                  title: "Status",
+                  children: [
+                    Row(
+                      children: [
+                        Chip(
+                          label: Text(
+                            controller.orders
+                                .firstWhere((element) => element.id == order.id)
+                                .status!
+                                .capitalizeFirst!,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: _getStatusColor(controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .status!),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 10.0),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          '(${_getStatusLabel(controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .status!)})',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Quality Check Section
+                if (controller.orders
+                    .firstWhere((element) => element.id == order.id)
+                    .status == 'received')
+                  _buildSectionCard(
+                    title: "Quality Checks",
+                    children: [
+                      _buildQualityCheckRow('Material Check', true),
+                      _buildQualityCheckRow('Packaging Check', true),
+                      _buildQualityCheckRow('Quantity Check', true),
+                      // _buildQualityCheckRow('Material Check', controller.orders
+                      //     .firstWhere((element) => element.id == order.id)
+                      //     .qualityCheck),
+                      // _buildQualityCheckRow('Packaging Check', controller.orders
+                      //     .firstWhere((element) => element.id == order.id)
+                      //     .qualityCheck),
+                      // _buildQualityCheckRow('Quantity Check', controller.orders
+                      //     .firstWhere((element) => element.id == order.id)
+                      //     .quantityCheck),
+                    ],
+                  ),
+
+                const SizedBox(height: 16),
+
+                // Action Buttons Section
+                _buildActionSection(context),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -191,6 +245,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
       children: [
         Checkbox(
           value: value ?? false,
+          activeColor: Colors.green,
           onChanged: null,
         ),
         Text(label),
@@ -202,14 +257,22 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
     return Center(
       child: Column(
         children: [
-          if (order.status == 'approved')
+          if (controller.orders
+              .firstWhere((element) => element.id == order.id)
+              .status == 'approved')
             ElevatedButton.icon(
               onPressed: () async {
                 final result = await Get.dialog<bool>(
-                    ReceiveOrderDialog(order: order));
+                    ReceiveOrderDialog(
+                        order: controller.orders.firstWhere((element) => element
+                            .id == order.id)));
                 if (result == true) {
-                  order.status = 'received';
-                  controller.markAsReceived(order);
+                  controller.orders
+                      .firstWhere((element) => element.id == order.id)
+                      .status = 'received';
+                  // controller.markAsReceived(
+                  //     controller.orders.firstWhere((element) => element.id ==
+                  //         order.id));
                   controller.updater();
                   Get.back();
                   Get.snackbar(
@@ -227,20 +290,25 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                 minimumSize: const Size(double.infinity, 50),
               ),
             ),
-          if (order.status == 'pending')
+          if (controller.orders
+              .firstWhere((element) => element.id == order.id)
+              .status == 'pending')
             ElevatedButton.icon(
               onPressed: () {
-                Get.to(() => EditOrderPage(order: order));
+                Get.to(() => EditOrderPage(
+                    order: controller.orders.firstWhere((element) => element
+                        .id == order.id)));
                 controller.updater();
               },
               icon: const Icon(Icons.edit, color: Colors.white),
-              label: const Text('Edit Order', style: TextStyle(color: Colors.white),),
+              label: const Text(
+                'Edit Order', style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
                 minimumSize: const Size(double.infinity, 50),
               ),
             ),
-          if (order.status == 'received')
+          if (order.status == 'received' || order.status == "partially")
             ElevatedButton.icon(
               onPressed: () async {
                 final result = await Get.dialog<bool>(
@@ -248,13 +316,14 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                 );
                 if (result == true) {
                   order.status = 'returned';
-                  controller.updateOrderById(order.id!, order);
+                  // controller.updateOrderById(order.id!, order);
                   controller.updater();
                 }
                 Get.back();
               },
               icon: const Icon(Icons.reply, color: Colors.white),
-              label: const Text('Return Order', style: TextStyle(color: Colors.white),),
+              label: const Text(
+                'Return Order', style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
                 minimumSize: const Size(double.infinity, 50),

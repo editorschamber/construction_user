@@ -26,7 +26,8 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('Quantity: ${order.quantity}'),
+                  child: Text(
+                      'Quantity: ${(order.quantity ?? 0) - (order.returnedQuantity ?? 0)}'),
                 ),
                 const SizedBox(width: 10),
                 Padding(
@@ -37,7 +38,7 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
             ),
             const SizedBox(height: 16),
             Obx(
-                  () => Column(
+              () => Column(
                 children: [
                   ListTile(
                     title: const Text('Full Return'),
@@ -66,12 +67,13 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
               ),
             ),
             Obx(
-                  () => Visibility(
+              () => Visibility(
                 visible: !controller.isFullReturn.value,
                 child: TextField(
                   controller: controller.partialReturnQuantityController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Partial Return Quantity'),
+                  decoration: const InputDecoration(
+                      labelText: 'Partial Return Quantity'),
                 ),
               ),
             ),
@@ -95,12 +97,20 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
           onPressed: () {
             if (controller.isFullReturn.value) {
               controller.returnOrder(order); // Full return
+              controller.clearControllers();
               Get.back(result: true);
             } else {
-              double? partialQuantity = double.tryParse(controller.partialReturnQuantityController.text);
+              double? partialQuantity = double.tryParse(
+                  controller.partialReturnQuantityController.text);
 
               if (partialQuantity != null && partialQuantity > 0) {
-                if (partialQuantity > (double.tryParse(order.quantity.toString()) ?? 0)) {
+                if (partialQuantity >
+                        (double.tryParse(order.quantity.toString()) ?? 0) ||
+                    partialQuantity >
+                        ((double.tryParse(order.quantity.toString()) ?? 0) -
+                            (double.tryParse(
+                                    order.returnedQuantity.toString()) ??
+                                0))) {
                   Get.snackbar(
                     'Error',
                     'Partial return quantity cannot exceed the available quantity of ${order.quantity}.',
@@ -119,11 +129,13 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
 
                   return;
                 }
+                controller.clearControllers();
                 Get.back(result: true);
-                controller.returnOrder(order, isFullReturn: false, partialQuantity: partialQuantity);
+                controller.returnOrder(order,
+                    isFullReturn: false, partialQuantity: partialQuantity);
                 // Partial return
               } else {
-
+                controller.clearControllers();
                 Get.snackbar(
                   'Error',
                   'Please enter a valid quantity for partial return.',

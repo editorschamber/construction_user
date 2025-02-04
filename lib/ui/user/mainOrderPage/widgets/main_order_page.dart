@@ -74,7 +74,8 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
             Expanded(
               child: Obx(() {
                 final filteredOrders = controller.orders
-                    .where((order) => order.status == 'received')
+                    .where((order) => order.status == 'received' ||
+                    order.status == "partially")
                     .toList();
 
                 return Padding(
@@ -96,19 +97,20 @@ class ReceiveOrdersTab extends GetView<MainOrderController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
+                                'Order ID: ${order.id} ${order.status == "partially" ? "(Partially Returned)" : ""}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
                                 'Material: ${order.materialName}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Qty: ${order.quantity} ${order.unit}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Price: ${order.price}',
+                                'Qty: ${
+                                    order.status == "partially" ? ((order.quantity ?? 0) - (order.returnedQuantity ?? 0)) : order.quantity} ${order.unit}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
@@ -266,6 +268,12 @@ class OrderListTab extends GetView<MainOrderController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
+                                'Order ID: ${order.id}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
                                 'Material: ${order.materialName}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
@@ -316,7 +324,7 @@ class OrderListTab extends GetView<MainOrderController> {
                           onTap: () {
                             Get.to(() => OrderDetailsScreen(
                                 index: controller.orders.indexOf(order),
-                                order: order,
+                                order: controller.orders.firstWhere((element) => element.id == order.id),
                                 tabType: 'orderList'));
                           },
                         ),
@@ -381,13 +389,20 @@ class ReturnedOrdersTab extends GetView<MainOrderController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
+                                'Order ID: ${order.id} ${order.status == "partially" ? "(Partially Returned)" : ""}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
                                 'Material: ${order.materialName}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Price: ${order.price}',
+                                'Returned Qty: ${
+                                    order.returnedQuantity} ${order.unit}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold),
                               ),
