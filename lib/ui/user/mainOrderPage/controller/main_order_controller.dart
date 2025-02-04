@@ -331,26 +331,28 @@ class MainOrderController extends GetxController {
                     child: const Text('Cancel'),
                   ),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       orders.removeAt(index);
                       saveOrders();
                       Get.back();
-
-                      Get.snackbar(
-                        'Order Deleted',
-                        'The order has been successfully deleted.',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.redAccent,
-                        colorText: Colors.white,
-                        borderRadius: 10,
-                        margin: const EdgeInsets.all(16),
-                        icon: const Icon(Icons.delete, color: Colors.white),
-                        duration: const Duration(seconds: 3),
-                        animationDuration: const Duration(milliseconds: 500),
-                        barBlur: 10,
-                        isDismissible: true,
-                        dismissDirection: DismissDirection.horizontal,
-                      );
+                      bool isDeleted = await orderService.deleteOrder(orders[index]);
+                      if(isDeleted){
+                        Get.snackbar(
+                          'Order Deleted',
+                          'The order has been successfully deleted.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.redAccent,
+                          colorText: Colors.white,
+                          borderRadius: 10,
+                          margin: const EdgeInsets.all(16),
+                          icon: const Icon(Icons.delete, color: Colors.white),
+                          duration: const Duration(seconds: 3),
+                          animationDuration: const Duration(milliseconds: 500),
+                          barBlur: 10,
+                          isDismissible: true,
+                          dismissDirection: DismissDirection.horizontal,
+                        );
+                      }
                     },
                     child: const Text(
                       'Delete',

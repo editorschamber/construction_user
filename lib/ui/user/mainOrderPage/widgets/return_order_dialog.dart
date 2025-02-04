@@ -129,10 +129,10 @@ class ReturnOrderDialog extends GetView<MainOrderController> {
 
                   return;
                 }
-                controller.clearControllers();
-                Get.back(result: true);
                 controller.returnOrder(order,
                     isFullReturn: false, partialQuantity: partialQuantity);
+                controller.clearControllers();
+                Get.back(result: true);
                 // Partial return
               } else {
                 controller.clearControllers();

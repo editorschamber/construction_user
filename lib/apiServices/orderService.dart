@@ -112,4 +112,12 @@ class OrderService {
       throw Exception('Failed to update order status');
     }
   }
+  
+  Future<bool> deleteOrder(Order order) async{
+    final response = await apiService.deleteApi('orders/delete', body: {
+      "id" : order.id ?? 0
+    });
+
+    return response != null;
+  }
 }

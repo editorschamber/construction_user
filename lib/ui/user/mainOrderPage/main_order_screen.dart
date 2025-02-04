@@ -11,9 +11,7 @@ class MainOrderScreen extends GetView<MainOrderController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        return controller.isLoading.value
-            ? Center(child: CircularProgressIndicator())
-            : MainOrderPage();
+        return MainOrderPage();
       }),
     );
   }
