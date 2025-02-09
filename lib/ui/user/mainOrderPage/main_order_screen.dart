@@ -10,9 +10,7 @@ class MainOrderScreen extends GetView<MainOrderController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        return MainOrderPage();
-      }),
+      body: MainOrderPage(),
     );
   }
 }

@@ -39,7 +39,7 @@ class LoginPage extends GetView<LoginController> {
                     SizedBox(height: 24),
                     _buildLoginButton(),
                     SizedBox(height: 16),
-                    _buildSignUpRow(),
+                    // _buildSignUpRow(),
                   ],
                 ),
               ),
@@ -99,7 +99,7 @@ class LoginPage extends GetView<LoginController> {
     return Column(
       children: [
         Text(
-          "Welcome Back",
+          "Welcome",
           style: TextStyle(
             color: Colors.white,
             fontSize: 32,
@@ -132,6 +132,7 @@ class LoginPage extends GetView<LoginController> {
         CustomEnterNumber(
           countryCode: controller.countryCode,
           numberController: authController.numberController,
+          prefixIcon: Icon(Icons.phone, color: Colors.white70),
         ),
         SizedBox(height: 24),
         Text(
@@ -144,18 +145,18 @@ class LoginPage extends GetView<LoginController> {
           prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
         ),
         SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {
-              // TODO: Implement forgot password functionality
-            },
-            child: Text(
-              "Forgot Password?",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.centerRight,
+        //   child: TextButton(
+        //     onPressed: () {
+        //       // TODO: Implement forgot password functionality
+        //     },
+        //     child: Text(
+        //       "Forgot Password?",
+        //       style: TextStyle(color: Colors.white70, fontSize: 14),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

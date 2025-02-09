@@ -49,4 +49,20 @@ class UserService {
       throw Exception('Failed to create user');
     }
   }
+
+  Future<bool> updateProfileImage(String? userId, String base64Image) async {
+    final response = await apiServices.putApi(
+      "admin/updateProfile",
+      body: {
+        "userId": userId,
+        "profileImage": base64Image,
+      },
+    );
+
+    if (response != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

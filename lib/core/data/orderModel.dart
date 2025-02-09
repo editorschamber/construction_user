@@ -33,6 +33,11 @@ class Order {
   String? siteName;
   String? instruction;
   String? unit;
+  EdByUser? createdByUser;
+  EdByUser? approvedByUser;
+  EdByUser? receivedByUser;
+  EdByUser? returnedByUser;
+  EdByUser? rejectedByUser;
 
   Order({
     this.id,
@@ -61,50 +66,63 @@ class Order {
     this.siteName,
     this.instruction,
     this.unit,
+    this.createdByUser,
+    this.approvedByUser,
+    this.receivedByUser,
+    this.rejectedByUser,
+    this.returnedByUser
   });
 
-  factory Order.fromJson(Map<String, dynamic> json) => Order(
-    id: json["id"],
-    materialName: json["materialName"],
-    supplier: json["supplier"],
-    supplierId: json["supplierId"],
-    quantity: json["quantity"] != null
-        ? double.tryParse(json["quantity"].toString())
-        : null,
-    returnedQuantity: json["returnedQuantity"] != null
-        ? double.tryParse(json["returnedQuantity"].toString())
-        : null,
-    qualityCheck: json["qualityCheck"],
-    quantityCheck: json["quantityCheck"],
-    price: json["price"] != null
-        ? double.tryParse(json["price"].toString())
-        : null,
-    status: json["status"],
-    orderCreateDate: json["orderCreateDate"] == null
-        ? null
-        : DateTime.parse(json["orderCreateDate"]),
-    expectedDeliveryDate: json["expectedDeliveryDate"] == null
-        ? null
-        : DateTime.parse(json["expectedDeliveryDate"]),
-    deliveryAddress: json["deliveryAddress"],
-    imagePath: json["imagePath"],
-    returnReason: json["returnReason"],
-    returnImage: json["returnImage"],
-    siteId: json["siteId"],
-    userId: json["userId"],
-    createdAt:
-    json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt:
-    json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-    site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
-    supplierDetails: json["supplierDetails"] == null
-        ? null
-        : SupplierDetails.fromJson(json["supplierDetails"]),
-    supplierName: json["supplierName"],
-    siteName: json["siteName"],
-    instruction: json['instruction'],
-    unit: json['unit'],
-  );
+  factory Order.fromJson(Map<String, dynamic> json){
+    print(json);
+    return Order(
+      id: json["id"],
+      materialName: json["materialName"],
+      supplier: json["supplier"],
+      supplierId: json["supplierId"],
+      quantity: json["quantity"] != null
+          ? double.tryParse(json["quantity"].toString())
+          : null,
+      returnedQuantity: json["returnedQuantity"] != null
+          ? double.tryParse(json["returnedQuantity"].toString())
+          : null,
+      qualityCheck: json["qualityCheck"],
+      quantityCheck: json["quantityCheck"],
+      price: json["price"] != null
+          ? double.tryParse(json["price"].toString())
+          : null,
+      status: json["status"],
+      orderCreateDate: json["orderCreateDate"] == null
+          ? null
+          : DateTime.parse(json["orderCreateDate"]),
+      expectedDeliveryDate: json["expectedDeliveryDate"] == null
+          ? null
+          : DateTime.parse(json["expectedDeliveryDate"]),
+      deliveryAddress: json["deliveryAddress"],
+      imagePath: json["imagePath"],
+      returnReason: json["returnReason"],
+      returnImage: json["returnImage"],
+      siteId: json["siteId"],
+      userId: json["userId"],
+      createdAt:
+      json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      updatedAt:
+      json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+      site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
+      createdByUser: json["createdByUser"] == null ? null : EdByUser.fromJson(json["createdByUser"]),
+      approvedByUser: json["approvedByUser"] == null ? null : EdByUser.fromJson(json["approvedByUser"]),
+      receivedByUser: json["receivedByUser"] == null ? null : EdByUser.fromJson(json["receivedByUser"]),
+      rejectedByUser: json["rejectedByUser"] == null ? null : EdByUser.fromJson(json["rejectedByUser"]),
+      returnedByUser: json["returnedByUser"] == null ? null : EdByUser.fromJson(json["returnedByUser"]),
+      supplierDetails: json["supplierDetails"] == null
+          ? null
+          : SupplierDetails.fromJson(json["supplierDetails"]),
+      supplierName: json["supplierName"],
+      siteName: json["siteName"],
+      instruction: json['instruction'],
+      unit: json['unit'],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -180,6 +198,26 @@ class Order {
       unit: unit,
     );
   }
+}
+
+class EdByUser {
+  String? userId;
+  String? displayName;
+
+  EdByUser({
+    this.userId,
+    this.displayName,
+  });
+
+  factory EdByUser.fromJson(Map<String, dynamic> json) => EdByUser(
+    userId: json["userId"],
+    displayName: json["displayName"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "userId": userId,
+    "displayName": displayName,
+  };
 }
 
 class SiteData {

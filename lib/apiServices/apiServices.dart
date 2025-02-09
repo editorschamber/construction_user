@@ -102,6 +102,7 @@ class APIServices {
           body: jsonEncode(body));
 
       print(response.body);
+      print(response.request);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

@@ -6,6 +6,7 @@ class CustomEnterNumber extends StatelessWidget {
   final double? width;
   final TextEditingController? countryCode;
   final TextEditingController? numberController;
+  final Widget? prefixIcon;
 
   const CustomEnterNumber({
     super.key,
@@ -13,63 +14,30 @@ class CustomEnterNumber extends StatelessWidget {
     this.icon,
     this.countryCode,
     this.numberController,
-    this.width,
+    this.width, this.prefixIcon,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 70,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey,
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(14),
-              bottomLeft: Radius.circular(14),
-            ),
-          ),
-          child: TextField(
-            controller: countryCode,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-          ),
+    return TextField(
+      controller: numberController,
+      keyboardType: TextInputType.phone,
+      style: TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white70),
+          borderRadius: BorderRadius.circular(8),
         ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
-              ),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(14),
-                bottomRight: Radius.circular(14),
-              ),
-            ),
-            child: TextField(
-              controller: numberController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                hintText: "Enter Your Number",
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                ),
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-              ),
-            ),
-          ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ],
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        hintText: 'Enter your number',
+        hintStyle: TextStyle(color: Colors.white),
+      ),
     );
   }
 }
-
-
-
