@@ -117,20 +117,25 @@ class EditOrderPage extends GetView<MainOrderController> {
                   const SizedBox(height: 8),
                   // Expected Delivery Date
                   TextFormField(
-                    initialValue:
-                        expectedDeliveryDate?.toString().split(' ')[0],
+                    controller: TextEditingController(
+                      text: controller.selectedDeliveryDate.value?.toString().split(' ')[0] ??
+                          expectedDeliveryDate?.toString().split(' ')[0] ??
+                          "",
+                    ),
                     decoration: const InputDecoration(
-                        labelText: 'Expected Delivery Date'),
+                      labelText: 'Expected Delivery Date',
+                    ),
                     readOnly: true,
                     onTap: () async {
                       final DateTime? picked = await showDatePicker(
                         context: context,
-                        initialDate: expectedDeliveryDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
+                        initialDate: controller.selectedDeliveryDate.value ?? DateTime.now(),
+                        firstDate: expectedDeliveryDate ?? DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-                      if (picked != null && picked != expectedDeliveryDate) {
-                        expectedDeliveryDate = picked;
+
+                      if (picked != null) {
+                        controller.setDeliveryDate(picked); // Update reactive variable
                       }
                     },
                   ),

@@ -65,6 +65,11 @@ class MainOrderController extends GetxController {
   SupplierService supplierService = SupplierService();
   StorageService storageService = StorageService();
   RefreshNotifier refreshNotifier = RefreshNotifier.getInstance();
+  Rxn<DateTime> selectedDeliveryDate = Rxn<DateTime>();
+
+  void setDeliveryDate(DateTime date) {
+    selectedDeliveryDate.value = date;
+  }
 
   @override
   void onInit() {
@@ -332,11 +337,12 @@ class MainOrderController extends GetxController {
                   ),
                   TextButton(
                     onPressed: () async {
-                      orders.removeAt(index);
-                      saveOrders();
+                      // orders.removeAt(index);
+                      // saveOrders();
                       Get.back();
                       bool isDeleted = await orderService.deleteOrder(orders[index]);
                       if(isDeleted){
+                        orders.removeAt(index);
                         Get.snackbar(
                           'Order Deleted',
                           'The order has been successfully deleted.',

@@ -76,12 +76,12 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                           controller.orders
                               .firstWhere((element) => element.id == order.id)
                               .id),
-                      _buildDetailRow(
-                        'Created on',
-                        DateFormat('dd-MMM-yyyy').format(controller.orders
-                            .firstWhere((element) => element.id == order.id)
-                            .expectedDeliveryDate!),
-                      ),
+                      // _buildDetailRow(
+                      //   'Created on',
+                      //   DateFormat('dd-MMM-yyyy').format(controller.orders
+                      //       .firstWhere((element) => element.id == order.id)
+                      //       .expectedDeliveryDate!),
+                      // ),
                       _buildDetailRow(
                           'Supplier:',
                           controller.orders

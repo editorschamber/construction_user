@@ -662,7 +662,7 @@ class ApprovedListTab extends GetView<MainOrderController> {
                                 const SizedBox(height: 8),
                                 Text('Order by: ${order.createdByUser?.displayName}'),
                                 const SizedBox(height: 8),
-                                Text('Order by: ${order.approvedByUser?.displayName}'),
+                                Text('Approved by: ${order.approvedByUser?.displayName}'),
                               ],
                             ),
                             // trailing: Wrap(

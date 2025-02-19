@@ -80,35 +80,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       itemBuilder: (context, index) {
                         final site = sitesList[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                site.siteName ?? "No Site Name",
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  physics: const AlwaysScrollableScrollPhysics(),
-                                  child: Column(
-                                    children: [
-                                      SitePlans(site: site),
-                                      const SizedBox(height: 20),
-                                      AvailableStock(
-                                        site: site,
-                                        homeController: homeController,
-                                      ),
-                                    ],
+                        return RefreshIndicator(
+                          onRefresh: _refreshData, // Trigger pull-to-refresh function
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  site.siteName ?? "No Site Name",
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 20),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    child: Column(
+                                      children: [
+                                        SitePlans(site: site),
+                                        const SizedBox(height: 20),
+                                        AvailableStock(
+                                          site: site,
+                                          homeController: homeController,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
