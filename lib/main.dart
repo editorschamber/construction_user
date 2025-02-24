@@ -14,7 +14,7 @@ import 'package:site_construct/ui/user/profile/controller/profile_controller.dar
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.lazyPut(()=>ProfileController());
+  Get.lazyPut(() => ProfileController());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Site Construction',
+      title: 'Supervisor App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
       // home: StorageService.isLoggedIn() ? NavigationMenu() : LoginScreen(),
       // initialBinding: _firebaseAuth.currentUser == null ? LoginBinding() : null,
       initialBinding: LoginBinding(),
-
     );
   }
 }

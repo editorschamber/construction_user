@@ -48,14 +48,27 @@ class Sites {
     this.userId,
   });
 
+  // factory Sites.fromJson(Map<String, dynamic> json) => Sites(
+  //       id: json["id"],
+  //       siteName: json["siteName"],
+  //       location: json["location"],
+  //       startDate: DateTime.parse(json["startDate"]),
+  //       endDate: DateTime.parse(json["endDate"]),
+  //       imageUrl: json["imageUrl"],
+  //       userId: json["userId"],
+  //     );
+
   factory Sites.fromJson(Map<String, dynamic> json) => Sites(
         id: json["id"],
-        siteName: json["siteName"],
-        location: json["location"],
-        startDate: DateTime.parse(json["startDate"]),
-        endDate: DateTime.parse(json["endDate"]),
-        imageUrl: json["imageUrl"],
-        userId: json["userId"],
+        siteName: json["siteName"] ?? '', // Handle null values
+        location: json["location"] ?? '',
+        startDate: json["startDate"] != null
+            ? DateTime.tryParse(json["startDate"])
+            : null,
+        endDate:
+            json["endDate"] != null ? DateTime.tryParse(json["endDate"]) : null,
+        imageUrl: json["imageUrl"] ?? '',
+        userId: json["userId"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
