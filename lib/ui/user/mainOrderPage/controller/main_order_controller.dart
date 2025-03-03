@@ -47,6 +47,7 @@ class MainOrderController extends GetxController {
   }.obs; // Added for quality checks
   File? pickedImage;
   final ImagePicker _picker = ImagePicker();
+  String? base64Image;
   int _orderIdCounter = 0; // ID counter for orders
   RxBool isFullReturn = false.obs;
   final stockService = StockService();
@@ -105,6 +106,11 @@ class MainOrderController extends GetxController {
     }).toList();
   }
 
+  void setBase64Image(String base64) {
+    base64Image = base64;
+    update();
+  }
+
   void addOrderInput() {
     orderInputs.add(OrderInput());
   }
@@ -135,13 +141,13 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updateOrderById(var id, Order updatedOrder) async{
+  void updateOrderById(var id, Order updatedOrder) async {
     updatedOrder.id == id;
-     var response = await orderService.updateOrder(updatedOrder);
-     if(response){
-       Get.snackbar("Success", "Order updated successfully");
-       loadOrders();
-     }
+    var response = await orderService.updateOrder(updatedOrder);
+    if (response) {
+      Get.snackbar("Success", "Order updated successfully");
+      loadOrders();
+    }
   }
 
   void loadOrderIdCounter() {
@@ -267,10 +273,11 @@ class MainOrderController extends GetxController {
             siteId: selectedSite?.value.id,
             orderCreateDate: input.orderCreateDate.value,
             expectedDeliveryDate: input.expectedDeliveryDate.value,
-            imagePath: '',
+            imagePath: base64Image,
             instruction: instructionsController.text,
             qualityCheck: false,
-            quantityCheck: false);
+            quantityCheck: false,
+            );
 
         if (qualityChecks['materialQuality'] == true) {
           log("Material Quality Checked");
@@ -294,6 +301,7 @@ class MainOrderController extends GetxController {
     loadOrders();
     isLoading.value = false;
     clearControllers();
+    base64Image = null;
   }
 
   void returnOrder(Order oldOrder,
@@ -302,7 +310,8 @@ class MainOrderController extends GetxController {
     returnedOrder.returnReason = returnReasonController.text;
 
     if (isFullReturn) {
-      returnedOrder.returnedQuantity = (oldOrder.quantity ?? 0) - (oldOrder.returnedQuantity ?? 0);
+      returnedOrder.returnedQuantity =
+          (oldOrder.quantity ?? 0) - (oldOrder.returnedQuantity ?? 0);
       await orderService.returnOrder(returnedOrder);
     } else {
       returnedOrder.returnedQuantity = partialQuantity;
@@ -340,8 +349,9 @@ class MainOrderController extends GetxController {
                       // orders.removeAt(index);
                       // saveOrders();
                       Get.back();
-                      bool isDeleted = await orderService.deleteOrder(orders[index]);
-                      if(isDeleted){
+                      bool isDeleted =
+                          await orderService.deleteOrder(orders[index]);
+                      if (isDeleted) {
                         orders.removeAt(index);
                         Get.snackbar(
                           'Order Deleted',
@@ -416,6 +426,7 @@ class MainOrderController extends GetxController {
       'quantityAccuracy': false,
       'packaging': false,
     };
+    base64Image = null;
     addOrderInput();
   }
 

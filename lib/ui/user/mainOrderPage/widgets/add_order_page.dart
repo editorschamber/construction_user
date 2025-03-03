@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:site_construct/apiServices/apiServices.dart';
 import 'package:site_construct/core/data/site.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
 import 'package:site_construct/core/models/supplierData.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:site_construct/ui/user/mainOrderPage/widgets/image_picker_dialog.dart';
 
 import '../../../../core/models/matarialData.dart';
 import '../../homeScreen/home_controller.dart';
@@ -199,7 +201,71 @@ class AddOrderPage extends StatelessWidget {
                         decoration:
                             const InputDecoration(labelText: 'Instructions'),
                       ),
-                      const SizedBox(height: 10),
+                      // Replace the existing Row for Gallery/Camera buttons with this single button
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => ImagePickerDialog(
+                                  onImageSelected: (base64Image) {
+                                    orderController.setBase64Image(base64Image);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Image selected successfully'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.image,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            label: const Text(
+                              'Pick Image',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(0, 50),
+                              backgroundColor: Colors.deepOrange.shade100,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          orderController.base64Image != null
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.shade100,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Icon(Icons.check_circle,
+                                          color: Colors.green),
+                                      SizedBox(width: 8),
+                                      Text('Image attached',
+                                          style:
+                                              TextStyle(color: Colors.green)),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
                           orderController.addOrder();
@@ -239,7 +305,8 @@ class AddOrderPage extends StatelessWidget {
                     return ListTile(
                       title: Text(supplier.supplierName ?? ""),
                       onTap: () {
-                        input.supplierController.text = supplier.supplierName ?? "";
+                        input.supplierController.text =
+                            supplier.supplierName ?? "";
                         input.selectedSupplier.value = supplier;
 
                         Get.back();

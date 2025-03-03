@@ -6,61 +6,74 @@ import '../controller/main_order_controller.dart';
 
 class ReceiveOrderDialog extends GetView<MainOrderController> {
   final Order order;
+  final TextEditingController remarkcontroller = TextEditingController();
 
-  const ReceiveOrderDialog({required this.order, super.key});
+  ReceiveOrderDialog({required this.order, super.key});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Confirm Order Details'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Displaying Material Name, Quantity, and Site as text fields with default values
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('Material: ${order.materialName}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('Quantity: ${order.quantity}'),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text('Site: ${order.siteName}'),
-          ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Displaying Material Name, Quantity, and Site as text fields with default values
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text('Material: ${order.materialName}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text('Quantity: ${order.quantity}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text('Site: ${order.siteName}'),
+            ),
 
-          // Quality checkboxes
-          const SizedBox(height: 16),
-          const Text('Quality Checks', style: TextStyle(fontWeight: FontWeight.bold)),
-          Obx(() {
-            return Column(
-              children: [
-                CheckboxListTile(
-                  title: const Text('Check Material Quality'),
-                  value: controller.qualityChecks['materialQuality'],
-                  onChanged: (bool? value) {
-                    controller.qualityChecks['materialQuality'] = value ?? false;
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('Check Quantity Accuracy'),
-                  value: controller.qualityChecks['quantityAccuracy'],
-                  onChanged: (bool? value) {
-                    controller.qualityChecks['quantityAccuracy'] = value ?? false;
-                  },
-                ),
-                CheckboxListTile(
-                  title: const Text('Check Packaging'),
-                  value: controller.qualityChecks['packaging'],
-                  onChanged: (bool? value) {
-                    controller.qualityChecks['packaging'] = value ?? false;
-                  },
-                ),
-              ],
-            );
-          }),
-        ],
+            // Quality checkboxes
+            const SizedBox(height: 16),
+            const Text('Quality Checks',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            Obx(() {
+              return Column(
+                children: [
+                  CheckboxListTile(
+                    title: const Text('Check Material Quality'),
+                    value: controller.qualityChecks['materialQuality'],
+                    onChanged: (bool? value) {
+                      controller.qualityChecks['materialQuality'] =
+                          value ?? false;
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Check Quantity Accuracy'),
+                    value: controller.qualityChecks['quantityAccuracy'],
+                    onChanged: (bool? value) {
+                      controller.qualityChecks['quantityAccuracy'] =
+                          value ?? false;
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Check Packaging'),
+                    value: controller.qualityChecks['packaging'],
+                    onChanged: (bool? value) {
+                      controller.qualityChecks['packaging'] = value ?? false;
+                    },
+                  ),
+                  TextField(
+                    controller: remarkcontroller,
+                    decoration: const InputDecoration(
+                      labelText: 'Remark',
+                      border: OutlineInputBorder(),
+                    ),
+                  )
+                ],
+              );
+            }),
+          ],
+        ),
       ),
       actions: [
         TextButton(
