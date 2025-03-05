@@ -6,7 +6,7 @@ import '../controller/main_order_controller.dart';
 
 class ReceiveOrderDialog extends GetView<MainOrderController> {
   final Order order;
-  final TextEditingController remarkcontroller = TextEditingController();
+  final TextEditingController remarkController = TextEditingController();
 
   ReceiveOrderDialog({required this.order, super.key});
 
@@ -63,7 +63,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                     },
                   ),
                   TextField(
-                    controller: remarkcontroller,
+                    controller: remarkController,
                     decoration: const InputDecoration(
                       labelText: 'Remark',
                       border: OutlineInputBorder(),
@@ -89,7 +89,7 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
             if (controller.qualityChecks.values.every((value) => value)) {
               Get.back(result: true);
               order.status = 'received';
-              controller.markAsReceived(order);
+              controller.markAsReceived(order, remarkController.text);
             } else {
               // Show a popup error if not all checks are ticked
               Get.snackbar(

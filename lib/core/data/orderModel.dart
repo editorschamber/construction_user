@@ -39,6 +39,7 @@ class Order {
   EdByUser? receivedByUser;
   EdByUser? returnedByUser;
   EdByUser? rejectedByUser;
+  String? remarks;
 
   Order({
     this.id,
@@ -73,67 +74,70 @@ class Order {
     this.rejectedByUser,
     this.returnedByUser,
     this.imageBase64,
+    this.remarks,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
     print(json);
     return Order(
-      id: json["id"],
-      materialName: json["materialName"],
-      supplier: json["supplier"],
-      supplierId: json["supplierId"],
-      quantity: json["quantity"] != null
-          ? double.tryParse(json["quantity"].toString())
-          : null,
-      returnedQuantity: json["returnedQuantity"] != null
-          ? double.tryParse(json["returnedQuantity"].toString())
-          : null,
-      qualityCheck: json["qualityCheck"],
-      quantityCheck: json["quantityCheck"],
-      price: json["price"] != null
-          ? double.tryParse(json["price"].toString())
-          : null,
-      status: json["status"],
-      orderCreateDate: json["orderCreateDate"] == null
-          ? null
-          : DateTime.parse(json["orderCreateDate"]),
-      expectedDeliveryDate: json["expectedDeliveryDate"] == null
-          ? null
-          : DateTime.parse(json["expectedDeliveryDate"]),
-      deliveryAddress: json["deliveryAddress"],
-      imagePath: json["imagePath"],
-      returnReason: json["returnReason"],
-      returnImage: json["returnImage"],
-      siteId: json["siteId"],
-      userId: json["userId"],
-      createdAt:
-          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-      updatedAt:
-          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-      site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
-      createdByUser: json["createdByUser"] == null
-          ? null
-          : EdByUser.fromJson(json["createdByUser"]),
-      approvedByUser: json["approvedByUser"] == null
-          ? null
-          : EdByUser.fromJson(json["approvedByUser"]),
-      receivedByUser: json["receivedByUser"] == null
-          ? null
-          : EdByUser.fromJson(json["receivedByUser"]),
-      rejectedByUser: json["rejectedByUser"] == null
-          ? null
-          : EdByUser.fromJson(json["rejectedByUser"]),
-      returnedByUser: json["returnedByUser"] == null
-          ? null
-          : EdByUser.fromJson(json["returnedByUser"]),
-      supplierDetails: json["supplierDetails"] == null
-          ? null
-          : SupplierDetails.fromJson(json["supplierDetails"]),
-      supplierName: json["supplierName"],
-      siteName: json["siteName"],
-      instruction: json['instruction'],
-      unit: json['unit'],
-    );
+        id: json["id"],
+        materialName: json["materialName"],
+        supplier: json["supplier"],
+        supplierId: json["supplierId"],
+        quantity: json["quantity"] != null
+            ? double.tryParse(json["quantity"].toString())
+            : null,
+        returnedQuantity: json["returnedQuantity"] != null
+            ? double.tryParse(json["returnedQuantity"].toString())
+            : null,
+        qualityCheck: json["qualityCheck"],
+        quantityCheck: json["quantityCheck"],
+        price: json["price"] != null
+            ? double.tryParse(json["price"].toString())
+            : null,
+        status: json["status"],
+        orderCreateDate: json["orderCreateDate"] == null
+            ? null
+            : DateTime.parse(json["orderCreateDate"]),
+        expectedDeliveryDate: json["expectedDeliveryDate"] == null
+            ? null
+            : DateTime.parse(json["expectedDeliveryDate"]),
+        deliveryAddress: json["deliveryAddress"],
+        imagePath: json["imagePath"],
+        returnReason: json["returnReason"],
+        returnImage: json["returnImage"],
+        siteId: json["siteId"],
+        userId: json["userId"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+        site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
+        createdByUser: json["createdByUser"] == null
+            ? null
+            : EdByUser.fromJson(json["createdByUser"]),
+        approvedByUser: json["approvedByUser"] == null
+            ? null
+            : EdByUser.fromJson(json["approvedByUser"]),
+        receivedByUser: json["receivedByUser"] == null
+            ? null
+            : EdByUser.fromJson(json["receivedByUser"]),
+        rejectedByUser: json["rejectedByUser"] == null
+            ? null
+            : EdByUser.fromJson(json["rejectedByUser"]),
+        returnedByUser: json["returnedByUser"] == null
+            ? null
+            : EdByUser.fromJson(json["returnedByUser"]),
+        supplierDetails: json["supplierDetails"] == null
+            ? null
+            : SupplierDetails.fromJson(json["supplierDetails"]),
+        supplierName: json["supplierName"],
+        siteName: json["siteName"],
+        instruction: json['instruction'],
+        unit: json['unit'],
+        remarks: json['remarks']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -163,6 +167,7 @@ class Order {
         "siteName": siteName,
         "instruction": instruction,
         "unit": unit,
+        "remarks": remarks
       };
 
   /// **Copy method to update only modified values**
@@ -181,33 +186,33 @@ class Order {
       String? instruction,
       int? siteId}) {
     return Order(
-      id: id,
-      materialName: materialName ?? this.materialName,
-      supplier: supplier ?? this.supplier,
-      supplierId: supplierId ?? this.supplierId,
-      quantity: quantity ?? this.quantity,
-      returnedQuantity: returnedQuantity ?? this.returnedQuantity,
-      qualityCheck: qualityCheck ?? this.qualityCheck,
-      quantityCheck: quantityCheck ?? this.quantityCheck,
-      price: price ?? this.price,
-      status: status ?? this.status,
-      orderCreateDate: orderCreateDate,
-      expectedDeliveryDate: expectedDeliveryDate ?? this.expectedDeliveryDate,
-      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
-      imagePath: imagePath,
-      returnReason: returnReason,
-      returnImage: returnImage,
-      siteId: siteId,
-      userId: userId,
-      createdAt: createdAt,
-      updatedAt: DateTime.now(), // Updates timestamp on modification
-      site: site,
-      supplierDetails: supplierDetails,
-      supplierName: supplierName,
-      siteName: siteName,
-      instruction: instruction ?? this.instruction,
-      unit: unit,
-    );
+        id: id,
+        materialName: materialName ?? this.materialName,
+        supplier: supplier ?? this.supplier,
+        supplierId: supplierId ?? this.supplierId,
+        quantity: quantity ?? this.quantity,
+        returnedQuantity: returnedQuantity ?? this.returnedQuantity,
+        qualityCheck: qualityCheck ?? this.qualityCheck,
+        quantityCheck: quantityCheck ?? this.quantityCheck,
+        price: price ?? this.price,
+        status: status ?? this.status,
+        orderCreateDate: orderCreateDate,
+        expectedDeliveryDate: expectedDeliveryDate ?? this.expectedDeliveryDate,
+        deliveryAddress: deliveryAddress ?? this.deliveryAddress,
+        imagePath: imagePath,
+        returnReason: returnReason,
+        returnImage: returnImage,
+        siteId: siteId,
+        userId: userId,
+        createdAt: createdAt,
+        updatedAt: DateTime.now(), // Updates timestamp on modification
+        site: site,
+        supplierDetails: supplierDetails,
+        supplierName: supplierName,
+        siteName: siteName,
+        instruction: instruction ?? this.instruction,
+        unit: unit,
+        remarks: remarks);
   }
 }
 

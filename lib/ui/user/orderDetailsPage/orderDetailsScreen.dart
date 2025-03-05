@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,26 +47,7 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                           .firstWhere((element) => element.id == order.id)
                           .imagePath
                           .isNotEmpty)
-                    Center(
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          // child: Image.file(
-                          //   File(controller.orders
-                          //       .firstWhere((element) => element.id == order.id)
-                          //       .imagePath
-                          //       .replaceFirst('File: ', '')),
-                          //   height: 200,
-                          //   width: double.infinity,
-                          //   fit: BoxFit.cover,
-                          // ),
-
-                          child: controller.base64ToImage(controller.orders
-                                  .firstWhere(
-                                      (element) => element.id == order.id)
-                                  .imagePath ??
-                              '')),
-                    ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                   // Order Details Card
                   _buildSectionCard(
@@ -144,6 +126,11 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
                                 .returnReason),
+                      _buildDetailRow(
+                          'Remarks:',
+                          controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .remarks),
                     ],
                   ),
 
@@ -289,6 +276,34 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                       ],
                     ),
 
+                  const SizedBox(height: 16),
+
+                  _buildDetailRow(
+                      'Remarks:',
+                      controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .remarks),
+
+                  if (controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .imagePath !=
+                          null &&
+                      controller.orders
+                          .firstWhere((element) => element.id == order.id)
+                          .imagePath!
+                          .isNotEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 300,
+                          width: 300,
+                          child: Image.memory(base64Decode(controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .imagePath!)),
+                        ),
+                      ),
+                    ),
                   const SizedBox(height: 16),
 
                   // Action Buttons Section
