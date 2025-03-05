@@ -48,17 +48,22 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                           .isNotEmpty)
                     Center(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          File(controller.orders
-                              .firstWhere((element) => element.id == order.id)
-                              .imagePath
-                              .replaceFirst('File: ', '')),
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(12),
+                          // child: Image.file(
+                          //   File(controller.orders
+                          //       .firstWhere((element) => element.id == order.id)
+                          //       .imagePath
+                          //       .replaceFirst('File: ', '')),
+                          //   height: 200,
+                          //   width: double.infinity,
+                          //   fit: BoxFit.cover,
+                          // ),
+
+                          child: controller.base64ToImage(controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .imagePath ??
+                              '')),
                     ),
                   const SizedBox(height: 16),
 
@@ -98,11 +103,13 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                               .firstWhere((element) => element.id == order.id)
                               .siteName),
                       if (controller.orders
-                                  .firstWhere((element) => element.id == order.id)
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
                                   .status ==
                               'returned' ||
                           controller.orders
-                                  .firstWhere((element) => element.id == order.id)
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
                                   .status ==
                               'partially')
                         _buildDetailRow(
@@ -147,46 +154,78 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                           'Created by:',
                           controller.orders
                               .firstWhere((element) => element.id == order.id)
-                              .createdByUser?.displayName),
-                      if(controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "approved" || controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "received" || controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "partially")
+                              .createdByUser
+                              ?.displayName),
+                      if (controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "approved" ||
+                          controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "received" ||
+                          controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "partially")
                         _buildDetailRow(
                             'Approved By:',
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
-                                .approvedByUser?.displayName),
-                      if(controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "received" || controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "partially")
+                                .approvedByUser
+                                ?.displayName),
+                      if (controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "received" ||
+                          controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "partially")
                         _buildDetailRow(
                             'Received By:',
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
-                                .receivedByUser?.displayName),
-                      if(controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "returned" || controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "partially")
+                                .receivedByUser
+                                ?.displayName),
+                      if (controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "returned" ||
+                          controller.orders
+                                  .firstWhere(
+                                      (element) => element.id == order.id)
+                                  .status ==
+                              "partially")
                         _buildDetailRow(
                             'Returned By:',
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
-                                .returnedByUser?.displayName),
-                      if(controller.orders
-                          .firstWhere((element) => element.id == order.id).status == "rejected")
+                                .returnedByUser
+                                ?.displayName),
+                      if (controller.orders
+                              .firstWhere((element) => element.id == order.id)
+                              .status ==
+                          "rejected")
                         _buildDetailRow(
                             'Rejected By:',
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
-                                .rejectedByUser?.displayName),
-
+                                .rejectedByUser
+                                ?.displayName),
                     ],
                   ),
 
                   Card(
                     elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -195,8 +234,9 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                           _buildDetailRow(
                               'Status:',
                               _getStatusLabel(controller.orders
-                                  .firstWhere((element) => element.id == order.id)
-                                  .status!)
+                                      .firstWhere(
+                                          (element) => element.id == order.id)
+                                      .status!)
                                   .capitalizeFirst)
                         ],
                       ),
@@ -365,7 +405,10 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                 }
               },
               icon: const Icon(Icons.check_circle, color: Colors.white),
-              label: const Text('Receive Order', style: TextStyle(color: Colors.white),),
+              label: const Text(
+                'Receive Order',
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 minimumSize: const Size(double.infinity, 50),

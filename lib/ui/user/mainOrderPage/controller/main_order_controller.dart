@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -131,6 +133,88 @@ class MainOrderController extends GetxController {
     final List<dynamic> jsonOrders = box.read('orders') ?? [];
     return jsonOrders.map((json) => Order.fromJson(json)).toList();
   }
+
+// ImageProvider base64ToNetworkImage(String base64String) {
+//   try {
+//     // Remove any headers or additional metadata
+//     String cleanBase64 = base64String.replaceAll(RegExp(r'^data:image\/\w+;base64,'), '');
+
+//     // Ensure the Base64 string length is a multiple of 4
+//     while (cleanBase64.length % 4 != 0) {
+//       cleanBase64 += '=';
+//     }
+
+//     Uint8List bytes = base64Decode(cleanBase64);
+//     return MemoryImage(bytes);
+//   } catch (e) {
+//     print('Error converting Base64 to image: $e');
+//     // Return a placeholder image or error image
+//     return const AssetImage('assets/img/person.jpg'); // Replace with your placeholder image path
+//   }
+// }
+
+ /// Converts a Base64 string or URL to an Image widget
+Widget base64ToImage(String? base64String) {
+  if (base64String == null || base64String.isEmpty) {
+    return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+  }
+
+  try {
+    // 🔍 If it's a URL, load the image from the network instead
+    if (base64String.startsWith("http") || base64String.contains("www")) {
+      debugPrint("🔗 Detected a URL, loading network image...");
+      return Image.network(
+        base64String,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const Center(child: CircularProgressIndicator());
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(Icons.error, color: Colors.red, size: 50);
+        },
+      );
+    }
+
+    // 🔹 Step 1: Remove Base64 prefix
+    String cleanBase64 = base64String.replaceAll(RegExp(r'^data:image\/\w+;base64,'), '');
+
+    // 🔹 Step 2: Remove all whitespace (sometimes newlines break Base64 decoding)
+    cleanBase64 = cleanBase64.replaceAll(RegExp(r'\s+'), '');
+
+    // 🔹 Step 3: Ensure length is a multiple of 4 (Base64 requirement)
+    while (cleanBase64.length % 4 != 0) {
+      cleanBase64 += '=';
+    }
+
+    // 🔹 Step 4: Validate Base64 format
+    if (!RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(cleanBase64)) {
+      debugPrint('❌ Invalid Base64 format detected');
+      return const Icon(Icons.error, size: 50, color: Colors.red);
+    }
+
+    // 🔹 Step 5: Decode Base64 string to bytes
+    Uint8List bytes = base64Decode(cleanBase64);
+
+    // 🔹 Step 6: Validate decoded bytes
+    if (bytes.isEmpty) {
+      debugPrint("❌ Decoded byte array is empty!");
+      return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+    }
+
+    // 🔹 Step 7: Return Image widget from memory
+    return Image.memory(
+      bytes,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return const Icon(Icons.error, color: Colors.red, size: 50);
+      },
+    );
+  } catch (e) {
+    debugPrint('❌ Error decoding Base64: $e');
+    return const Icon(Icons.broken_image, size: 50, color: Colors.grey);
+  }
+}
 
   Order? getOrderById(String orderId) {
     final orders = retrieveOrders();
@@ -266,18 +350,18 @@ class MainOrderController extends GetxController {
         print("selectedSite?.value.id ${selectedSite?.value.id}");
 
         final order = Order(
-            materialName: input.selectedMaterial.value,
-            supplierId: input.selectedSupplier.value.id,
-            price: (double.tryParse(input.quantityController.text) ?? 0) * 100,
-            quantity: double.tryParse(input.quantityController.text) ?? 0.0,
-            siteId: selectedSite?.value.id,
-            orderCreateDate: input.orderCreateDate.value,
-            expectedDeliveryDate: input.expectedDeliveryDate.value,
-            imagePath: base64Image,
-            instruction: instructionsController.text,
-            qualityCheck: false,
-            quantityCheck: false,
-            );
+          materialName: input.selectedMaterial.value,
+          supplierId: input.selectedSupplier.value.id,
+          price: (double.tryParse(input.quantityController.text) ?? 0) * 100,
+          quantity: double.tryParse(input.quantityController.text) ?? 0.0,
+          siteId: selectedSite?.value.id,
+          orderCreateDate: input.orderCreateDate.value,
+          expectedDeliveryDate: input.expectedDeliveryDate.value,
+          imagePath: base64Image,
+          instruction: instructionsController.text,
+          qualityCheck: false,
+          quantityCheck: false,
+        );
 
         if (qualityChecks['materialQuality'] == true) {
           log("Material Quality Checked");
