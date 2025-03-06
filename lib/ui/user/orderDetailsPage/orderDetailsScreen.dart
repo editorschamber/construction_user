@@ -126,11 +126,15 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                             controller.orders
                                 .firstWhere((element) => element.id == order.id)
                                 .returnReason),
-                      _buildDetailRow(
-                          'Remarks:',
-                          controller.orders
+                      if (controller.orders
                               .firstWhere((element) => element.id == order.id)
-                              .remarks),
+                              .status ==
+                          'received')
+                        _buildDetailRow(
+                            'Remarks:',
+                            controller.orders
+                                .firstWhere((element) => element.id == order.id)
+                                .remarks),
                     ],
                   ),
 
@@ -277,12 +281,6 @@ class OrderDetailsScreen extends GetView<MainOrderController> {
                     ),
 
                   const SizedBox(height: 16),
-
-                  _buildDetailRow(
-                      'Remarks:',
-                      controller.orders
-                          .firstWhere((element) => element.id == order.id)
-                          .remarks),
 
                   if (controller.orders
                               .firstWhere((element) => element.id == order.id)
