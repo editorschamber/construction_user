@@ -9,8 +9,13 @@ class APIServices {
 
   Future<dynamic> getApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body, String? authToken}) async {
-    final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    print("access tokem is ${StorageService.accessToken} and path is ${url}");
+    Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
+    print("access tokem is ${StorageService.accessToken} and path is ${url} and params $params");
+    if(params != null){
+      url = url.replace(
+        queryParameters: params.map((key, value) => MapEntry(key, value.toString())),
+      );
+    }
     try {
       final http.Response response;
       response = await client.get(
@@ -36,7 +41,7 @@ class APIServices {
   Future<dynamic> postApi(String endpoint,
       {Map<String, dynamic>? params, dynamic body}) async {
     final Uri url = Uri.parse(APIStrings.baseUrl + endpoint);
-    print("access tokem is ${StorageService.accessToken} and path is ${url}");
+    print("access tokem is ${StorageService.accessToken} and path is ${url} and body is $body");
 
     try {
       final http.Response response;

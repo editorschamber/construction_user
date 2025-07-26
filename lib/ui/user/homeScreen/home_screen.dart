@@ -123,6 +123,42 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.dialog(
+              AlertDialog(
+                title: Text('Mark Attendance'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            homeController.pickImage("IN");
+                            // Get.back(); // closes the dialog
+                          },
+                          child: Text('IN', style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            homeController.pickImage("OUT");
+                            // Get.back(); // closes the dialog
+                          },
+                          child: Text('OUT', style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+          );
+        },
+        child: Icon(Icons.more_time),
+      ),
     );
   }
 }

@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:site_construct/apiServices/attendanceService.dart';
 import 'package:site_construct/apiServices/homeService.dart';
 import 'package:site_construct/apiServices/stockService.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
@@ -9,6 +12,7 @@ import 'package:site_construct/core/notifiers/refreshNotifier.dart';
 
 import '../../../core/models/materialQuantity.dart';
 import '../../../core/notifiers/selectedSiteNotifier.dart';
+import 'package:image/image.dart' as img;
 
 class HomeController extends GetxController {
   var displayName = ''.obs;
@@ -16,8 +20,34 @@ class HomeController extends GetxController {
   Rx<Sites>? selectedSite = Sites().obs;
   RxBool isLoading = true.obs;
   StockService stockService = StockService();
+  AttendanceService attendanceService = AttendanceService();
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
   RefreshNotifier refreshNotifier = RefreshNotifier.getInstance();
+  var base64Image = "".obs; // Store Base64 image
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickImage(status) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    print(image);
+    if (image != null) {
+      File imgFile = File(image.path);
+      var imageBytes = await imgFile.readAsBytes();
+      final decodedImg = img.decodeImage(imageBytes);
+      final resized = img.copyResize(decodedImg!, width: 600); // reduce size
+      final jpg = img.encodeJpg(resized, quality: 70);
+      base64Image.value = base64Encode(jpg); // Convert to Base64
+      // print(base64Image.value.length);
+      var response = await attendanceService.markAttendance(base64Image.value, siteNotifier.value, status);
+      if(response != null){
+        Get.snackbar("Success", response['message']);
+      }else{
+        Get.snackbar("Failure", "Please try again!");
+      }
+    }else{
+      Get.snackbar("Failure", "Image not captured!");
+    }
+  }
 
   @override
   void onInit() {

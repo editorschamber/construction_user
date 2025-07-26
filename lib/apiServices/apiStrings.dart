@@ -33,4 +33,10 @@ class APIStrings {
   static const String supervisors = "supervisors";
   static const String getSitesByUserId = "constructionSites/getSitesByUserId";
   static const String getAllMaterial = "materials/getAllMaterial";
+
+  // Attendance Service
+  static const String markAttendance = 'users/markAttendance';
+  static const String laborAttendance = 'labor/addAttendance';
+  static const String getLaborAttendance = 'labor/getAllAttendance';
+
 }

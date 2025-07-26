@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:site_construct/apiServices/attendanceService.dart';
+import 'package:site_construct/core/models/laborModel.dart';
+import 'package:site_construct/core/notifiers/selectedSiteNotifier.dart';
 import 'package:site_construct/ui/user/labour/widgets/labour_details.dart';
 
 class LabourScreen extends StatefulWidget {
@@ -9,24 +14,35 @@ class LabourScreen extends StatefulWidget {
 }
 
 class _LabourScreenState extends State<LabourScreen> {
-  List<Map<String, String>> members = [
-    {'name': 'Ghamshyam', 'site': '2', 'job': 'Electrician'},
-    {'name': 'Mangi Lal', 'site': '1', 'job': 'Plumber'},
-    {'name': 'Hemant', 'site': '3', 'job': 'Engineer'},
-    {'name': 'Saurabh', 'site': '1', 'job': 'Engineer'},
-    {'name': 'Himesh', 'site': '3', 'job': 'Plumber'},
-  ];
+  List<AttendanceModel> members = [];
+  SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
+  DateTime selectedDate = DateTime.now();
 
-  void _addMember(String name, String site, String job) {
-    setState(() {
-      members.add({'name': name, 'site': site, 'job': job});
-    });
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  Future<void> _addMember(String name) async {
+    // setState(() {
+    //   members.add({'name': name});
+    // });
+
+    var response = await AttendanceService().addLaborAttendance([
+      {"labourName": name, "status": "IN"
+      }
+    ], siteNotifier.value);
+    if(response != null){
+      Navigator.of(context).pop();
+      Get.snackbar("Success", "Attendance marked for $name successfully");
+    } else {
+      Get.snackbar("Error", "Attendance not marked for $name ");
+    }
   }
 
   void _showAddMemberDialog() {
     String name = '';
-    String site = '';
-    String job = '';
 
     showDialog(
       context: context,
@@ -41,19 +57,7 @@ class _LabourScreenState extends State<LabourScreen> {
                 onChanged: (value) {
                   name = value;
                 },
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Site Name'),
-                onChanged: (value) {
-                  site = value;
-                },
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Job Title'),
-                onChanged: (value) {
-                  job = value;
-                },
-              ),
+              )
             ],
           ),
           actions: [
@@ -66,9 +70,9 @@ class _LabourScreenState extends State<LabourScreen> {
             TextButton(
               child: const Text('Add'),
               onPressed: () {
-                if (name.isNotEmpty && site.isNotEmpty && job.isNotEmpty) {
-                  _addMember(name, site, job);
-                  Navigator.of(context).pop();
+                if (name.isNotEmpty) {
+                  _addMember(name);
+
                 }
               },
             ),
@@ -82,11 +86,36 @@ class _LabourScreenState extends State<LabourScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Labour Details'),
+        title: const Text('Labours'),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: LabourDetails(members: members),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('${DateFormat.yMMMd().format(selectedDate)}'),
+                  IconButton(
+                    icon: const Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      ) ?? DateTime.now();
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: LabourDetails(members: members.takeWhile((m) => m.createdAt.difference(selectedDate).inDays == 0).toList())),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddMemberDialog,
@@ -94,4 +123,14 @@ class _LabourScreenState extends State<LabourScreen> {
       ),
     );
   }
+
+
+
+  getData() async{
+    var response = await AttendanceService().getLabourAttendance(siteNotifier.value);
+    setState(() {
+      members = response;
+    });
+  }
 }
+

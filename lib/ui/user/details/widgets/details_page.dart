@@ -67,19 +67,19 @@ class DetailsPage extends StatelessWidget {
           const SizedBox(height: 15),
           // Text(site.siteDetails).greyStyled(),
           //Todo : remove for now
-          // CustomButton(
-          //   width: width,
-          //   buttonColor: Colors.purple,
-          //   buttonText: "Labour Details",
-          //   onTap: () => Get.toNamed(labourScreen),
-          // ),
-          // const SizedBox(height: 15),
-          // CustomButton(
-          //   width: width,
-          //   buttonColor: Colors.purple,
-          //   buttonText: "Material Details",
-          //   onTap: () => Get.toNamed(materialScreen),
-          // ),
+          CustomButton(
+            width: width,
+            buttonColor: Colors.purple,
+            buttonText: "Labour Attendance",
+            onTap: () => Get.toNamed(labourScreen),
+          ),
+          const SizedBox(height: 15),
+          CustomButton(
+            width: width,
+            buttonColor: Colors.purple,
+            buttonText: "Material Details",
+            onTap: () => Get.toNamed(materialScreen),
+          ),
           const SizedBox(height: 15),
           CustomButton(
             width: width,
