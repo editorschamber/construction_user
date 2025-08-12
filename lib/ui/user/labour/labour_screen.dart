@@ -15,11 +15,13 @@ class LabourScreen extends StatefulWidget {
 
 class _LabourScreenState extends State<LabourScreen> {
   List<AttendanceModel> members = [];
+  List<AttendanceModel> allMembers = [];
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
+    fetchAllLabors();
     getData();
     super.initState();
   }
@@ -28,6 +30,14 @@ class _LabourScreenState extends State<LabourScreen> {
     // setState(() {
     //   members.add({'name': name});
     // });
+    if (name.isEmpty) {
+      Get.snackbar("Error", "Name cannot be empty");
+      return;
+    }
+    if (members.any((m) => m.laborName.toLowerCase() == name.toLowerCase() && DateTime.now().difference(m.createdAt).inDays == 0)) {
+      Get.snackbar("Error", "Attendance already marked for $name today");
+      return;
+    }
 
     var response = await AttendanceService().addLaborAttendance([
       {"labourName": name, "status": "IN"
@@ -36,47 +46,131 @@ class _LabourScreenState extends State<LabourScreen> {
     if(response != null){
       Navigator.of(context).pop();
       Get.snackbar("Success", "Attendance marked for $name successfully");
+      getData();
     } else {
       Get.snackbar("Error", "Attendance not marked for $name ");
     }
   }
 
+  Future<void> fetchAllLabors() async {
+    var response = await AttendanceService().getAllLabors(siteNotifier.value);
+    if (response != null) {
+      setState(() {
+        allMembers = response;
+      });
+    } else {
+      Get.snackbar("Error", "Failed to fetch labour data");
+    }
+  }
+
   void _showAddMemberDialog() {
-    String name = '';
+    String filter = '';
+    String? selectedName;
+
+    final List<String> allNames = allMembers.skipWhile((x){
+      print(members.indexWhere((y) => (y.laborName == x.laborName) && DateTime.now().difference(y.createdAt).inDays == 0) != -1);
+      return members.indexWhere((y) => (y.laborName == x.laborName) && DateTime.now().difference(y.createdAt).inDays == 0) != -1;
+
+    })
+        .map((e) => (e.laborName).toString().trim())
+        .toSet()
+        .toList();
+
+    print(allNames);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add New Member'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Name'),
-                onChanged: (value) {
-                  name = value;
-                },
-              )
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Add'),
-              onPressed: () {
-                if (name.isNotEmpty) {
-                  _addMember(name);
+        return StatefulBuilder(
+          builder: (context, setStateSB) {
+            final filtered = allNames
+                .where((n) => n.toLowerCase().contains(filter.toLowerCase()))
+                .toList();
 
-                }
-              },
-            ),
-          ],
+            return AlertDialog(
+              title: const Text('Add or Select Member'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Autocomplete<String>(
+                    optionsBuilder: (TextEditingValue tev) {
+                      final q = tev.text.trim().toLowerCase();
+                      if (q.isEmpty) {
+                        // show nothing until user types; change to `return allNames` if you want full list on focus
+                        return const Iterable<String>.empty();
+                      }
+                      return allNames.where((n) => n.toLowerCase().contains(q));
+                    },
+                    fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
+                      // keep the current text in `filter` and also derive button state
+                      textController.addListener(() {
+                        setStateSB(() {
+                          filter = textController.text.trim();
+                        });
+                      });
+                      return TextField(
+                        controller: textController,
+                        focusNode: focusNode,
+                        decoration: const InputDecoration(
+                          labelText: 'Search or type name',
+                          hintText: '',
+                        ),
+                        onSubmitted: (_) => onFieldSubmitted(),
+                      );
+                    },
+                    onSelected: (String selection) {
+                      setStateSB(() {
+                        selectedName = selection;
+                        filter = selection; // keep button label in sync
+                      });
+                    },
+                    optionsViewBuilder: (context, onSelected, options) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        child: Align(
+                          widthFactor: 0.75,
+                          alignment: Alignment.center,
+                          child: Material(
+                            elevation: 4,
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: options.length,
+                              itemBuilder: (context, index) {
+                                final option = options.elementAt(index);
+                                return ListTile(
+                                  dense: true,
+                                  title: Text(option),
+                                  onTap: () => onSelected(option),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                TextButton(
+                  child: Text(selectedName != null &&
+                      allNames.any((n) =>
+                      n.toLowerCase() == selectedName!.toLowerCase())
+                      ? 'Select'
+                      : 'Add'),
+                  onPressed: () {
+                    final nameToAdd = selectedName ?? filter;
+                    if (nameToAdd.isEmpty) return;
+                    _addMember(nameToAdd);
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -98,7 +192,6 @@ class _LabourScreenState extends State<LabourScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text('${DateFormat.yMMMd().format(selectedDate)}'),
-
                   IconButton(
                     icon: const Icon(Icons.calendar_today),
                     onPressed: () async {

@@ -66,4 +66,51 @@ class AttendanceService{
       throw Exception('Failed to verify token');
     }
   }
+
+  Future<List<AttendanceModel>> getAllLabors(siteId) async {
+    final response = await apiService.getApi(
+      APIStrings.getAllLabors,
+      params: {
+        "siteId": siteId,
+      }
+    );
+
+    if (response != null) {
+      print(response);
+      return attendanceFromJson(jsonEncode(response['data']));
+    } else {
+      throw Exception('Failed to verify token');
+    }
+  }
+
+  Future<List<AttendanceModel>> getLabourAttendanceByName(name) async {
+    final response = await apiService.getApi(
+      APIStrings.getAttendanceByName,
+      params: {
+        "laborName": name
+      }
+    );
+
+    if (response != null) {
+      return attendanceFromJson(jsonEncode(response["attendance"]));
+    } else {
+      throw Exception('Failed to verify token');
+    }
+  }
+
+  Future<Map<String, dynamic>> markAsOut(String id, String siteId) async {
+    final response = await apiService.postApi(
+      APIStrings.markAsOut,
+      body: jsonEncode({
+          "id": id,
+          "siteId": siteId,
+        })
+    );
+
+    if (response != null) {
+      return response;
+    } else {
+      throw Exception('Failed to delete attendance');
+    }
+  }
 }

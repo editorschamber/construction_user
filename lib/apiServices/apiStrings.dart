@@ -38,5 +38,9 @@ class APIStrings {
   static const String markAttendance = 'users/markAttendance';
   static const String laborAttendance = 'labor/addAttendance';
   static const String getLaborAttendance = 'labor/getAllAttendance';
+  static const String getAllLabors = 'labor/getAllLabors';
+  static const String getAttendanceByName = 'labor/getAttendance';
+  static const String markAsOut = 'labor/markAsOut';
+
 
 }

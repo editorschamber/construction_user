@@ -11,7 +11,7 @@ class AttendanceModel {
   final String laborName;
   final int siteId;
   final String markedBy;
-  final String status;
+  String status;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -22,17 +22,17 @@ class AttendanceModel {
     required this.markedBy,
     required this.status,
     required this.createdAt,
-    required this.updatedAt,
+    required this.updatedAt
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) => AttendanceModel(
-    id: json['id'],
+    id: json['id'] ?? '',
     laborName: json['laborName'],
-    siteId: json['siteId'],
-    markedBy: json['markedBy'],
-    status: json['status'],
-    createdAt: DateTime.parse(json['createdAt']),
-    updatedAt: DateTime.parse(json['updatedAt']),
+    siteId: json['siteId'] ?? 0,
+    markedBy: json['markedBy'] ?? '',
+    status: json['status'] ?? 'IN',
+    createdAt: json["createdAt"] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : DateTime.now(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -44,4 +44,5 @@ class AttendanceModel {
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
+
 }
