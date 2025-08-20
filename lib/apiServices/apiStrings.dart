@@ -36,6 +36,7 @@ class APIStrings {
 
   // Attendance Service
   static const String markAttendance = 'users/markAttendance';
+  static const String supervisorAttendance = "users/getAttendance";
   static const String laborAttendance = 'labor/addAttendance';
   static const String getLaborAttendance = 'labor/getAllAttendance';
   static const String getAllLabors = 'labor/getAllLabors';

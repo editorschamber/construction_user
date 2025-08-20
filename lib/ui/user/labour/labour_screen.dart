@@ -178,45 +178,95 @@ class _LabourScreenState extends State<LabourScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Labours'),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Labours'),
+          centerTitle: true,
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Attendance'),
+              Tab(text: 'All Labours'),
+            ],
+          ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              // Tab 1: Existing UI (unchanged)
+              Column(
                 children: [
-                  Text('${DateFormat.yMMMd().format(selectedDate)}'),
-                  IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () async {
-                      selectedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      ) ?? DateTime.now();
-                      setState(() {});
-                    },
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('${DateFormat.yMMMd().format(selectedDate)}'),
+                        IconButton(
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () async {
+                            selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            ) ??
+                                DateTime.now();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: LabourDetails(
+                      showInOutButton: true,
+                      members: members
+                      // Step 1: same-day filter
+                          .where((m) => m.createdAt.difference(selectedDate).inDays == 0)
+                      // Step 2: fold into Map<String, AttendanceModel>
+                          .fold<Map<String, AttendanceModel>>({}, (map, m) {
+                        map.putIfAbsent(m.laborName, () => m);
+                        return map;
+                      })
+                      // Step 3: convert back to List<AttendanceModel>
+                          .values
+                          .toList(),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Expanded(child: LabourDetails(members: members.takeWhile((m) => m.createdAt.difference(selectedDate).inDays == 0).toList())),
-          ],
+
+              // Tab 2: All Labours
+              Column(
+                children: [
+                  Expanded(
+                    child: LabourDetails(
+                      showInOutButton: false,
+                      members: allMembers
+                      // keep only one per labourName (latest occurrence kept)
+                          .fold<Map<String, AttendanceModel>>({}, (map, m) {
+                        map[m.laborName] = m;
+                        return map;
+                      })
+                          .values
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddMemberDialog,
-        child: const Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _showAddMemberDialog,
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
+
 
 
 

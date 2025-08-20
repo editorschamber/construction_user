@@ -8,8 +8,10 @@ import 'package:site_construct/apiServices/attendanceService.dart';
 import 'package:site_construct/apiServices/homeService.dart';
 import 'package:site_construct/apiServices/stockService.dart';
 import 'package:site_construct/core/data/sitesModel.dart';
+import 'package:site_construct/core/models/userModel.dart';
 import 'package:site_construct/core/notifiers/refreshNotifier.dart';
 
+import '../../../apiServices/userService.dart';
 import '../../../core/models/materialQuantity.dart';
 import '../../../core/notifiers/selectedSiteNotifier.dart';
 import 'package:image/image.dart' as img;
@@ -23,11 +25,14 @@ class HomeController extends GetxController {
   AttendanceService attendanceService = AttendanceService();
   SelectedSiteNotifier siteNotifier = SelectedSiteNotifier.getInstance();
   RefreshNotifier refreshNotifier = RefreshNotifier.getInstance();
+  UserService userService = UserService();
   var base64Image = "".obs; // Store Base64 image
 
   final ImagePicker _picker = ImagePicker();
+  RxBool isAttendanceMarked = false.obs;
 
-  Future<void> pickImage(status) async {
+  Future<void> pickImage() async {
+    final status = isAttendanceMarked.value ? "OUT" : "IN";
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     print(image);
     if (image != null) {
@@ -41,6 +46,7 @@ class HomeController extends GetxController {
       var response = await attendanceService.markAttendance(base64Image.value, siteNotifier.value, status);
       if(response != null){
         Get.snackbar("Success", response['message']);
+        getAttendanceData();
       }else{
         Get.snackbar("Failure", "Please try again!");
       }
@@ -55,6 +61,7 @@ class HomeController extends GetxController {
       fetchStockBySiteName();
     });
     getSitesData();
+    getAttendanceData();
     super.onInit();
   }
 
@@ -64,6 +71,22 @@ class HomeController extends GetxController {
   Future<void> fetchStockBySiteName() async {
     filteredReceivedOrders.value =
         await stockService.getAvailableStocks(siteId: "${siteNotifier.value}");
+  }
+
+  Future<void> getAttendanceData() async {
+    try {
+      UserData? user = await userService.getUserDetails() as UserData?;
+
+      var response = await attendanceService.getSupervisorAttendance(user?.userId);
+      if(response.attendance != null && response.attendance!.isNotEmpty) {
+        isAttendanceMarked.value = response.attendance!.any((attendance) => attendance.status == "IN");
+      } else {
+        isAttendanceMarked.value = false;
+      }
+
+    } catch (e) {
+      Get.snackbar("Error", "An error occurred while fetching attendance data");
+    }
   }
 
   Future<bool> submitDailyUsage(String materialName, double usedQty) async{

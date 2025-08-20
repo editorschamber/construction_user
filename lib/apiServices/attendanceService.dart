@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:site_construct/apiServices/apiStrings.dart';
 import 'package:site_construct/core/models/laborModel.dart';
 
+import '../core/models/supervisorAttendanceModel.dart';
 import 'apiServices.dart';
 
 class AttendanceService{
@@ -97,6 +98,21 @@ class AttendanceService{
       throw Exception('Failed to verify token');
     }
   }
+
+  Future<SupervisorAttendanceModel> getSupervisorAttendance(userId) async {
+    final response = await apiService.getApi(
+        "${APIStrings.supervisorAttendance}",
+        params: {"userId": userId});
+
+    if (response != null) {
+      print("getSites data is ${response}");
+
+      return SupervisorAttendanceModel.fromJson(response);
+    } else {
+      throw Exception('Failed to load getSites data');
+    }
+  }
+
 
   Future<Map<String, dynamic>> markAsOut(String id, String siteId) async {
     final response = await apiService.postApi(

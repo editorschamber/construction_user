@@ -37,7 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        if (homeController.isLoading.value || homeController.siteModel.value.data == null) {
+        if (homeController.isLoading.value ||
+            homeController.siteModel.value.data == null) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -81,9 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final site = sitesList[index];
                         return RefreshIndicator(
-                          onRefresh: _refreshData, // Trigger pull-to-refresh function
+                          onRefresh: _refreshData,
+                          // Trigger pull-to-refresh function
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -123,42 +126,57 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.dialog(
-              AlertDialog(
-                title: Text('Mark Attendance'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            homeController.pickImage("IN");
-                            // Get.back(); // closes the dialog
-                          },
-                          child: Text('IN', style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            homeController.pickImage("OUT");
-                            // Get.back(); // closes the dialog
-                          },
-                          child: Text('OUT', style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-          );
-        },
-        child: Icon(Icons.more_time),
-      ),
+      floatingActionButton: Obx(() {
+        return FloatingActionButton(
+          backgroundColor: homeController.isAttendanceMarked.value
+              ? Colors.red
+              : Colors.green,
+          onPressed: () {
+            // Get.dialog(
+            //     AlertDialog(
+            //       title: Text('Mark Attendance'),
+            //       content: Column(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //             children: [
+            //               ElevatedButton(
+            //                 onPressed: () {
+            //                   homeController.pickImage("IN");
+            //                   // Get.back(); // closes the dialog
+            //                 },
+            //                 child: Text('IN', style: TextStyle(color: Colors
+            //                     .white)),
+            //                 style: ElevatedButton.styleFrom(
+            //                     backgroundColor: Colors.green),
+            //               ),
+            //               ElevatedButton(
+            //                 onPressed: () {
+            //                   homeController.pickImage("OUT");
+            //                   // Get.back(); // closes the dialog
+            //                 },
+            //                 child: Text('OUT', style: TextStyle(color: Colors
+            //                     .white)),
+            //                 style: ElevatedButton.styleFrom(
+            //                     backgroundColor: Colors.red),
+            //               ),
+            //             ],
+            //           ),
+            //         ],
+            //       ),
+            //     )
+            // );
+            homeController.pickImage();
+          },
+          // child: Icon(Icons.more_time),
+          child: Text(homeController.isAttendanceMarked.value ? "OUT" : "IN", style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),),
+        );
+      }),
     );
   }
 }

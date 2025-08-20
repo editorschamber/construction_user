@@ -139,9 +139,9 @@ class _LabourAttendanceState extends State<LabourAttendance> {
                       rows: [
                         for (final r in rows)
                           DataRow(cells: [
-                            DataCell(Text(_fmtDate(r.date))),
-                            DataCell(Text(_fmtTime(r.inTime))),
-                            DataCell(Text(_fmtTime(r.outTime))),
+                            DataCell(Text(_fmtDate(r.date.toLocal()))),
+                            DataCell(Text(_fmtTime(r.inTime?.toLocal()))),
+                            DataCell(Text(_fmtTime(r.outTime?.toLocal()))),
                             DataCell(
                               Text(
                                 r.present ? 'Present' : 'Absent',
