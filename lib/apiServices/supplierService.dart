@@ -43,7 +43,8 @@ class SupplierService {
   // Create a new supplier
   Future<bool> createSupplier(Map<String, dynamic> supplierData) async {
     try {
-      final response = await apiServices.postApi('supplier/create',
+      final response = await apiServices.postApi(
+        'supplier/create',
         body: json.encode(supplierData),
       );
       if (response != null) {

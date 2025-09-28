@@ -17,7 +17,8 @@ class EditOrderPage extends GetView<MainOrderController> {
     final MainOrderController controller = Get.find();
 
     // Temporary variables to hold updated values
-    Materials? materialName = controller.materials.firstWhereOrNull((material) => material.materialName == order.materialName);
+    Materials? materialName = controller.materials.firstWhereOrNull(
+        (material) => material.materialName == order.materialName);
     String? supplierName = order.supplierName;
     String? quantity = "${order.quantity}";
     String? siteName = order.siteName;
@@ -59,7 +60,8 @@ class EditOrderPage extends GetView<MainOrderController> {
 
                   // Material Name
                   DropdownButtonFormField<Materials>(
-                    value: controller.materials.value.firstWhereOrNull((m) => m.materialName == order.materialName),
+                    value: controller.materials.value.firstWhereOrNull(
+                        (m) => m.materialName == order.materialName),
                     decoration: const InputDecoration(labelText: 'Material'),
                     items: controller.materials.value.map((Materials material) {
                       return DropdownMenuItem<Materials>(
@@ -103,7 +105,6 @@ class EditOrderPage extends GetView<MainOrderController> {
                       // controller.updateOrderMaterial(order.id!, value);
                       siteId = value?.id;
                     },
-
                     items: controller.sites.value.data?.map((site) {
                       return DropdownMenuItem<Sites>(
                         value: site,
@@ -118,7 +119,9 @@ class EditOrderPage extends GetView<MainOrderController> {
                   // Expected Delivery Date
                   TextFormField(
                     controller: TextEditingController(
-                      text: controller.selectedDeliveryDate.value?.toString().split(' ')[0] ??
+                      text: controller.selectedDeliveryDate.value
+                              ?.toString()
+                              .split(' ')[0] ??
                           expectedDeliveryDate?.toString().split(' ')[0] ??
                           "",
                     ),
@@ -129,13 +132,15 @@ class EditOrderPage extends GetView<MainOrderController> {
                     onTap: () async {
                       final DateTime? picked = await showDatePicker(
                         context: context,
-                        initialDate: controller.selectedDeliveryDate.value ?? DateTime.now(),
+                        initialDate: controller.selectedDeliveryDate.value ??
+                            DateTime.now(),
                         firstDate: expectedDeliveryDate ?? DateTime.now(),
                         lastDate: DateTime(2101),
                       );
 
                       if (picked != null) {
-                        controller.setDeliveryDate(picked); // Update reactive variable
+                        controller.setDeliveryDate(
+                            picked); // Update reactive variable
                       }
                     },
                   ),

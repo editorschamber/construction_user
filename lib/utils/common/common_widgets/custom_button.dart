@@ -37,7 +37,7 @@ class CustomButton extends StatelessWidget {
         child: Center(
           child: Text(
             buttonText,
-            style:  TextStyle(fontFamily: 'Poppins', color: textColor ),
+            style: TextStyle(fontFamily: 'Poppins', color: textColor),
           ),
         ),
       ),

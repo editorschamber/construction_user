@@ -43,21 +43,22 @@ class HomeController extends GetxController {
       final jpg = img.encodeJpg(resized, quality: 70);
       base64Image.value = base64Encode(jpg); // Convert to Base64
       // print(base64Image.value.length);
-      var response = await attendanceService.markAttendance(base64Image.value, siteNotifier.value, status);
-      if(response != null){
+      var response = await attendanceService.markAttendance(
+          base64Image.value, siteNotifier.value, status);
+      if (response != null) {
         Get.snackbar("Success", response['message']);
         getAttendanceData();
-      }else{
+      } else {
         Get.snackbar("Failure", "Please try again!");
       }
-    }else{
+    } else {
       Get.snackbar("Failure", "Image not captured!");
     }
   }
 
   @override
   void onInit() {
-    refreshNotifier.addListener((){
+    refreshNotifier.addListener(() {
       fetchStockBySiteName();
     });
     getSitesData();
@@ -77,21 +78,29 @@ class HomeController extends GetxController {
     try {
       UserData? user = await userService.getUserDetails() as UserData?;
 
-      var response = await attendanceService.getSupervisorAttendance(user?.userId);
-      if(response.attendance != null && response.attendance!.isNotEmpty) {
-        isAttendanceMarked.value = response.attendance!.any((attendance) => attendance.status == "IN");
+      var response =
+          await attendanceService.getSupervisorAttendance(user?.userId);
+      if (response.attendance != null && response.attendance!.isNotEmpty) {
+        isAttendanceMarked.value = response.attendance!.any((attendance) =>
+            attendance.status == "IN" &&
+            DateTime.now()
+                    .difference(DateTime.parse(attendance.createdAt ?? ""))
+                    .inDays ==
+                0);
       } else {
         isAttendanceMarked.value = false;
       }
-
     } catch (e) {
       Get.snackbar("Error", "An error occurred while fetching attendance data");
     }
   }
 
-  Future<bool> submitDailyUsage(String materialName, double usedQty) async{
+  Future<bool> submitDailyUsage(String materialName, double usedQty) async {
     try {
-      var response = await stockService.addDailyUsage(siteId: siteNotifier.value, materialName: materialName, quantityUsed: usedQty);
+      var response = await stockService.addDailyUsage(
+          siteId: siteNotifier.value,
+          materialName: materialName,
+          quantityUsed: usedQty);
       print(response);
       return jsonEncode(response).isNotEmpty;
     } on Exception catch (e) {

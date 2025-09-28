@@ -5,23 +5,15 @@ import 'package:site_construct/core/models/laborModel.dart';
 import '../core/models/supervisorAttendanceModel.dart';
 import 'apiServices.dart';
 
-class AttendanceService{
-
+class AttendanceService {
   final apiService = APIServices();
   // Admin login
   Future<Map<String, dynamic>> markAttendance(image, siteId, status) async {
-    var data = {
-      'siteId': siteId,
-      'status': status
-    };
+    var data = {'siteId': siteId, 'status': status};
     print("image $data");
     final response = await apiService.postApi(
       APIStrings.markAttendance,
-      body: json.encode({
-        'image': image,
-        'siteId': siteId,
-        'status': status
-      }),
+      body: json.encode({'image': image, 'siteId': siteId, 'status': status}),
     );
 
     if (response != null) {
@@ -54,12 +46,8 @@ class AttendanceService{
 
   // Verify JWT token
   Future<List<AttendanceModel>> getLabourAttendance(siteId) async {
-    final response = await apiService.getApi(
-      APIStrings.getLaborAttendance,
-      params: {
-        "siteId": siteId
-      }
-    );
+    final response = await apiService
+        .getApi(APIStrings.getLaborAttendance, params: {"siteId": siteId});
 
     if (response != null) {
       return attendanceFromJson(jsonEncode(response["attendance"]));
@@ -69,12 +57,9 @@ class AttendanceService{
   }
 
   Future<List<AttendanceModel>> getAllLabors(siteId) async {
-    final response = await apiService.getApi(
-      APIStrings.getAllLabors,
-      params: {
-        "siteId": siteId,
-      }
-    );
+    final response = await apiService.getApi(APIStrings.getAllLabors, params: {
+      "siteId": siteId,
+    });
 
     if (response != null) {
       print(response);
@@ -85,12 +70,8 @@ class AttendanceService{
   }
 
   Future<List<AttendanceModel>> getLabourAttendanceByName(name) async {
-    final response = await apiService.getApi(
-      APIStrings.getAttendanceByName,
-      params: {
-        "laborName": name
-      }
-    );
+    final response = await apiService
+        .getApi(APIStrings.getAttendanceByName, params: {"laborName": name});
 
     if (response != null) {
       return attendanceFromJson(jsonEncode(response["attendance"]));
@@ -113,15 +94,12 @@ class AttendanceService{
     }
   }
 
-
   Future<Map<String, dynamic>> markAsOut(String id, String siteId) async {
-    final response = await apiService.postApi(
-      APIStrings.markAsOut,
-      body: jsonEncode({
+    final response = await apiService.postApi(APIStrings.markAsOut,
+        body: jsonEncode({
           "id": id,
           "siteId": siteId,
-        })
-    );
+        }));
 
     if (response != null) {
       return response;

@@ -53,6 +53,7 @@ class DatabaseHelper {
 
   Future<int> deleteUserByPhoneNumber(String phoneNumber) async {
     Database db = await instance.database;
-    return await db.delete('users', where : 'phoneNumber =?', whereArgs: [phoneNumber]);
+    return await db
+        .delete('users', where: 'phoneNumber =?', whereArgs: [phoneNumber]);
   }
 }

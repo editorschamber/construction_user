@@ -8,15 +8,13 @@ class CustomTextfield1 extends StatelessWidget {
   final TextEditingController? password;
   Widget? prefixIcon;
 
-
-   CustomTextfield1({
-    super.key,
-    this.hintText,
-    this.icon,
-    this.password,
-    this.width,
-    this.prefixIcon
-  });
+  CustomTextfield1(
+      {super.key,
+      this.hintText,
+      this.icon,
+      this.password,
+      this.width,
+      this.prefixIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +57,6 @@ class CustomTextfield1 extends StatelessWidget {
             ),
           ),
         ),
-
       ],
     );
   }

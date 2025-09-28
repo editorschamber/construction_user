@@ -32,7 +32,8 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
 
           // Quality checkboxes
           const SizedBox(height: 16),
-          const Text('Quality Checks', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Quality Checks',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           Obx(() {
             return Column(
               children: [
@@ -40,14 +41,16 @@ class ReceiveOrderDialog extends GetView<MainOrderController> {
                   title: const Text('Check Material Quality'),
                   value: controller.qualityChecks['materialQuality'],
                   onChanged: (bool? value) {
-                    controller.qualityChecks['materialQuality'] = value ?? false;
+                    controller.qualityChecks['materialQuality'] =
+                        value ?? false;
                   },
                 ),
                 CheckboxListTile(
                   title: const Text('Check Quantity Accuracy'),
                   value: controller.qualityChecks['quantityAccuracy'],
                   onChanged: (bool? value) {
-                    controller.qualityChecks['quantityAccuracy'] = value ?? false;
+                    controller.qualityChecks['quantityAccuracy'] =
+                        value ?? false;
                   },
                 ),
                 CheckboxListTile(

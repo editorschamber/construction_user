@@ -28,7 +28,7 @@ class DetailsPage extends StatelessWidget {
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Hero(
               tag: 1,
-              child:CachedNetworkImage(
+              child: CachedNetworkImage(
                 imageUrl: site!.imageUrl ?? "",
                 fit: BoxFit.cover,
                 width: double.infinity,

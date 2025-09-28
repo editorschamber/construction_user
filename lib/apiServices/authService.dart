@@ -4,7 +4,6 @@ import 'package:site_construct/apiServices/apiStrings.dart';
 import 'apiServices.dart';
 
 class AuthService {
-
   final apiService = APIServices();
   // Admin login
   Future<Map<String, dynamic>> login(String username, String password) async {

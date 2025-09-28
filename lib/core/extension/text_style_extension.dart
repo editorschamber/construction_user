@@ -5,9 +5,9 @@ extension CustomTextExtensions on Text {
     return Text(
       this.data ?? '',
       style: this.style?.copyWith(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-      ) ??
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ) ??
           TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,

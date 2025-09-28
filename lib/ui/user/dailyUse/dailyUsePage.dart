@@ -26,7 +26,6 @@ class _DailyUsagePageState extends State<DailyUsagePage> {
     selectedMaterials = homeController.filteredReceivedOrders ?? [];
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +44,12 @@ class _DailyUsagePageState extends State<DailyUsagePage> {
                 child: ListView.builder(
                   itemCount: homeController.filteredReceivedOrders.length,
                   itemBuilder: (context, index) {
-                    final material = homeController
-                        .filteredReceivedOrders[index];
+                    final material =
+                        homeController.filteredReceivedOrders[index];
                     return ListTile(
                       title: Text(material.materialName ?? ""),
-                      subtitle: Text('Available: ${material.quantity} ${material
-                          .unit}'),
+                      subtitle: Text(
+                          'Available: ${material.quantity} ${material.unit}'),
                     );
                   },
                 ),
@@ -92,7 +91,8 @@ class _DailyUsagePageState extends State<DailyUsagePage> {
                   final materialName = selectedMaterial;
                   final quantityUsed = double.tryParse(quantityController.text);
 
-                  if (materialName != null && quantityUsed != null &&
+                  if (materialName != null &&
+                      quantityUsed != null &&
                       quantityUsed > 0) {
                     final isUpdated = await homeController.submitDailyUsage(
                       materialName,

@@ -10,13 +10,12 @@ import 'package:site_construct/core/models/userModel.dart';
 import '../ui/user/homeScreen/home_controller.dart';
 
 class StockService {
-
   APIServices apiServices = APIServices();
   // Get all available stocks
-  Future<List<MaterialQuantity>> getAvailableStocks({required String siteId}) async {
-    final response = await apiServices.getApi(
-      "${APIStrings.availableStocks}?siteId=${siteId}"
-    );
+  Future<List<MaterialQuantity>> getAvailableStocks(
+      {required String siteId}) async {
+    final response = await apiServices
+        .getApi("${APIStrings.availableStocks}?siteId=${siteId}");
 
     if (response != null) {
       return materialQuantityFromJson(jsonEncode(response['data']));
@@ -29,7 +28,7 @@ class StockService {
   Future<Map<String, dynamic>> addDailyUsage(
       {siteId, materialName, quantityUsed}) async {
     final response = await apiServices.postApi(
-        APIStrings.materialUsage,
+      APIStrings.materialUsage,
       body: json.encode({
         "siteId": siteId,
         "materialName": materialName,

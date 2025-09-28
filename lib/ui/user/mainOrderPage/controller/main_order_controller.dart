@@ -135,13 +135,13 @@ class MainOrderController extends GetxController {
     }
   }
 
-  void updateOrderById(var id, Order updatedOrder) async{
+  void updateOrderById(var id, Order updatedOrder) async {
     updatedOrder.id == id;
-     var response = await orderService.updateOrder(updatedOrder);
-     if(response){
-       Get.snackbar("Success", "Order updated successfully");
-       loadOrders();
-     }
+    var response = await orderService.updateOrder(updatedOrder);
+    if (response) {
+      Get.snackbar("Success", "Order updated successfully");
+      loadOrders();
+    }
   }
 
   void loadOrderIdCounter() {
@@ -302,7 +302,8 @@ class MainOrderController extends GetxController {
     returnedOrder.returnReason = returnReasonController.text;
 
     if (isFullReturn) {
-      returnedOrder.returnedQuantity = (oldOrder.quantity ?? 0) - (oldOrder.returnedQuantity ?? 0);
+      returnedOrder.returnedQuantity =
+          (oldOrder.quantity ?? 0) - (oldOrder.returnedQuantity ?? 0);
       await orderService.returnOrder(returnedOrder);
     } else {
       returnedOrder.returnedQuantity = partialQuantity;
@@ -340,8 +341,9 @@ class MainOrderController extends GetxController {
                       // orders.removeAt(index);
                       // saveOrders();
                       Get.back();
-                      bool isDeleted = await orderService.deleteOrder(orders[index]);
-                      if(isDeleted){
+                      bool isDeleted =
+                          await orderService.deleteOrder(orders[index]);
+                      if (isDeleted) {
                         orders.removeAt(index);
                         Get.snackbar(
                           'Order Deleted',

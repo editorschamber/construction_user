@@ -17,7 +17,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeController homeController = Get.put(HomeController());
   final MainOrderController orderController = Get.put(MainOrderController());
-  final PageController _pageController = PageController(); // Controller for horizontal scroll
+  final PageController _pageController =
+      PageController(); // Controller for horizontal scroll
 
   @override
   void initState() {
@@ -85,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           onRefresh: _refreshData,
                           // Trigger pull-to-refresh function
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -100,7 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(height: 20),
                                 Expanded(
                                   child: SingleChildScrollView(
-                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
                                     child: Column(
                                       children: [
                                         SitePlans(site: site),
@@ -170,11 +172,14 @@ class _HomeScreenState extends State<HomeScreen> {
             homeController.pickImage();
           },
           // child: Icon(Icons.more_time),
-          child: Text(homeController.isAttendanceMarked.value ? "OUT" : "IN", style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),),
+          child: Text(
+            homeController.isAttendanceMarked.value ? "OUT" : "IN",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         );
       }),
     );

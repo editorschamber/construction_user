@@ -34,16 +34,17 @@ class _LabourScreenState extends State<LabourScreen> {
       Get.snackbar("Error", "Name cannot be empty");
       return;
     }
-    if (members.any((m) => m.laborName.toLowerCase() == name.toLowerCase() && DateTime.now().difference(m.createdAt).inDays == 0)) {
+    if (members.any((m) =>
+        m.laborName.toLowerCase() == name.toLowerCase() &&
+        DateTime.now().difference(m.createdAt).inDays == 0)) {
       Get.snackbar("Error", "Attendance already marked for $name today");
       return;
     }
 
     var response = await AttendanceService().addLaborAttendance([
-      {"labourName": name, "status": "IN"
-      }
+      {"labourName": name, "status": "IN"}
     ], siteNotifier.value);
-    if(response != null){
+    if (response != null) {
       Navigator.of(context).pop();
       Get.snackbar("Success", "Attendance marked for $name successfully");
       getData();
@@ -67,11 +68,17 @@ class _LabourScreenState extends State<LabourScreen> {
     String filter = '';
     String? selectedName;
 
-    final List<String> allNames = allMembers.skipWhile((x){
-      print(members.indexWhere((y) => (y.laborName == x.laborName) && DateTime.now().difference(y.createdAt).inDays == 0) != -1);
-      return members.indexWhere((y) => (y.laborName == x.laborName) && DateTime.now().difference(y.createdAt).inDays == 0) != -1;
-
-    })
+    final List<String> allNames = allMembers
+        .skipWhile((x) {
+          print(members.indexWhere((y) =>
+                  (y.laborName == x.laborName) &&
+                  DateTime.now().difference(y.createdAt).inDays == 0) !=
+              -1);
+          return members.indexWhere((y) =>
+                  (y.laborName == x.laborName) &&
+                  DateTime.now().difference(y.createdAt).inDays == 0) !=
+              -1;
+        })
         .map((e) => (e.laborName).toString().trim())
         .toSet()
         .toList();
@@ -101,7 +108,8 @@ class _LabourScreenState extends State<LabourScreen> {
                       }
                       return allNames.where((n) => n.toLowerCase().contains(q));
                     },
-                    fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
+                    fieldViewBuilder:
+                        (context, textController, focusNode, onFieldSubmitted) {
                       // keep the current text in `filter` and also derive button state
                       textController.addListener(() {
                         setStateSB(() {
@@ -158,8 +166,8 @@ class _LabourScreenState extends State<LabourScreen> {
                 ),
                 TextButton(
                   child: Text(selectedName != null &&
-                      allNames.any((n) =>
-                      n.toLowerCase() == selectedName!.toLowerCase())
+                          allNames.any((n) =>
+                              n.toLowerCase() == selectedName!.toLowerCase())
                       ? 'Select'
                       : 'Add'),
                   onPressed: () {
@@ -207,11 +215,11 @@ class _LabourScreenState extends State<LabourScreen> {
                           icon: const Icon(Icons.calendar_today),
                           onPressed: () async {
                             selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2101),
-                            ) ??
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101),
+                                ) ??
                                 DateTime.now();
                             setState(() {});
                           },
@@ -223,14 +231,15 @@ class _LabourScreenState extends State<LabourScreen> {
                     child: LabourDetails(
                       showInOutButton: true,
                       members: members
-                      // Step 1: same-day filter
-                          .where((m) => m.createdAt.difference(selectedDate).inDays == 0)
-                      // Step 2: fold into Map<String, AttendanceModel>
+                          // Step 1: same-day filter
+                          .where((m) =>
+                              m.createdAt.difference(selectedDate).inDays == 0)
+                          // Step 2: fold into Map<String, AttendanceModel>
                           .fold<Map<String, AttendanceModel>>({}, (map, m) {
-                        map.putIfAbsent(m.laborName, () => m);
-                        return map;
-                      })
-                      // Step 3: convert back to List<AttendanceModel>
+                            map.putIfAbsent(m.laborName, () => m);
+                            return map;
+                          })
+                          // Step 3: convert back to List<AttendanceModel>
                           .values
                           .toList(),
                     ),
@@ -245,11 +254,11 @@ class _LabourScreenState extends State<LabourScreen> {
                     child: LabourDetails(
                       showInOutButton: false,
                       members: allMembers
-                      // keep only one per labourName (latest occurrence kept)
+                          // keep only one per labourName (latest occurrence kept)
                           .fold<Map<String, AttendanceModel>>({}, (map, m) {
-                        map[m.laborName] = m;
-                        return map;
-                      })
+                            map[m.laborName] = m;
+                            return map;
+                          })
                           .values
                           .toList(),
                     ),
@@ -267,14 +276,11 @@ class _LabourScreenState extends State<LabourScreen> {
     );
   }
 
-
-
-
-  getData() async{
-    var response = await AttendanceService().getLabourAttendance(siteNotifier.value);
+  getData() async {
+    var response =
+        await AttendanceService().getLabourAttendance(siteNotifier.value);
     setState(() {
       members = response;
     });
   }
 }
-

@@ -358,8 +358,10 @@ class OrderListTab extends GetView<MainOrderController> {
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: ExpansionTile(
-                            childrenPadding: EdgeInsets.symmetric(horizontal: 12),
-                            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                            childrenPadding:
+                                EdgeInsets.symmetric(horizontal: 12),
+                            expandedCrossAxisAlignment:
+                                CrossAxisAlignment.start,
                             title: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -398,46 +400,55 @@ class OrderListTab extends GetView<MainOrderController> {
                               const SizedBox(height: 8),
                               Text('Supplier: ${order.supplierName}'),
                               const SizedBox(height: 8),
-                              Text('Order by: ${order.createdByUser?.displayName}'),
+                              Text(
+                                  'Order by: ${order.createdByUser?.displayName}'),
                               const SizedBox(height: 8),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Chip(
                                       label: Text(
                                         order.status!.capitalizeFirst!,
-                                        style: const TextStyle(color: Colors.white),
+                                        style: const TextStyle(
+                                            color: Colors.white),
                                       ),
-                                      backgroundColor: order.status == 'approved'
-                                          ? Colors.green
-                                          : Colors.blueAccent,
+                                      backgroundColor:
+                                          order.status == 'approved'
+                                              ? Colors.green
+                                              : Colors.blueAccent,
                                     ),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         ElevatedButton(
                                             onPressed: () {
-                                              controller.deleteOrder(
-                                                  controller.orders.indexOf(order));
+                                              controller.deleteOrder(controller
+                                                  .orders
+                                                  .indexOf(order));
                                             },
-                                            child: Text("delete", style: TextStyle(color: Colors.redAccent),)),
+                                            child: Text(
+                                              "delete",
+                                              style: TextStyle(
+                                                  color: Colors.redAccent),
+                                            )),
                                         const SizedBox(width: 8),
                                         ElevatedButton(
                                             onPressed: () {
                                               Get.to(() => OrderDetailsScreen(
-                                                  index: controller.orders.indexOf(order),
-                                                  order: controller.orders.firstWhere(
-                                                          (element) =>
-                                                      element.id == order.id),
+                                                  index: controller.orders
+                                                      .indexOf(order),
+                                                  order: controller.orders
+                                                      .firstWhere((element) =>
+                                                          element.id ==
+                                                          order.id),
                                                   tabType: 'orderList'));
                                             },
                                             child: Text("View")),
                                       ],
                                     ),
-
-
                                   ],
                                 ),
                               )
@@ -660,9 +671,11 @@ class ApprovedListTab extends GetView<MainOrderController> {
                                 const SizedBox(height: 8),
                                 Text('Supplier: ${order.supplierName}'),
                                 const SizedBox(height: 8),
-                                Text('Order by: ${order.createdByUser?.displayName}'),
+                                Text(
+                                    'Order by: ${order.createdByUser?.displayName}'),
                                 const SizedBox(height: 8),
-                                Text('Approved by: ${order.approvedByUser?.displayName}'),
+                                Text(
+                                    'Approved by: ${order.approvedByUser?.displayName}'),
                               ],
                             ),
                             // trailing: Wrap(

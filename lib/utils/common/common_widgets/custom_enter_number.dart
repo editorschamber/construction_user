@@ -14,7 +14,8 @@ class CustomEnterNumber extends StatelessWidget {
     this.icon,
     this.countryCode,
     this.numberController,
-    this.width, this.prefixIcon,
+    this.width,
+    this.prefixIcon,
   });
 
   @override

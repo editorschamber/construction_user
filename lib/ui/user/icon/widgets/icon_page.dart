@@ -9,9 +9,9 @@ class IconPage extends GetView {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
-        height: height,
-        width: width,
-        child: notificationTile(),
+      height: height,
+      width: width,
+      child: notificationTile(),
     );
   }
 

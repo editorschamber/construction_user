@@ -40,7 +40,8 @@ class ProfileController extends GetxController {
     }
 
     try {
-      bool success = await userService.updateProfileImage(StorageService.userId, base64Image.value);
+      bool success = await userService.updateProfileImage(
+          StorageService.userId, base64Image.value);
       if (success) {
         Get.snackbar("Success", "Profile picture updated successfully");
       } else {
@@ -57,7 +58,7 @@ class ProfileController extends GetxController {
     loadUserData();
   }
 
-  void loadUserData() async{
+  void loadUserData() async {
     UserData? user = await userService.getUserDetails() as UserData?;
     if (user != null) {
       displayName.value = user.displayName ?? "";

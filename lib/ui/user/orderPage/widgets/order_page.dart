@@ -16,7 +16,7 @@ class OrderPage extends GetView<OrderController> {
             crossAxisCount: 2,
             crossAxisSpacing: 8.0,
             mainAxisSpacing: 8.0,
-            childAspectRatio: 0.75,  // Adjusted to make the card taller
+            childAspectRatio: 0.75, // Adjusted to make the card taller
           ),
           itemCount: controller.orders.length,
           itemBuilder: (context, index) {
@@ -58,8 +58,8 @@ class OrderPage extends GetView<OrderController> {
                         },
                         child: ClipRRect(
                           borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(12),
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
                           ),
                           child: Image.file(
                             File(order.imagePath),

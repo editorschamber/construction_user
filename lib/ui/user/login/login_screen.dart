@@ -13,7 +13,7 @@ class LoginScreen extends GetView<LoginController> {
     var width = MediaQuery.sizeOf(context).width;
     return Scaffold(
       body: SafeArea(
-        child:  LoginPage(),
+        child: LoginPage(),
       ),
     );
   }

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
-List<MaterialQuantity> materialQuantityFromJson(String str) => List<MaterialQuantity>.from(json.decode(str).map((x) => MaterialQuantity.fromJson(x)));
+List<MaterialQuantity> materialQuantityFromJson(String str) =>
+    List<MaterialQuantity>.from(
+        json.decode(str).map((x) => MaterialQuantity.fromJson(x)));
 
-String materialQuantityToJson(List<MaterialQuantity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String materialQuantityToJson(List<MaterialQuantity> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class MaterialQuantity {
   int? id;
@@ -27,27 +30,32 @@ class MaterialQuantity {
     this.unit,
   });
 
-  factory MaterialQuantity.fromJson(Map<String, dynamic> json) => MaterialQuantity(
-    id: json["id"],
-    materialName: json["materialName"],
-    quantity: json["quantity"],
-    siteId: json["siteId"],
-    price: json["price"],
-    userId: json["userId"],
-    unit: json["unit"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-  );
+  factory MaterialQuantity.fromJson(Map<String, dynamic> json) =>
+      MaterialQuantity(
+        id: json["id"],
+        materialName: json["materialName"],
+        quantity: json["quantity"],
+        siteId: json["siteId"],
+        price: json["price"],
+        userId: json["userId"],
+        unit: json["unit"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "materialName": materialName,
-    "quantity": quantity,
-    "siteId": siteId,
-    "price": price,
-    "userId": userId,
-    "unit": unit,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-  };
+        "id": id,
+        "materialName": materialName,
+        "quantity": quantity,
+        "siteId": siteId,
+        "price": price,
+        "userId": userId,
+        "unit": unit,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
+      };
 }

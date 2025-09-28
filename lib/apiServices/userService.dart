@@ -8,12 +8,9 @@ import 'apiServices.dart';
 class UserService {
   APIServices apiServices = APIServices();
 
-
   // Get all users
   Future<List<dynamic>> getUsers() async {
-    final response = await apiServices.getApi(
-      APIStrings.users
-    );
+    final response = await apiServices.getApi(APIStrings.users);
 
     if (response != null) {
       return response;
@@ -23,7 +20,8 @@ class UserService {
   }
 
   Future<UserData> getUserDetails() async {
-    final response = await apiServices.getApi("${APIStrings.getUserDetails}?id=${StorageService.userId}");
+    final response = await apiServices
+        .getApi("${APIStrings.getUserDetails}?id=${StorageService.userId}");
 
     if (response != null) {
       return userDataFromJson(jsonEncode(response["data"]));
@@ -33,7 +31,8 @@ class UserService {
   }
 
   // Create a new user
-  Future<Map<String, dynamic>> createUser(String username, String password, String role) async {
+  Future<Map<String, dynamic>> createUser(
+      String username, String password, String role) async {
     final response = await apiServices.postApi(
       APIStrings.users,
       body: json.encode({

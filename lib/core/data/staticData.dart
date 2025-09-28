@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
 
 class StaticData {
-  static final RxMap<String, List<MaterialModel>> siteMaterials = <String, List<MaterialModel>>{
+  static final RxMap<String, List<MaterialModel>> siteMaterials =
+      <String, List<MaterialModel>>{
     'Site 1': [
       MaterialModel(name: 'Steel', quantity: 3100),
       MaterialModel(name: 'Brick', quantity: 3100),

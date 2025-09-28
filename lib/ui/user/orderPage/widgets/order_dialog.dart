@@ -35,17 +35,20 @@ class OrderDialog extends StatelessWidget {
                 },
                 items: orderController.orders
                     .map((order) => DropdownMenuItem<String>(
-                  value: order.supplierName,
-                  child: Text(order.supplierName ?? ""),
-                ))
+                          value: order.supplierName,
+                          child: Text(order.supplierName ?? ""),
+                        ))
                     .toList(),
               );
             }),
             Obx(() {
               return DropdownButton<String>(
                 hint: const Text("Select Site"),
-                value: orderController.selectedSite.value.isEmpty ? null : orderController.selectedSite.value,
-                items: orderController.sites.map<DropdownMenuItem<String>>((Site site) {
+                value: orderController.selectedSite.value.isEmpty
+                    ? null
+                    : orderController.selectedSite.value,
+                items: orderController.sites
+                    .map<DropdownMenuItem<String>>((Site site) {
                   return DropdownMenuItem<String>(
                     value: site.siteName,
                     child: Text(site.siteName),

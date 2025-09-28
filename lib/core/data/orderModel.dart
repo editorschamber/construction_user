@@ -39,41 +39,40 @@ class Order {
   EdByUser? returnedByUser;
   EdByUser? rejectedByUser;
 
-  Order({
-    this.id,
-    this.materialName,
-    this.supplier,
-    this.supplierId,
-    this.quantity,
-    this.returnedQuantity,
-    this.qualityCheck,
-    this.quantityCheck,
-    this.price,
-    this.status,
-    this.orderCreateDate,
-    this.expectedDeliveryDate,
-    this.deliveryAddress,
-    this.imagePath,
-    this.returnReason,
-    this.returnImage,
-    this.siteId,
-    this.userId,
-    this.createdAt,
-    this.updatedAt,
-    this.site,
-    this.supplierDetails,
-    this.supplierName,
-    this.siteName,
-    this.instruction,
-    this.unit,
-    this.createdByUser,
-    this.approvedByUser,
-    this.receivedByUser,
-    this.rejectedByUser,
-    this.returnedByUser
-  });
+  Order(
+      {this.id,
+      this.materialName,
+      this.supplier,
+      this.supplierId,
+      this.quantity,
+      this.returnedQuantity,
+      this.qualityCheck,
+      this.quantityCheck,
+      this.price,
+      this.status,
+      this.orderCreateDate,
+      this.expectedDeliveryDate,
+      this.deliveryAddress,
+      this.imagePath,
+      this.returnReason,
+      this.returnImage,
+      this.siteId,
+      this.userId,
+      this.createdAt,
+      this.updatedAt,
+      this.site,
+      this.supplierDetails,
+      this.supplierName,
+      this.siteName,
+      this.instruction,
+      this.unit,
+      this.createdByUser,
+      this.approvedByUser,
+      this.receivedByUser,
+      this.rejectedByUser,
+      this.returnedByUser});
 
-  factory Order.fromJson(Map<String, dynamic> json){
+  factory Order.fromJson(Map<String, dynamic> json) {
     print(json);
     return Order(
       id: json["id"],
@@ -105,15 +104,25 @@ class Order {
       siteId: json["siteId"],
       userId: json["userId"],
       createdAt:
-      json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       updatedAt:
-      json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
       site: json["site"] == null ? null : SiteData.fromJson(json["site"]),
-      createdByUser: json["createdByUser"] == null ? null : EdByUser.fromJson(json["createdByUser"]),
-      approvedByUser: json["approvedByUser"] == null ? null : EdByUser.fromJson(json["approvedByUser"]),
-      receivedByUser: json["receivedByUser"] == null ? null : EdByUser.fromJson(json["receivedByUser"]),
-      rejectedByUser: json["rejectedByUser"] == null ? null : EdByUser.fromJson(json["rejectedByUser"]),
-      returnedByUser: json["returnedByUser"] == null ? null : EdByUser.fromJson(json["returnedByUser"]),
+      createdByUser: json["createdByUser"] == null
+          ? null
+          : EdByUser.fromJson(json["createdByUser"]),
+      approvedByUser: json["approvedByUser"] == null
+          ? null
+          : EdByUser.fromJson(json["approvedByUser"]),
+      receivedByUser: json["receivedByUser"] == null
+          ? null
+          : EdByUser.fromJson(json["receivedByUser"]),
+      rejectedByUser: json["rejectedByUser"] == null
+          ? null
+          : EdByUser.fromJson(json["rejectedByUser"]),
+      returnedByUser: json["returnedByUser"] == null
+          ? null
+          : EdByUser.fromJson(json["returnedByUser"]),
       supplierDetails: json["supplierDetails"] == null
           ? null
           : SupplierDetails.fromJson(json["supplierDetails"]),
@@ -125,50 +134,49 @@ class Order {
   }
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "materialName": materialName,
-    "supplier": supplier,
-    "supplierId": supplierId,
-    "quantity": quantity,
-    "returnedQuantity": returnedQuantity,
-    "qualityCheck": qualityCheck,
-    "quantityCheck": quantityCheck,
-    "price": price,
-    "status": status,
-    "orderCreateDate": orderCreateDate?.toIso8601String(),
-    "expectedDeliveryDate": expectedDeliveryDate?.toIso8601String(),
-    "deliveryAddress": deliveryAddress,
-    "imagePath": imagePath,
-    "returnReason": returnReason,
-    "returnImage": returnImage,
-    "siteId": siteId,
-    "userId": userId,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-    "site": site?.toJson(),
-    "supplierDetails": supplierDetails?.toJson(),
-    "supplierName": supplierName,
-    "siteName": siteName,
-    "instruction": instruction,
-    "unit": unit,
-  };
+        "id": id,
+        "materialName": materialName,
+        "supplier": supplier,
+        "supplierId": supplierId,
+        "quantity": quantity,
+        "returnedQuantity": returnedQuantity,
+        "qualityCheck": qualityCheck,
+        "quantityCheck": quantityCheck,
+        "price": price,
+        "status": status,
+        "orderCreateDate": orderCreateDate?.toIso8601String(),
+        "expectedDeliveryDate": expectedDeliveryDate?.toIso8601String(),
+        "deliveryAddress": deliveryAddress,
+        "imagePath": imagePath,
+        "returnReason": returnReason,
+        "returnImage": returnImage,
+        "siteId": siteId,
+        "userId": userId,
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
+        "site": site?.toJson(),
+        "supplierDetails": supplierDetails?.toJson(),
+        "supplierName": supplierName,
+        "siteName": siteName,
+        "instruction": instruction,
+        "unit": unit,
+      };
 
   /// **Copy method to update only modified values**
-  Order copyWith({
-    String? materialName,
-    String? supplier,
-    int? supplierId,
-    double? quantity,
-    double? returnedQuantity,
-    bool? qualityCheck,
-    bool? quantityCheck,
-    double? price,
-    String? status,
-    DateTime? expectedDeliveryDate,
-    String? deliveryAddress,
-    String? instruction,
-    int? siteId
-  }) {
+  Order copyWith(
+      {String? materialName,
+      String? supplier,
+      int? supplierId,
+      double? quantity,
+      double? returnedQuantity,
+      bool? qualityCheck,
+      bool? quantityCheck,
+      double? price,
+      String? status,
+      DateTime? expectedDeliveryDate,
+      String? deliveryAddress,
+      String? instruction,
+      int? siteId}) {
     return Order(
       id: id,
       materialName: materialName ?? this.materialName,
@@ -210,14 +218,14 @@ class EdByUser {
   });
 
   factory EdByUser.fromJson(Map<String, dynamic> json) => EdByUser(
-    userId: json["userId"],
-    displayName: json["displayName"],
-  );
+        userId: json["userId"],
+        displayName: json["displayName"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "userId": userId,
-    "displayName": displayName,
-  };
+        "userId": userId,
+        "displayName": displayName,
+      };
 }
 
 class SiteData {
@@ -230,14 +238,14 @@ class SiteData {
   });
 
   factory SiteData.fromJson(Map<String, dynamic> json) => SiteData(
-    id: json["id"],
-    siteName: json["siteName"],
-  );
+        id: json["id"],
+        siteName: json["siteName"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "siteName": siteName,
-  };
+        "id": id,
+        "siteName": siteName,
+      };
 }
 
 class SupplierDetails {
@@ -256,7 +264,7 @@ class SupplierDetails {
       );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "supplierName": supplierName,
-  };
+        "id": id,
+        "supplierName": supplierName,
+      };
 }

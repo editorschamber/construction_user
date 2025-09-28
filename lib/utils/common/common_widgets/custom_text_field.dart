@@ -20,16 +20,17 @@ class CustomTextField extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(10), // Add this line for rounded corners
+        borderRadius:
+            BorderRadius.circular(10), // Add this line for rounded corners
       ),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
           icon: icon != null
               ? Icon(
-            icon,
-            color: Colors.grey,
-          )
+                  icon,
+                  color: Colors.grey,
+                )
               : null,
           hintText: hintText,
           hintStyle: const TextStyle(

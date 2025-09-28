@@ -239,7 +239,8 @@ class AddOrderPage extends StatelessWidget {
                     return ListTile(
                       title: Text(supplier.supplierName ?? ""),
                       onTap: () {
-                        input.supplierController.text = supplier.supplierName ?? "";
+                        input.supplierController.text =
+                            supplier.supplierName ?? "";
                         input.selectedSupplier.value = supplier;
 
                         Get.back();

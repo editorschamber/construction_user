@@ -32,7 +32,7 @@ class OrderService {
 
   Future<List<Order>> getOrdersByUser({required String? userId}) async {
     final response =
-    await apiService.getApi("${APIStrings.getOrdersByUser}?userId=$userId");
+        await apiService.getApi("${APIStrings.getOrdersByUser}?userId=$userId");
 
     if (response != null) {
       return orderFromJson(jsonEncode(response['data']));
@@ -112,11 +112,10 @@ class OrderService {
       throw Exception('Failed to update order status');
     }
   }
-  
-  Future<bool> deleteOrder(Order order) async{
-    final response = await apiService.deleteApi('orders/delete', body: {
-      "id" : order.id ?? 0
-    });
+
+  Future<bool> deleteOrder(Order order) async {
+    final response = await apiService
+        .deleteApi('orders/delete', body: {"id": order.id ?? 0});
 
     print(response);
     return response != null;

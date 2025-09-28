@@ -42,6 +42,5 @@ class APIStrings {
   static const String getAllLabors = 'labor/getAllLabors';
   static const String getAttendanceByName = 'labor/getAttendance';
   static const String markAsOut = 'labor/markAsOut';
-
-
+  static const String createMaterial = "materials/createMaterial";
 }

@@ -11,7 +11,8 @@ class _DayRow {
   final DateTime? inTime;
   final DateTime? outTime;
   final bool present;
-  _DayRow({required this.date, this.inTime, this.outTime, required this.present});
+  _DayRow(
+      {required this.date, this.inTime, this.outTime, required this.present});
 }
 
 class LabourAttendance extends StatefulWidget {
@@ -28,7 +29,8 @@ class _LabourAttendanceState extends State<LabourAttendance> {
   DateTime selectedDate = DateTime.now();
 
   String _fmtDate(DateTime d) => DateFormat('dd-MM-yyyy').format(d);
-  String _fmtTime(DateTime? t) => t == null ? '-' : DateFormat('HH:mm').format(t);
+  String _fmtTime(DateTime? t) =>
+      t == null ? '-' : DateFormat('HH:mm').format(t);
 
   List<_DayRow> _buildMonthRows() {
     // Start from the first day of the current month
@@ -45,7 +47,8 @@ class _LabourAttendanceState extends State<LabourAttendance> {
       lastDate = now;
     }
 
-    bool sameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+    bool sameDay(DateTime a, DateTime b) =>
+        a.year == b.year && a.month == b.month && a.day == b.day;
 
     // Filter to range [start, lastDate]
     final rangeRecords = attendanceRecords.where((r) {
@@ -54,7 +57,8 @@ class _LabourAttendanceState extends State<LabourAttendance> {
     }).toList();
 
     // Group by day key
-    String keyOf(DateTime d) => '${d.year}-${d.month.toString().padLeft(2,'0')}-${d.day.toString().padLeft(2,'0')}';
+    String keyOf(DateTime d) =>
+        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     final Map<String, List<AttendanceModel>> byDay = {};
     for (final r in rangeRecords) {
       final d = DateTime(r.createdAt.year, r.createdAt.month, r.createdAt.day);
@@ -77,12 +81,13 @@ class _LabourAttendanceState extends State<LabourAttendance> {
         final t = rec.createdAt;
         inTime = rec.createdAt;
         present = true;
-        if(status == "OUT"){
+        if (status == "OUT") {
           outTime = rec.updatedAt;
         }
       }
 
-      rows.add(_DayRow(date: cursor, inTime: inTime, outTime: outTime, present: present));
+      rows.add(_DayRow(
+          date: cursor, inTime: inTime, outTime: outTime, present: present));
       cursor = cursor.add(const Duration(days: 1));
     }
 
@@ -96,9 +101,8 @@ class _LabourAttendanceState extends State<LabourAttendance> {
   }
 
   Future<void> fetchAttendanceRecords() async {
-    var response = await AttendanceService().getLabourAttendanceByName(
-      widget.name
-    );
+    var response =
+        await AttendanceService().getLabourAttendanceByName(widget.name);
     if (response != null) {
       setState(() {
         attendanceRecords = response;
@@ -163,4 +167,4 @@ class _LabourAttendanceState extends State<LabourAttendance> {
       ),
     );
   }
-  }
+}

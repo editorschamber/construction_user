@@ -24,26 +24,27 @@ class LoginPage extends GetView<LoginController> {
             return authController.isLoading.value
                 ? Center(child: CircularProgressIndicator(color: Colors.white))
                 : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                    _buildLogo(),
-                    SizedBox(height: 48),
-                    _buildWelcomeText(),
-                    SizedBox(height: 48),
-                    _buildInputFields(),
-                    SizedBox(height: 24),
-                    _buildLoginButton(),
-                    SizedBox(height: 16),
-                    // _buildSignUpRow(),
-                  ],
-                ),
-              ),
-            );
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1),
+                          _buildLogo(),
+                          SizedBox(height: 48),
+                          _buildWelcomeText(),
+                          SizedBox(height: 48),
+                          _buildInputFields(),
+                          SizedBox(height: 24),
+                          _buildLoginButton(),
+                          SizedBox(height: 16),
+                          // _buildSignUpRow(),
+                        ],
+                      ),
+                    ),
+                  );
           }),
         ],
       ),
@@ -126,7 +127,8 @@ class LoginPage extends GetView<LoginController> {
       children: [
         Text(
           "Mobile Number",
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
         ),
         SizedBox(height: 8),
         CustomEnterNumber(
@@ -137,7 +139,8 @@ class LoginPage extends GetView<LoginController> {
         SizedBox(height: 24),
         Text(
           "Password",
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
         ),
         SizedBox(height: 8),
         CustomTextfield(
@@ -229,4 +232,3 @@ class BackgroundPainter extends CustomPainter {
     return false;
   }
 }
-

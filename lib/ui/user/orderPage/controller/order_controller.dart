@@ -30,7 +30,7 @@ class OrderController extends GetxController {
   @override
   void onInit() {
     siteNotifier.addListener(() {
-      if(siteNotifier.value != null){
+      if (siteNotifier.value != null) {
         loadOrders();
       }
     });
@@ -52,8 +52,8 @@ class OrderController extends GetxController {
 
   void loadOrders() {
     List<Order> storedOrders = (box.read<List>('orders') as List?)
-        ?.map((orderJson) => Order.fromJson(orderJson))
-        .toList() ??
+            ?.map((orderJson) => Order.fromJson(orderJson))
+            .toList() ??
         defaultOrders;
     // orders.value = storedOrders;
     // orders.value = storedOrders.map((e) => Order.fromJson(e)).toList();
@@ -91,6 +91,7 @@ class OrderController extends GetxController {
       ),
     ];
   }
+
   void addOrder({bool isReceivedOrder = false}) {
     bool hasImage = pickedImage != null;
     bool hasMaterial = materialNameController.text.isNotEmpty;
@@ -99,7 +100,8 @@ class OrderController extends GetxController {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       // _orderIdCounter++;
-      final order = Order(// Assign incrementing ID
+      final order = Order(
+        // Assign incrementing ID
         status: 'pending',
         materialName: hasMaterial ? materialNameController.text : "",
         supplier: selectedSupplier.value,
@@ -125,13 +127,12 @@ class OrderController extends GetxController {
 
     if (hasImage || (hasMaterial && hasQuantity)) {
       final order = Order(
-        status: '',
-        materialName: hasMaterial ? materialNameController.text : "",
-        supplierName: selectedSupplier.value,
-        quantity: double.tryParse(quantityController.text),
-        imagePath: hasImage ? pickedImage!.path : "",
-        siteName: selectedSite.value
-      );
+          status: '',
+          materialName: hasMaterial ? materialNameController.text : "",
+          supplierName: selectedSupplier.value,
+          quantity: double.tryParse(quantityController.text),
+          imagePath: hasImage ? pickedImage!.path : "",
+          siteName: selectedSite.value);
 
       orders.add(order);
       saveOrders();
@@ -150,7 +151,7 @@ class OrderController extends GetxController {
   Future<void> pickImage() async {
     try {
       FilePickerResult? result =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null && result.files.single.path != null) {
         pickedImage = File(result.files.single.path!);
         log(result.files.single.path!.toString());

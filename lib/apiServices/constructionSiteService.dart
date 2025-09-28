@@ -20,7 +20,8 @@ class ConstructionSiteService {
   }
 
   // Add a new construction site
-  Future<Map<String, dynamic>> addConstructionSite(Map<String, dynamic> siteData) async {
+  Future<Map<String, dynamic>> addConstructionSite(
+      Map<String, dynamic> siteData) async {
     final response = await apiService.postApi(
       APIStrings.constructionSites,
       body: json.encode(siteData),

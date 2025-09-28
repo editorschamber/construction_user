@@ -21,17 +21,16 @@ class UserData {
   String? password;
   String? profileImage;
 
-  UserData({
-    this.userId,
-    this.username,
-    this.role,
-    this.displayName,
-    this.phoneNumber,
-    this.createdAt,
-    this.updatedAt,
-    this.password,
-    this.profileImage
-  });
+  UserData(
+      {this.userId,
+      this.username,
+      this.role,
+      this.displayName,
+      this.phoneNumber,
+      this.createdAt,
+      this.updatedAt,
+      this.password,
+      this.profileImage});
 
   factory UserData.fromMap(Map<String, dynamic> json) => UserData(
       userId: json["userId"],
@@ -42,17 +41,16 @@ class UserData {
       createdAt: DateTime.parse(json["createdAt"]),
       updatedAt: DateTime.parse(json["updatedAt"]),
       password: json["password"],
-    profileImage: json["profileImage"].toString()
-  );
+      profileImage: json["profileImage"].toString());
 
   Map<String, dynamic> toMap() => {
-    "userId": userId,
-    "username": username,
-    "role": role,
-    "displayName": displayName,
-    "phoneNumber": phoneNumber,
-    "createdAt": createdAt,
-    "updatedAt": updatedAt,
-    "password": password
-  };
+        "userId": userId,
+        "username": username,
+        "role": role,
+        "displayName": displayName,
+        "phoneNumber": phoneNumber,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
+        "password": password
+      };
 }
